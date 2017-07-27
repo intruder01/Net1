@@ -17,7 +17,7 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -62,15 +62,20 @@
     <Compile Include="Helpers\PID.cs" />
     <Compile Include="InputPlane.cs" />
     <Compile Include="Layer.cs" />
+    <Compile Include="Math3D.cs" />
     <Compile Include="NetConfigData.cs" />
     <Compile Include="NetConfigForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NetConfigForm.Designer.cs" />
+    <Compile Include="NetConfigForm.Designer.cs">
+      <DependentUpon>NetConfigForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="NetForm1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NetForm1.Designer.cs" />
+    <Compile Include="NetForm1.Designer.cs">
+      <DependentUpon>NetForm1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Network.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -80,6 +85,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="ScreenUpdateData.cs" />
+    <Compile Include="Viewer3DSelectable3DObject.cs" />
     <Compile Include="Stats\PerformanceMetrics.cs" />
     <Compile Include="Stats\RunningRegression.cs" />
     <Compile Include="Stats\RunningStat.cs" />
@@ -89,8 +95,10 @@
     <Compile Include="Viewer3DForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Viewer3DForm.Designer.cs" />
-    <Compile Include="Viewer3Engine.cs" />
+    <Compile Include="Viewer3DForm.Designer.cs">
+      <DependentUpon>Viewer3DForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Viewer3DEngine.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
@@ -139,9 +147,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="NetConfigForm.resx" />
-    <EmbeddedResource Include="NetForm1.resx" />
-    <EmbeddedResource Include="Viewer3DForm.resx" />
+    <EmbeddedResource Include="NetConfigForm.resx">
+      <DependentUpon>NetConfigForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NetForm1.resx">
+      <DependentUpon>NetForm1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Viewer3DForm.resx">
+      <DependentUpon>Viewer3DForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

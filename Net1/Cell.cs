@@ -16,7 +16,7 @@ using static System.Math;
 //		apical		- ???, feedback 
 namespace Net1
 {
-	public class Cell
+	public class Cell : Selectable3DObject
 	{
 		//Cell index in Column
 		public int Index { get; private set; }

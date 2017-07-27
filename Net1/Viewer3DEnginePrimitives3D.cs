@@ -32,26 +32,29 @@ namespace Net1
 		{
 			this._vertices = new VertexPositionColor[30];
 
+			//X
 			this._vertices[0] = new VertexPositionColor(new Vector3(0, 0, 0), Color.Red);
 			this._vertices[1] = new VertexPositionColor(Vector3.Right * 5, Color.Red);
 			this._vertices[2] = new VertexPositionColor(new Vector3(5, 0, 0), Color.Red);
 			this._vertices[3] = new VertexPositionColor(new Vector3(4.5f, 0.5f, 0), Color.Red);
-			this._vertices[4] = new VertexPositionColor(new Vector3(5, 0, 0), Color.Red);
-			this._vertices[5] = new VertexPositionColor(new Vector3(4.5f, -0.5f, 0), Color.Red);
+			//this._vertices[4] = new VertexPositionColor(new Vector3(5, 0, 0), Color.Red);
+			//this._vertices[5] = new VertexPositionColor(new Vector3(4.5f, -0.5f, 0), Color.Red);
 
+			//Y
 			this._vertices[6] = new VertexPositionColor(new Vector3(0, 0, 0), Color.Green);
 			this._vertices[7] = new VertexPositionColor(Vector3.Up * 5, Color.Green);
-			this._vertices[8] = new VertexPositionColor(new Vector3(0, 5, 0), Color.Green);
-			this._vertices[9] = new VertexPositionColor(new Vector3(0.5f, 4.5f, 0), Color.Green);
-			this._vertices[10] = new VertexPositionColor(new Vector3(0, 5, 0), Color.Green);
-			this._vertices[11] = new VertexPositionColor(new Vector3(-0.5f, 4.5f, 0), Color.Green);
+			//this._vertices[8] = new VertexPositionColor(new Vector3(0, 5, 0), Color.Green);
+			//this._vertices[9] = new VertexPositionColor(new Vector3(0.5f, 4.5f, 0), Color.Green);
+			//this._vertices[10] = new VertexPositionColor(new Vector3(0, 5, 0), Color.Green);
+			//this._vertices[11] = new VertexPositionColor(new Vector3(-0.5f, 4.5f, 0), Color.Green);
 
-			this._vertices[12] = new VertexPositionColor(new Vector3(0, 0, 0), Color.Blue);
-			this._vertices[13] = new VertexPositionColor(Vector3.Forward * 5, Color.Blue);
-			this._vertices[14] = new VertexPositionColor(new Vector3(0, 0, -5), Color.Blue);
-			this._vertices[15] = new VertexPositionColor(new Vector3(0, 0.5f, -4.5f), Color.Blue);
-			this._vertices[16] = new VertexPositionColor(new Vector3(0, 0, -5), Color.Blue);
-			this._vertices[17] = new VertexPositionColor(new Vector3(0, -0.5f, -4.5f), Color.Blue);
+			//Z
+			this._vertices[12] = new VertexPositionColor ( new Vector3 ( 0, 0, 0 ), Color.Blue );
+			this._vertices[13] = new VertexPositionColor ( Vector3.Forward * 5, Color.Blue );
+			//this._vertices[14] = new VertexPositionColor ( new Vector3 ( 0, 0, -5 ), Color.Blue );
+			//this._vertices[15] = new VertexPositionColor ( new Vector3 ( 0, 0.5f, -4.5f ), Color.Blue );
+			//this._vertices[16] = new VertexPositionColor ( new Vector3 ( 0, 0, -5 ), Color.Blue );
+			//this._vertices[17] = new VertexPositionColor ( new Vector3 ( 0, -0.5f, -4.5f ), Color.Blue );
 		}
 
 		public void Draw(Matrix viewMatrix, Matrix projectionMatrix)
@@ -243,7 +246,8 @@ namespace Net1
 
 				int primitiveCount = this._indices.Count / 3;
 
-				graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, this._vertices.Count, 0, primitiveCount);
+				//graphicsDevice.DrawIndexedPrimitives ( PrimitiveType.TriangleList, 0, 0, this._vertices.Count, 0, primitiveCount );
+				graphicsDevice.DrawIndexedPrimitives ( PrimitiveType.TriangleList, 0, 0, primitiveCount );
 			}
 		}
 

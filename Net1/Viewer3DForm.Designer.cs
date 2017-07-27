@@ -133,6 +133,7 @@
 			this.showCorrectButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.showCorrectButton.Name = "showCorrectButton";
 			this.showCorrectButton.Size = new System.Drawing.Size(23, 22);
+			this.showCorrectButton.ToolTipText = "Show Correct";
 			this.showCorrectButton.Click += new System.EventHandler(this.showCorrectButton_Click_1);
 			// 
 			// showSeqPredictingButton
@@ -143,6 +144,7 @@
 			this.showSeqPredictingButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.showSeqPredictingButton.Name = "showSeqPredictingButton";
 			this.showSeqPredictingButton.Size = new System.Drawing.Size(23, 22);
+			this.showSeqPredictingButton.ToolTipText = "Show Seq Predicting";
 			this.showSeqPredictingButton.Click += new System.EventHandler(this.showSeqPredictingButton_Click);
 			// 
 			// showPredictingButton
@@ -153,6 +155,7 @@
 			this.showPredictingButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.showPredictingButton.Name = "showPredictingButton";
 			this.showPredictingButton.Size = new System.Drawing.Size(23, 22);
+			this.showPredictingButton.ToolTipText = "Show Predicting";
 			this.showPredictingButton.Click += new System.EventHandler(this.showPredictingButton_Click);
 			// 
 			// showLearningButton
@@ -163,6 +166,7 @@
 			this.showLearningButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.showLearningButton.Name = "showLearningButton";
 			this.showLearningButton.Size = new System.Drawing.Size(23, 22);
+			this.showLearningButton.ToolTipText = "Show Learning";
 			this.showLearningButton.Click += new System.EventHandler(this.showLearningButton_Click);
 			// 
 			// showActiveButton
@@ -174,6 +178,7 @@
 			this.showActiveButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.showActiveButton.Name = "showActiveButton";
 			this.showActiveButton.Size = new System.Drawing.Size(23, 22);
+			this.showActiveButton.ToolTipText = "Show Active";
 			this.showActiveButton.Click += new System.EventHandler(this.showActiveButton_Click);
 			// 
 			// showFalsePredictedButton
@@ -184,6 +189,7 @@
 			this.showFalsePredictedButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.showFalsePredictedButton.Name = "showFalsePredictedButton";
 			this.showFalsePredictedButton.Size = new System.Drawing.Size(23, 22);
+			this.showFalsePredictedButton.ToolTipText = "Show False Predicted";
 			this.showFalsePredictedButton.Click += new System.EventHandler(this.showFalsePredictedButton_Click);
 			// 
 			// btnResetCamera
@@ -205,6 +211,8 @@
 			this.pictureBoxSurface.Size = new System.Drawing.Size(1064, 590);
 			this.pictureBoxSurface.TabIndex = 1;
 			this.pictureBoxSurface.TabStop = false;
+			this.pictureBoxSurface.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBoxSurface_MouseMove);
+			this.pictureBoxSurface.Resize += new System.EventHandler(this.pictureBoxSurface_Resize);
 			// 
 			// Viewer3DForm
 			// 

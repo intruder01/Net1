@@ -16,6 +16,7 @@ namespace Net1
 	{
 		#region Fields
 
+		private Microsoft.Xna.Framework.Point mousePosition;
 		#endregion
 
 
@@ -44,7 +45,9 @@ namespace Net1
 
 		public Viewer3DForm()
 		{
-			InitializeComponent();
+			InitializeComponent ();
+
+			ShowCoordinateSystem = true;
 		}
 
 		#endregion
@@ -59,6 +62,8 @@ namespace Net1
 
 		#endregion
 
+
+		#region Events
 
 		private void showCorrectButton_Click(object sender, EventArgs e)
 		{
@@ -144,5 +149,42 @@ namespace Net1
 			//Reset rotation angle and zoom of the camera
 			Viewer3D.Engine.ResetCamera();
 		}
+
+		private void pictureBoxSurface_Resize (object sender, EventArgs e)
+		{
+			Viewer3D.Engine.ResetGraphicsDevice ();
+		}
+
+		private void pictureBoxSurface_MouseMove (object sender, MouseEventArgs e)
+		{
+			float diffX = e.X - this.mousePosition.X;
+			float diffY = e.Y - this.mousePosition.Y;
+
+			this.mousePosition.X = e.X;
+			this.mousePosition.Y = e.Y;
+
+			//debug js
+			Viewer3D.Engine.mouseLocation = new Microsoft.Xna.Framework.Point ( e.X, e.Y );
+
+			//Rotation angle for camera in world space
+			if(e.Button == MouseButtons.Left)
+			{
+				Viewer3D.Engine.RotateWorldSpaceHtmObjects ( diffX, diffY );
+			}
+
+			//Set focus to the hosting surgace in order to maous wheel event works
+			if(!this.pictureBoxSurface.Focused)
+			{
+				this.pictureBoxSurface.Focus ();
+			}
+
+			if(e.Button != MouseButtons.Left && e.Button != MouseButtons.Right)
+			{
+				Viewer3D.Engine.Pick ( e.Location, false );
+			}
+		}
+
+		#endregion
+
 	}
 }

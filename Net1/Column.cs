@@ -10,7 +10,7 @@ using static System.Math;
 
 namespace Net1
 {
-	public class Column
+	public class Column : Selectable3DObject
 	{
 		//Location poroperties 
 		//X location in Layer

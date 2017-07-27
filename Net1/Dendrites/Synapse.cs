@@ -7,7 +7,7 @@ using static System.Math;
 
 namespace Net1
 {
-	public abstract class Synapse
+	public abstract class Synapse : Selectable3DObject
 	{
 		//List of Columns connected to this Synapse
 		public Column ColumnConnected { get; protected set; }

@@ -37,7 +37,7 @@ namespace Net1
 
 		public static class Tests
 		{
-			public static int TestNumLoops = 10000;		//Number of loops in Tests
+			public static int TestNumLoops = 10;		//Number of loops in Tests
 		}
 
 #endif
