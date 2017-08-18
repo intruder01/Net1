@@ -11,9 +11,10 @@ namespace Net1
 	{
 		//List of Columns connected to this Synapse
 		public Column ColumnConnected { get; protected set; }
-
 		//Active when IsConnected and ColumnConnected IsActive
 		public bool IsActive { get; protected set; }
+		//Active when IsConnected and ColumnConnected IsActive
+		public bool IsConnected { get; protected set; }
 		//Synapse Permanence value (scalar 0-1)
 		private double _permanence;
 		public double Permanence
@@ -25,6 +26,7 @@ namespace Net1
 			protected set
 			{
 				_permanence = Max(0, Min(value, 1.0));
+				IsConnected = _permanence >= NetConfigData.SynapsePermanenceThreshold;
 			}
 		}
 

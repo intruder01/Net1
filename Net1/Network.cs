@@ -21,8 +21,8 @@ namespace Net1
 		public Trainer Trainer { get; private set; }
 		public string Filename { get; set; }
 
-		//performance metrics
-		private PerformanceMetrics Metrics { get; set; }
+		////performance metrics
+		public PerformanceMetrics Metrics { get; private set; }
 
 		//training handshake signals
 		public bool TrainRequest { get; set; }          //request to start training 
@@ -58,9 +58,7 @@ namespace Net1
 			CreateLayers();
 			ConnectLayers();
 
-			Metrics = new PerformanceMetrics();
-
-			Trainer.NextCase(Ip, 0);
+			Trainer.LoadCase(Ip, 0);
 
 			ScreenUpdateData.DataChanged();
 		}
@@ -121,21 +119,21 @@ namespace Net1
 		//stats update after completing 1 case  
 		private void statsUpdate_Case()
 		{
-			Metrics.CalcSparseness(Lr, Trainer.NumCases);
+			Lr.SparsenessStat.Value = Metrics.CalcSparseness(Lr);
 
 		}
 
 		//stats update after completing epoch
 		private void statsUpdate_Epoch()
 		{
-			Metrics.CalcEntropy(Lr, Trainer.NumCases);
+			Lr.EntropyStat.Value = Metrics.CalcEntropy(Lr, Trainer.NumCases);
 			
 		}
 
 		//reset stats in preparation for another epoch
 		private void statsInitialiseEpoch()
 		{
-			Metrics.InitializeEpoch(Lr, Ip, Trainer.NumCases);
+			Metrics.InitializeEpoch(Lr);
 		}
 
 		//network parameter automatic adjustments at end of epoch
@@ -171,7 +169,7 @@ namespace Net1
 					for (int x = 0; x < Lr.NumColumnsX; x++)
 						for (int y = 0; y < Lr.NumColumnsY; y++)
 						{
-							Column col = Lr.Columns[x][y];
+							Column col = Lr.Columns[y][x];
 							col.ProximalDendrite.ActivationThreshold = NetConfigData.DendriteActivationThresholdProximal;
 						}
 					break;
@@ -180,7 +178,7 @@ namespace Net1
 					for (int x = 0; x < Lr.NumColumnsX; x++)
 						for (int y = 0; y < Lr.NumColumnsY; y++)
 						{
-							Column col = Lr.Columns[x][y];
+							Column col = Lr.Columns[y][x];
 							foreach (Cell cell in col.Cells)
 							{
 								cell.BasalDendrite.ActivationThreshold = NetConfigData.DendriteActivationThresholdBasal;
@@ -192,7 +190,7 @@ namespace Net1
 					for (int x = 0; x < Lr.NumColumnsX; x++)
 						for (int y = 0; y < Lr.NumColumnsY; y++)
 						{
-							Column col = Lr.Columns[x][y];
+							Column col = Lr.Columns[y][x];
 							col.ApicalDendrite.ActivationThreshold = NetConfigData.DendriteActivationThresholdApical;
 						}
 					break;

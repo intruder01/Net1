@@ -30,16 +30,19 @@ namespace Net1
 		public bool IsActive { get; private set; }
 		//True if Column is predicting.
 		public bool IsPredicting { get; private set; }
+		//True if Column is inhibited by neighbourhood columns.
+		public bool IsInhibited { get; private set; }
 		//Column boost value
 		public double Boost { get; private set; }   //TODO
 
 		//Column performance and statistical information
 		public int ColumnActivationCount { get; set; }		//count Column activation every epoch
+		public int ColumnInhibitedCount { get; set; }      //count Column inhibited every epoch
 
 		#region Constructors
 
 		//generic constructor
-		public Column()
+		public Column ()
 		{
 			X = -1;
 			Y = -1;
@@ -48,8 +51,12 @@ namespace Net1
 			ApicalDendrite = new DendriteApical(NetConfigData.DendriteActivationThresholdApical);
 			InputOverlap = 0;
 			InputOverlap_TimeAve = 0.0;
+			IsActive = false;
+			IsPredicting = false;
+			IsInhibited = false;
 			Boost = Global.COLUMN_INITIAL_BOOST_VALUE;
 			ColumnActivationCount = 0;
+			ColumnInhibitedCount = 0;
 		}
 
 		//added Layer reference for Cells construction to auto-create basal connections
@@ -96,6 +103,7 @@ namespace Net1
 		public int Update_Activation(List<Column> columns, bool inhibitionEnabled)
 		{
 			IsActive = false;
+			IsInhibited = false;
 
 			if (columns.Count > 0)
 			{
@@ -118,14 +126,18 @@ namespace Net1
 					//disable other Columns
 					foreach (Column col in topPercentileList)
 					{
-						if(col != this)
-							col.setInputOverlap(0);
+						if ( col != this )
+						{
+							col.setInputOverlap ( 0 );
+							col.IsInhibited = true;
+							col.ColumnInhibitedCount++;
+						}
 					}
 				}
 			}
 			return IsActive ? 1 : 0;
 		}
-		
+
 		public bool CreateCells(int numCellsInColumn)
 		{
 			int numNewCells = numCellsInColumn - this.Cells.Count;
@@ -175,6 +187,8 @@ namespace Net1
 
 			return result;
 		}
+
+		
 
 		//create Proximal connections from this Column to Columns in Input Layer/Plane
 		public void CreateProximalSynapses(Layer lr, Layer ip, double radius, double zoneCoveragePerc)

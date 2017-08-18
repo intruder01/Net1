@@ -27,16 +27,14 @@ namespace Net1
 		{
 			IsActive = false;
 
-			if (ColumnConnected.IsActive)
-			{
+			if ( ColumnConnected.IsActive )
 				Permanence += NetConfigData.SynapsePermanenceIncrease;
-				if(Permanence >= NetConfigData.SynapsePermanenceThreshold)
-					IsActive = true;
-			}
 			else
 				Permanence -= NetConfigData.SynapsePermanenceDecrease;
 
-			 return IsActive ? 1 : 0;
+			IsActive = Permanence >= NetConfigData.SynapsePermanenceThreshold;
+
+			return IsActive ? 1 : 0;
 		}
 
 

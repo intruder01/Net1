@@ -65,9 +65,49 @@ namespace Net1
 
 		#region Events
 
-		private void showCorrectButton_Click(object sender, EventArgs e)
+		private void pictureBoxSurface_MouseClick (object sender, MouseEventArgs e)
 		{
+			Viewer3D.Engine.Pick ( e.Location, true );
+		}
 
+		private void pictureBoxSurface_MouseDoubleClick (object sender, MouseEventArgs e)
+		{
+			Viewer3D.Engine.ResetCamera ();
+		}
+
+		private void pictureBoxSurface_MouseMove (object sender, MouseEventArgs e)
+		{
+			float diffX = e.X - this.mousePosition.X;
+			float diffY = e.Y - this.mousePosition.Y;
+
+			this.mousePosition.X = e.X;
+			this.mousePosition.Y = e.Y;
+
+			//debug js
+			Viewer3D.Engine.mouseLocation = new Microsoft.Xna.Framework.Point ( e.X, e.Y );
+
+			//Rotation angle for camera in world space
+			if ( e.Button == MouseButtons.Left )
+			{
+				Viewer3D.Engine.RotateWorldSpaceCamera ( diffX, diffY );
+			}
+
+			//Rotation angle for htm objects in world space
+			if ( e.Button == MouseButtons.Right )
+			{
+				Viewer3D.Engine.RotateWorldSpaceHtmObjects ( diffX, diffY );
+			}
+
+			//Set focus to the hosting surgace in order to maouse wheel event works
+			if ( !this.pictureBoxSurface.Focused )
+			{
+				this.pictureBoxSurface.Focus ();
+			}
+
+			if ( !( e.Button == MouseButtons.Left ) && !( e.Button == MouseButtons.Right ) )
+			{
+				Viewer3D.Engine.Pick ( e.Location, false );
+			}
 		}
 
 		private void spatialLearningToolStripMenuItem_Click(object sender, EventArgs e)
@@ -95,7 +135,6 @@ namespace Net1
 			this.ShowPredictedGrid = !this.ShowPredictedGrid;
 			if (this.ShowPredictedGrid)
 				this.ShowPredictionReconstructiondGrid = false; //mutually exclusive since painted in the same corner
-
 		}
 
 		private void regionPredictionReconstructionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -105,12 +144,12 @@ namespace Net1
 				this.ShowPredictedGrid = false; //mutually exclusive since painted in the same corner
 		}
 
-
-		private void showCorrectButton_Click_1(object sender, EventArgs e)
+		private void showCorrectButton_Click(object sender, EventArgs e)
 		{
 			this.ShowCorrectPredictedCells = !this.ShowCorrectPredictedCells;
 			this.showCorrectButton.Text = this.ShowCorrectPredictedCells ? "+" : "-";
 		}
+
 		private void showSeqPredictingButton_Click(object sender, EventArgs e)
 		{
 			this.ShowSeqPredictingCells = !this.ShowSeqPredictingCells;
@@ -155,36 +194,11 @@ namespace Net1
 			Viewer3D.Engine.ResetGraphicsDevice ();
 		}
 
-		private void pictureBoxSurface_MouseMove (object sender, MouseEventArgs e)
-		{
-			float diffX = e.X - this.mousePosition.X;
-			float diffY = e.Y - this.mousePosition.Y;
+		
 
-			this.mousePosition.X = e.X;
-			this.mousePosition.Y = e.Y;
-
-			//debug js
-			Viewer3D.Engine.mouseLocation = new Microsoft.Xna.Framework.Point ( e.X, e.Y );
-
-			//Rotation angle for camera in world space
-			if(e.Button == MouseButtons.Left)
-			{
-				Viewer3D.Engine.RotateWorldSpaceHtmObjects ( diffX, diffY );
-			}
-
-			//Set focus to the hosting surgace in order to maous wheel event works
-			if(!this.pictureBoxSurface.Focused)
-			{
-				this.pictureBoxSurface.Focus ();
-			}
-
-			if(e.Button != MouseButtons.Left && e.Button != MouseButtons.Right)
-			{
-				Viewer3D.Engine.Pick ( e.Location, false );
-			}
-		}
 
 		#endregion
 
+	
 	}
 }

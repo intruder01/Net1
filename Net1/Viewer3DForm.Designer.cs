@@ -134,7 +134,7 @@
 			this.showCorrectButton.Name = "showCorrectButton";
 			this.showCorrectButton.Size = new System.Drawing.Size(23, 22);
 			this.showCorrectButton.ToolTipText = "Show Correct";
-			this.showCorrectButton.Click += new System.EventHandler(this.showCorrectButton_Click_1);
+			this.showCorrectButton.Click += new System.EventHandler(this.showCorrectButton_Click);
 			// 
 			// showSeqPredictingButton
 			// 
@@ -189,6 +189,7 @@
 			this.showFalsePredictedButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.showFalsePredictedButton.Name = "showFalsePredictedButton";
 			this.showFalsePredictedButton.Size = new System.Drawing.Size(23, 22);
+			this.showFalsePredictedButton.Text = "0";
 			this.showFalsePredictedButton.ToolTipText = "Show False Predicted";
 			this.showFalsePredictedButton.Click += new System.EventHandler(this.showFalsePredictedButton_Click);
 			// 
@@ -211,6 +212,8 @@
 			this.pictureBoxSurface.Size = new System.Drawing.Size(1064, 590);
 			this.pictureBoxSurface.TabIndex = 1;
 			this.pictureBoxSurface.TabStop = false;
+			this.pictureBoxSurface.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBoxSurface_MouseClick);
+			this.pictureBoxSurface.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pictureBoxSurface_MouseDoubleClick);
 			this.pictureBoxSurface.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBoxSurface_MouseMove);
 			this.pictureBoxSurface.Resize += new System.EventHandler(this.pictureBoxSurface_Resize);
 			// 

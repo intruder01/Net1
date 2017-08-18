@@ -82,6 +82,7 @@
     <Compile Include="ColumnTests.cs" />
     <Compile Include="CellTests.cs" />
     <Compile Include="DendriteProximalTests.cs" />
+    <Compile Include="PerformanceMetricsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SynapseBasalTests.cs" />
     <Compile Include="SynapseApicalTests.cs" />

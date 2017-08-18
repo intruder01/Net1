@@ -32,7 +32,7 @@ namespace Net1.Tests
 				{
 					for (int y = 0; y < ip.NumColumnsY; y++)
 					{
-						Column col = ip.Columns[x][y];
+						Column col = ip.Columns[y][x];
 						if (Algebra.EuclideanDistance2D(centreX, centreY, col.X, col.Y) <= radius)
 						{
 							desiredResult.Add(col);

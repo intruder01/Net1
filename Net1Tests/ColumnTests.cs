@@ -393,7 +393,7 @@ namespace Net1.Tests
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
 						//this will prevent cell from activating
-						lr.Columns[x][y].OverrideProximalPermanence(0);
+						lr.Columns[y][x].OverrideProximalPermanence(0);
 
 						lr.Update();
 						//lr.PrintActive();
@@ -523,7 +523,7 @@ namespace Net1.Tests
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						col.CreateProximalSynapses(lr, ip, double.MaxValue, 1);
 						col.CreateBasalSynapses(lr, double.MaxValue, 1);
 						col.OverrideProximalPermanence(1.0);
@@ -627,7 +627,7 @@ namespace Net1.Tests
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						Column column = lr.Columns[x][y];
+						Column column = lr.Columns[y][x];
 
 						//scale between InputPlane and Layer location positions
 						int scaledX, scaledY;

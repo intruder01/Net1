@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using static System.Math;
 using System.Collections;
 using Net1.RunningStats;
-
+using Net1.Stats;
 
 namespace Net1
 {
@@ -59,13 +59,27 @@ namespace Net1
 		public ParamSearch ParamSearch_Sparseness_ZoneCoveragePercProximal { get; private set; } // Parameter Search control
 
 
-		public RunningStat EntropyStat;					//running measure of Entropy
+		public RunningStat EntropyStat;                 //running measure of Entropy
+
+		//Prediction reconstruction - commented out for this commit //20170818-1
+
+		/// <param name="numColumnsX"></param>
+		/// <param name="numColumnsY"></param>
+		/// <param name="numCellsInColumn"></param>
+		////// 20160109-1
+		////// declare as property since it may be accessed by other viewer classes
+		////private float[,] predictionReconstruction;
+		////public float[,] PredictionReconstruction
+		////{
+		////	get { return predictionReconstruction; }
+		////	set { predictionReconstruction = value; }
+		////}
 
 
 
 		#region Constructors
 
-		public Layer(int numColumnsX, int numColumnsY, int numCellsInColumn)
+		public Layer (int numColumnsX, int numColumnsY, int numCellsInColumn)
 		{
 			NumColumnsX = numColumnsX;
 			NumColumnsY = numColumnsY;
@@ -93,6 +107,10 @@ namespace Net1
 			//find optimal zone coverage to obtain minimum 2% Input Overlap
 			ParamSearch_Sparseness_ZoneCoveragePercProximal = new ParamSearch(0.02, 0.0, 1.0, 0.001, 3, ParamSearchMode.Exact, ScreenUpdateData.SparsenessParamSearchEnable);
 
+			//// 20160109-1
+			//// Allocate input reconstruction array
+			//this.PredictionReconstruction = new float[0, 0]; //20170818-1
+
 		}
 
 		public Layer(Layer inputLayer, int numColumnsX, int numColumnsY, int numCellsInColumn)
@@ -115,7 +133,7 @@ namespace Net1
 			for (int x = 0; x < NumColumnsX; x++)
 				for (int y = 0; y < NumColumnsY; y++)
 				{
-					Column col = Columns[x][y];
+					Column col = Columns[y][x];
 					col.Update_Proximal();
 				}
 
@@ -123,7 +141,7 @@ namespace Net1
 			for (int x = 0; x < NumColumnsX; x++)
 				for (int y = 0; y < NumColumnsY; y++)
 				{
-					Column col = Columns[x][y];
+					Column col = Columns[y][x];
 					List<Column> neighbours = GetColumnsFromCentre_WithThreshold(
 						col.X, col.Y, radius, true, NetConfigData.ColumnStimulusThreshold);
 					col.Update_Activation(neighbours, InhibitionEnabled);
@@ -133,7 +151,7 @@ namespace Net1
 			for (int x = 0; x < NumColumnsX; x++)
 				for (int y = 0; y < NumColumnsY; y++)
 				{
-					Column col = Columns[x][y];
+					Column col = Columns[y][x];
 					col.Update_Basal();
 				}
 		}
@@ -155,7 +173,7 @@ namespace Net1
 			for (int x = 0; x < NumColumnsX; x++)
 				for (int y = 0; y < NumColumnsY; y++)
 				{
-					Column col = Columns[x][y];
+					Column col = Columns[y][x];
 
 					//get neighbourhood Columns
 					List<Column> colList = GetColumnsFromCentre(x, y, radius, true);
@@ -173,47 +191,60 @@ namespace Net1
 
 		}
 
-		//create Column grid according to internal parameters NumColumnsX, NumColumnsY, NumCellsInColumn
-		public void CreateColumns()
+	
+		//Create Column grid according to internal parameters NumColumnsX, NumColumnsY, NumCellsInColumn
+		//Layer row/column structure:
+		//
+		//NumColumnsX = 10
+		//NumColumnsY = 5
+		//
+		// 0 1 2 3 4 5 6 7 8 9
+		// 0 1 2 3 4 5 6 7 8 9
+		// 0 1 2 3 4 5 6 7 8 9
+		// 0 1 2 3 4 5 6 7 8 9
+		// 0 1 2 3 4 5 6 7 8 9
+		//
+
+		public void CreateColumns ()
 		{
-			//X dimension
-			while (Columns.Count < NumColumnsX) // add Columns in X dimension
+			//Y dimension - add rows (of Column)
+			while ( Columns.Count < NumColumnsY ) // add rows 
 			{
-				List<Column> colList = new List<Column>();
-				Columns.Add(colList);
+				List<Column> row = new List<Column> ();
+				Columns.Add ( row );
 			}
-			while (Columns.Count > 0 && Columns.Count > NumColumnsX) // subtract Columns from X dimension
+			while ( Columns.Count > 0 && Columns.Count > NumColumnsY ) // subtract rows 
 			{
-				//remove last Column[] - to preserve column numbering
-				Columns.RemoveAt(Columns.Count - 1);
+				//remove last row (List<Column>) - to preserve column numbering
+				Columns.RemoveAt ( Columns.Count - 1 );
 			}
 
-			int xIdx = 0;
-			//Y dimension
-			foreach (List<Column> colList in Columns)
+			
+			//X dimension - add columns (of Column)
+			int xIdx= 0;
+			foreach ( List<Column> row in Columns )	//for each row 
 			{
-				while (colList.Count < NumColumnsY) // add Columns in Y dimension
+				while ( row.Count < NumColumnsX ) // add Columns 
 				{
-					Column col = new Column(xIdx, colList.Count, NumCellsInColumn);
-					colList.Add(col);
+					Column column = new Column ( row.Count, xIdx, NumCellsInColumn );
+					row.Add ( column );
 				}
-				while (colList.Count > 0 && colList.Count > NumColumnsY) // subtract Columns from Y dimension
+				while ( row.Count > 0 && row.Count > NumColumnsX ) // subtract Columns 
 				{
 					//remove last Column - to preserve column numbering
-					colList.RemoveAt(colList.Count - 1);
+					row.RemoveAt ( row.Count - 1 );
 				}
 				xIdx++;
 			}
 
 			//adjust number of Cells in Columns
-			foreach (List<Column> colX in Columns)
+			foreach ( List<Column> row in Columns )
 			{
-				foreach (Column col in colX)
+				foreach ( Column column in row )
 				{
-					col.CreateCells(NumCellsInColumn);
+					column.CreateCells ( NumCellsInColumn );
 				}
 			}
-
 		}
 
 		public void ConnectColumns(Layer ip)
@@ -234,16 +265,19 @@ namespace Net1
 				for (int x = 0; x < NumColumnsX; x++)
 					for (int y = 0; y < NumColumnsY; y++)
 					{
-						Column col = Columns[x][y];
+						Column col = Columns[y][x];
 						col.CreateProximalSynapses(this, ip, radius, ZoneCoveragePercProximal);
 					}
+
+				//// Allocate input prediction reconstruction 
+				//PredictionReconstruction = new float[ip.NumColumnsX, ip.NumColumnsY]; //20170818-1
 			}
 			else	//imput layer empty, remove all Synapses
 			{
 				for (int x = 0; x < NumColumnsX; x++)
 					for (int y = 0; y < NumColumnsY; y++)
 					{
-						Column col = Columns[x][y];
+						Column col = Columns[y][x];
 						col.RemoveAllProximalSynapses();
 					}
 			}
@@ -259,7 +293,7 @@ namespace Net1
 			for (int x = 0; x < NumColumnsX; x++)
 				for (int y = 0; y < NumColumnsY; y++)
 				{
-					Column col = Columns[x][y];
+					Column col = Columns[y][x];
 					col.CreateBasalSynapses(this, radius, ZoneCoveragePercBasal);
 				}
 		}
@@ -274,7 +308,7 @@ namespace Net1
 			for (int x = 0; x < NumColumnsX; x++)
 				for (int y = 0; y < NumColumnsY; y++)
 				{
-					Column col = Columns[x][y];
+					Column col = Columns[y][x];
 					double distance = Algebra.EuclideanDistance2D(centreX, centreY, col.X, col.Y);
 
 					if (distance <= radius) 
@@ -308,7 +342,7 @@ namespace Net1
 		public double CalcRadius(double zoneSizePerc)
 		{
 			double radius = Max(Global.NEIGHBOURHOOD_RADIUS_MIN, 
-								Sqrt(this.NumColumnsX * this.NumColumnsX + this.NumColumnsY * this.NumColumnsY) * zoneSizePerc);
+							Sqrt(this.NumColumnsX * this.NumColumnsX + this.NumColumnsY * this.NumColumnsY) * zoneSizePerc);
 			return radius;
 		}
 
@@ -337,7 +371,7 @@ namespace Net1
 		{
 			for (int x = 0; x < NumColumnsX; x++)
 				for (int y = 0; y < NumColumnsY; y++)
-					Columns[x][y].SetCellsActiveState(false);
+					Columns[y][x].SetCellsActiveState(false);
 		}
 
 		//count number of active Columns
@@ -394,8 +428,6 @@ namespace Net1
 		}
 
 		
-
-
 
 
 #if TESTING
@@ -484,7 +516,7 @@ namespace Net1
 			Debug.WriteLine("Layer " + NumColumnsX + ", " + NumColumnsY);
 			for (int x = 0; x < NumColumnsX; x++)
 				for (int y = 0; y < NumColumnsY; y++)
-					Debug.WriteLine("  " + x + ", " + y + " IsActive=" + Columns[x][y].IsActive.ToString());
+					Debug.WriteLine("  " + x + ", " + y + " IsActive=" + Columns[y][x].IsActive.ToString());
 		}
 
 #endif

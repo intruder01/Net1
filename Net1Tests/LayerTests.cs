@@ -33,16 +33,14 @@ namespace Net1.Tests
 				Assert.AreEqual(lr.NumCellsInColumn, numCellsInColumn);
 
 				Assert.IsNotNull(lr.Columns);
-				Assert.AreEqual(lr.Columns.Count, numColumnsX);
+				Assert.AreEqual(lr.Columns.Count, numColumnsY);
 
 				for (int x = 0; x < lr.NumColumnsX; x++)
 				{
-					Assert.AreEqual(lr.Columns.Count, numColumnsX);
-					Assert.AreEqual(lr.Columns[x].Count, numColumnsY);
-
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Assert.AreEqual(lr.Columns[y].Count, numColumnsX);
+						Column col = lr.Columns[y][x];
 						Assert.AreEqual(col.Cells.Count, numCellsInColumn);
 
 						Assert.AreEqual(col.X, x);
@@ -618,8 +616,8 @@ namespace Net1.Tests
 
 				Layer lr = new Layer(numColumnsX, numColumnsY, numCellsInCol);
 				Assert.IsNotNull(lr.Columns);
-				Assert.AreEqual(lr.Columns.Count, numColumnsX);
-				Assert.AreEqual(lr.Columns[0].Count, numColumnsY);
+				Assert.AreEqual(lr.Columns.Count, numColumnsY);
+				Assert.AreEqual(lr.Columns[0].Count, numColumnsX);
 
 				//InputPlane
 				int ipNumColumnsX = rnd.Next(1, 20);
@@ -916,8 +914,8 @@ namespace Net1.Tests
 
 				Layer lr = new Layer(numColumnsX, numColumnsY, numCellsInCol);
 				Assert.IsNotNull(lr.Columns);
-				Assert.AreEqual(lr.Columns.Count, numColumnsX);
-				Assert.AreEqual(lr.Columns[0].Count, numColumnsY);
+				Assert.AreEqual(lr.Columns.Count, numColumnsY);
+				Assert.AreEqual(lr.Columns[0].Count, numColumnsX);
 
 				//InputPlane
 				int ipNnumColumnsX = rnd.Next(1, 20);
@@ -1063,8 +1061,8 @@ namespace Net1.Tests
 
 				Layer lr = new Layer(numColumnsX, numColumnsY, numCellsInCol);
 				Assert.IsNotNull(lr.Columns);
-				Assert.AreEqual(lr.Columns.Count, numColumnsX);
-				Assert.AreEqual(lr.Columns[0].Count, numColumnsY);
+				Assert.AreEqual(lr.Columns.Count, numColumnsY);
+				Assert.AreEqual(lr.Columns[0].Count, numColumnsX);
 
 				//create synapses
 				//lr.ConnectBasal(1, 1);
@@ -1419,7 +1417,7 @@ namespace Net1.Tests
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						lr.Columns[x][y].OverrideProximalInputOverlap(stimulusThreshold + 1);
+						lr.Columns[y][x].OverrideProximalInputOverlap(stimulusThreshold + 1);
 					}
 				}
 
@@ -1449,7 +1447,7 @@ namespace Net1.Tests
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						lr.Columns[x][y].OverrideProximalInputOverlap(stimulusThreshold - 1);
+						lr.Columns[y][x].OverrideProximalInputOverlap(stimulusThreshold - 1);
 					}
 				}
 
@@ -1479,9 +1477,9 @@ namespace Net1.Tests
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
 						if (rnd.NextDouble() > 0.5)
-							lr.Columns[x][y].OverrideProximalInputOverlap(stimulusThreshold + 1);
+							lr.Columns[y][x].OverrideProximalInputOverlap(stimulusThreshold + 1);
 						else
-							lr.Columns[x][y].OverrideProximalInputOverlap(stimulusThreshold - 1);
+							lr.Columns[y][x].OverrideProximalInputOverlap(stimulusThreshold - 1);
 					}
 				}
 
@@ -1537,7 +1535,7 @@ namespace Net1.Tests
 							double distance = Algebra.EuclideanDistance2D(x, y, col.X, col.Y);
 							Assert.IsTrue(distance <= radius);
 							Assert.IsTrue(distance != 0);
-							Assert.AreNotSame(col, lr.Columns[x][y]); //centre column not included
+							Assert.AreNotSame(col, lr.Columns[y][x]); //centre column not included
 						}
 					}
 				}
@@ -1572,7 +1570,7 @@ namespace Net1.Tests
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						lr.Columns[x][y].OverrideProximalInputOverlap(stimulusThreshold + 1);
+						lr.Columns[y][x].OverrideProximalInputOverlap(stimulusThreshold + 1);
 					}
 				}
 
@@ -1602,7 +1600,7 @@ namespace Net1.Tests
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						lr.Columns[x][y].OverrideProximalInputOverlap(stimulusThreshold - 1);
+						lr.Columns[y][x].OverrideProximalInputOverlap(stimulusThreshold - 1);
 					}
 				}
 
@@ -1632,9 +1630,9 @@ namespace Net1.Tests
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
 						if (rnd.NextDouble() > 0.5)
-							lr.Columns[x][y].OverrideProximalInputOverlap(stimulusThreshold + 1);
+							lr.Columns[y][x].OverrideProximalInputOverlap(stimulusThreshold + 1);
 						else
-							lr.Columns[x][y].OverrideProximalInputOverlap(stimulusThreshold - 1);
+							lr.Columns[y][x].OverrideProximalInputOverlap(stimulusThreshold - 1);
 					}
 				}				
 

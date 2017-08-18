@@ -56,7 +56,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.Update();
@@ -68,7 +68,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.Update();
@@ -80,7 +80,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.Update();
@@ -92,7 +92,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.Update();
@@ -106,7 +106,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.Update();
@@ -122,7 +122,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.Update();
@@ -136,7 +136,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.Update();
@@ -151,7 +151,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.Update();
@@ -167,7 +167,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.Update();
@@ -181,7 +181,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.Update();
@@ -195,7 +195,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.Update();
@@ -210,7 +210,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.Update();
@@ -248,7 +248,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.BasalDendrite.OverrideActivationThreshold(Global.DENDRITE_INITIAL_ACTIVATION_THRESHOLD + 1);
@@ -270,7 +270,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							//require X synapses active to activate
@@ -299,7 +299,7 @@ namespace Net1.Tests
 				for (int x = 0; x < lr.NumColumnsX; x++)
 					for (int y = 0; y < lr.NumColumnsY; y++)
 					{
-						Column col = lr.Columns[x][y];
+						Column col = lr.Columns[y][x];
 						foreach (Cell cell in col.Cells)
 						{
 							cell.BasalDendrite.OverridePermanence(NetConfigData.SynapsePermanenceThreshold - 2 * NetConfigData.SynapsePermanenceIncrease);
@@ -337,7 +337,7 @@ namespace Net1.Tests
 				//select random Column in Layer
 				int columnX = rnd.Next(0, lr.NumColumnsX);
 				int columnY = rnd.Next(0, lr.NumColumnsY);
-				Column column = lr.Columns[columnX][columnY];
+				Column column = lr.Columns[columnY][columnX];
 
 				//random % coverage
 				double zoneSizePerc = rnd.NextDouble();

@@ -14,6 +14,8 @@ using static System.Math;
 //		proximal	- 1 only, basic input space for the neuron
 //		basal		- multiple, context for activation changes
 //		apical		- ???, feedback 
+
+
 namespace Net1
 {
 	public class Cell : Selectable3DObject
@@ -26,19 +28,26 @@ namespace Net1
 		
 		//Status properties
 		public bool IsActive { get; private set; }
+		//cell is predicting when cell's distal dendrite is active
+		//indicating that cell is anticipating activation
 		public bool IsPredicting { get; private set; }
+		//cell is learning when it's column is activated via proximal connection
+		//and no cell in the column predicted the activation.
+		//All cells turn on in 'Learning' mode indicating that any proximal input will be
+		//learned by one of the cells.
+		public bool IsLearning { get; private set; }	//TODO: need logic for this property
 
-
-
+		
 
 		#region Constructors
 		//generic constructor
-		//no synaptic connections - mostly for testing
+		//no synaptic connections
 		public Cell(int index)
 		{
 			Index = index;
 			IsActive = false;
 			IsPredicting = false;
+			IsLearning = false;
 			BasalDendrite = new DendriteBasal(NetConfigData.DendriteActivationThresholdBasal);
 		}
 
@@ -112,6 +121,24 @@ namespace Net1
 		public void SetActiveState(bool active)
 		{
 			IsActive = active;
+		}
+
+		//TODO: verify if HTM theory requires multiple Basal dendrites (segments) in a cell
+		public DendriteBasal GetSequencePredictingBasalSegment ()
+		{
+			
+			//TODO: this logic different from openHTM due to only single basal dendrite (currently)
+
+			DendriteBasal predictingDendrite = null;
+
+			if ( this.IsPredicting)
+			{
+				if ( BasalDendrite.IsActive )
+					predictingDendrite = BasalDendrite;
+				else
+					predictingDendrite = null;
+			}
+			return predictingDendrite;
 		}
 
 

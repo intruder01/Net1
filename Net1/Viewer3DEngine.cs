@@ -31,7 +31,7 @@ namespace Net1
 		/// <summary>
 		/// 2 dimensional Array to grab active columns information
 		/// </summary>
-		private float[,] activeCOlumns;
+		private float[,] activeColumns;
 
 		#endregion
 
@@ -46,9 +46,9 @@ namespace Net1
 		private Matrix projectionMatrix;
 		
 		// Coordinates constants
-		private const float zHtmRegion = -0.0f;    //was-5.0f
-		private const float zHtmPlane = -0f; // Shift to the side //was -5.0f 
-		private const float yHtmPlane = -5f; // Shift down 
+		private const float zHtmRegion = 0.0f;    //was-5.0f
+		private const float zHtmPlane = 0f; // Shift to the side //was -5.0f 
+		private const float yHtmPlane = 0f; // Shift down  was -5f
 
 		private bool contentLoaded; //used in LoadContent()
 
@@ -69,6 +69,9 @@ namespace Net1
 		private CoordinateSysPrimitive coordinateSystem;
 		private SquarePrimitve bit;
 		private LinePrimitive connectionLine;
+		private PyramidPrimitive pyramid;
+		private OctahedronPrimitive octahedron;
+
 
 		//input state varialbles
 		KeyboardState keyState, prevKeyState;
@@ -92,6 +95,14 @@ namespace Net1
 		private Texture2D gridTexture;
 		private Texture2D whiteTexture;
 		private Vector2 gridSize = new Vector2(14f);
+
+		private const int gridHeight = 7;
+		private const int gridWidth = 7;
+
+		//Buffering space dimansions
+		private const int gridHeightBuffer = 5;
+		private const int gridWidthBuffer = 10;
+
 
 		#endregion
 
@@ -448,6 +459,8 @@ namespace Net1
 
 			this.graphics.PreparingDeviceSettings += this.graphics_PreparingDeviceSettings;
 			Control.FromHandle(this.Window.Handle).VisibleChanged += this.Game1_VisibleChanged;
+
+			IsFixedTimeStep = false;
 		}
 		#endregion
 
@@ -533,13 +546,15 @@ namespace Net1
 
 				//Prepare Arrays for 2-dim-content
 				this.predictions = new float[this.Region.NumColumnsX, this.Region.NumColumnsY];
-				this.activeCOlumns = new float[this.Region.NumColumnsX, this.Region.NumColumnsY];
+				this.activeColumns = new float[this.Region.NumColumnsX, this.Region.NumColumnsY];
 
 				//prepare Cube
 				this.cube = new CubePrimitive(this.GraphicsDevice);
 				this.coordinateSystem = new CoordinateSysPrimitive(this.GraphicsDevice);
 				this.bit = new SquarePrimitve(this.GraphicsDevice);
 				this.connectionLine = new LinePrimitive(this.GraphicsDevice);
+				this.pyramid = new PyramidPrimitive ( this.GraphicsDevice );
+				this.octahedron = new OctahedronPrimitive ( this.GraphicsDevice );
 
 				this.ResetCamera();
 
@@ -644,22 +659,25 @@ namespace Net1
 		{
 			this.GraphicsDevice.Clear(this.clearColor);
 
+			//TEST only
+			//this.DrawHtmInputPlane ();
+			//this.DrawTest ();
+
 			//Draw Legend
-			//this.DrawLegend(); 
+			this.DrawLegend(); 
 
 			//Draw HTM
-			this.DrawHtmInputPlane();
-			this.DrawTest ();
-
-			//this.DrawHtmRegion(false);	//TOCONTINUE
-			//this.DrawHtmRegion(true);
+			this.DrawHtmInputPlane ();
+			this.DrawHtmRegion(false);
+			this.DrawHtmRegion(true);
 
 			//Draw Prediction Plane
-			//this.DrawHtmRegionPredictionPlane();
-			//this.DrawHtmRegionPredictionReconstructionPlane();  //20160109 - 1
+			this.DrawHtmRegionPredictionPlane();
+			this.DrawHtmRegionPredictionReconstructionPlane();  //20160109 - 1
 
+			//TOCONTINUE
 			//Draw Active Columns Plane
-			//this.DrawHtmActiveColsPlane();
+			this.DrawHtmActiveColsPlane();
 
 			//Draw CoordinateSystem
 			if ( Viewer3D.Form.ShowCoordinateSystem)
@@ -671,50 +689,10 @@ namespace Net1
 			base.Draw(gameTime);		
 		}
 
-
-		private void DrawTest ()
+		private void FillHtmOverview(object element)
 		{
-			try
-			{
-				//Get input data from fileSensor. Attention: Draw rythm happens very often!
-				//TODO they use the Global.T concept to access data according to T steps back
-				//I did not implement it here as I see no need for it 
-				InputPlane ip = Program.netForm1.Net.Ip;
-				List<List<Column>> inputData = Program.netForm1.Net.Ip.Columns;
-				//int[,] inputData = Program.netForm1.Net.Ip.Columns;
-
-				if ( inputData != null )
-				{
-					const float alphaValue = 0.9f;
-
-					int regionWidth = ip.NumColumnsX;
-					int regionHeight = ip.NumColumnsY;
-
-					Matrix worldTranslationInitial = Matrix.CreateTranslation ( new Vector3 ( 5, 0, 0 ) );
-					float bitSquareScale = 0.3f;
-					Matrix worldScale = Matrix.CreateScale ( new Vector3 ( bitSquareScale, bitSquareScale, bitSquareScale ) );
-					Matrix worldRotate = Matrix.CreateRotationX ( this.pitchHtm ) * Matrix.CreateRotationY ( this.yawHtm );
-
-					for ( int x = 0; x < 5; x++ )
-					{
-						//All variables are on the method level
-						float cf = 1f;
-						Matrix worldTranslation = worldTranslationInitial * Matrix.CreateTranslation ( new Vector3 ( x * cf, 0, 0 * cf ) );
-						Matrix world = worldScale * worldTranslation * worldRotate;
-						
-						
-						//Draw input bit square
-						this.cube.Draw ( world, this.viewMatrix, this.projectionMatrix, Color.White, alphaValue );
-					}
-
-				}
-
-			}
-			catch ( Exception )
-			{
-				//occasionally data is in transition and causes exception, abort draw when this is the case
-				return;
-			}
+			//TOCONTINUE
+			//var statistics = Statistics ();
 
 
 		}
@@ -845,17 +823,31 @@ namespace Net1
 
 		}
 
+		private void DrawHtmActiveColsPlane ()
+		{
+			if ( !Viewer3D.Form.ShowActiveColumnGrid )
+				return;
+
+			//Compute starting point
+			int x = this.GraphicsDevice.PresentationParameters.BackBufferWidth -
+					this.activeColumns.GetLength ( 1 ) * ( gridWidth + gridWidthBuffer );
+			int y = this.GraphicsDevice.PresentationParameters.BackBufferHeight -
+					this.activeColumns.GetLength ( 0 ) * ( gridHeight + gridHeightBuffer ) - 50;
+			var startVectorLeft = new Vector2 ( x, y );
+
+			this.DrawHtmActivationMap ( startVectorLeft, this.activeColumns, "Active Columns:" );
+		}
+
 
 		private void DrawHtmInputPlane()
 		{
 			try
 			{
 				//Get input data from fileSensor. Attention: Draw rythm happens very often!
-				//TODO they use the Global.T concept to access data according to T steps back
+				//TODO: they use the Global.T concept to access data according to T steps back
 				//I did not implement it here as I see no need for it 
 				InputPlane ip = Program.netForm1.Net.Ip;
 				List<List<Column>> inputData = Program.netForm1.Net.Ip.Columns;
-				//int[,] inputData = Program.netForm1.Net.Ip.Columns;
 
 				if(inputData != null)
 				{
@@ -864,10 +856,8 @@ namespace Net1
 					int regionWidth = ip.NumColumnsX;
 					int regionHeight = ip.NumColumnsY;
 
-					//int regionWidth = inputData.Count;			//X TOCHECK - check if dimensions can be obtained from lists directly without referencing Ip
-					//int regionHeight = inputData[0].Count;		//Y TOCHECK
-
-					Matrix worldTranslationBehindDown = Matrix.CreateTranslation ( new Vector3 ( 0, yHtmPlane, 0 ) ) * Matrix.CreateTranslation ( new Vector3 ( 0, 0, zHtmPlane ) );
+					Matrix worldTranslationBehindDown = Matrix.CreateTranslation ( new Vector3 ( 0, yHtmPlane, 0 ) ) 
+													* Matrix.CreateTranslation ( new Vector3 ( 0, 0, zHtmPlane ) );
 					float bitSquareScale = 0.3f;
 					Matrix worldScale = Matrix.CreateScale (new Vector3 (bitSquareScale, bitSquareScale, bitSquareScale));
 					Matrix worldRotate = Matrix.CreateRotationX ( this.pitchHtm ) * Matrix.CreateRotationY ( this.yawHtm );
@@ -880,7 +870,7 @@ namespace Net1
 							float cf = 1f;
 							Matrix worldTranslation = Matrix.CreateTranslation ( new Vector3 ( x * cf, 0, z * cf ) ) * worldTranslationBehindDown;
 							Matrix world = worldScale * worldTranslation * worldRotate;
-							Column column = inputData[x][z];
+							Column column = inputData[z][x];
 							Color color = column.IsActive ? Color.White : Color.Black;
 
 							//Draw input bit square
@@ -900,8 +890,641 @@ namespace Net1
 
 		}
 
+		private void DrawTest ()
+		{
+			try
+			{
+				//Get input data from fileSensor. Attention: Draw rythm happens very often!
+				//TODO they use the Global.T concept to access data according to T steps back
+				//I did not implement it here as I see no need for it 
+				////////InputPlane ip = Program.netForm1.Net.Ip;
+				////////List<List<Column>> inputData = Program.netForm1.Net.Ip.Columns;
+				//int[,] inputData = Program.netForm1.Net.Ip.Columns;
+
+				float alphaValue = 0.9f;
+
+				//initial positin in world
+				//Matrix worldTranslationInitial = Matrix.CreateTranslation ( new Vector3 ( 0, 0, 0 ) ) * Matrix.CreateTranslation ( new Vector3 ( 0, 5, 0 ) ) * Matrix.CreateTranslation ( new Vector3 ( 0, 0, 0 ) );
+				Matrix worldTranslationInitial = Matrix.CreateTranslation ( new Vector3 ( 0, 0, 0 ) );
+				Matrix worldTranslation;
+				Matrix world;
+				float Scale = 0.8f;
+				Matrix worldScale = Matrix.CreateScale ( new Vector3 ( Scale, Scale, Scale ) );
+				Matrix worldRotate = Matrix.CreateRotationX ( this.pitchHtm ) * Matrix.CreateRotationY ( this.yawHtm );
+				float cf = 1.0f;
+
+				//////if ( inputData != null )
+				//////{
+					for ( int x = 0; x < 10; x++ )
+					{
+						for ( int y = 0; y < 10; y++ )
+						{
+							for ( int z = 0; z < 10; z++ )
+							{
+								worldTranslation = worldTranslationInitial * Matrix.CreateTranslation ( new Vector3 ( x * cf, y * cf, z * cf ) );
+								world = worldScale * worldTranslation * worldRotate;
+
+								//Draw input bit square
+								if ( x == 0 )
+									this.cube.Draw ( world, this.viewMatrix, this.projectionMatrix, Color.White, alphaValue );
+								else
+									this.cube.Draw ( world, this.viewMatrix, this.projectionMatrix, Color.Brown, alphaValue );
+							}
+						}
+					}
+				//////}
+
+				//float Scale = 5.3f;
+				//Matrix worldScale = Matrix.CreateScale ( new Vector3 ( Scale, Scale, Scale ) );
+				//Matrix worldRotate = Matrix.CreateRotationX ( this.pitchHtm ) * Matrix.CreateRotationY ( this.yawHtm );
+
+				//Matrix worldTranslationInitial = Matrix.CreateTranslation ( new Vector3 ( 2, 2, 0 ) );
+				//float cf = 1.0f;
+				//Matrix worldTranslation = worldTranslationInitial * Matrix.CreateTranslation ( new Vector3 ( 0, 0, 0 ) );
+				//Matrix world = worldScale * worldTranslation * worldRotate;
+
+				//const float alphaValue = 0.99f;
+				//this.octahedron.Draw ( world, this.viewMatrix, this.projectionMatrix, Color.TransparentBlack, alphaValue );
+
+				Scale = 0.99f;
+				worldScale = Matrix.CreateScale ( new Vector3 ( Scale, Scale, Scale ) );
+				worldRotate = Matrix.CreateRotationX ( this.pitchHtm ) * Matrix.CreateRotationY ( this.yawHtm );
+
+				worldTranslationInitial = Matrix.CreateTranslation ( new Vector3 ( 5, 5, 0 ) );
+				worldTranslation = worldTranslationInitial * Matrix.CreateTranslation ( new Vector3 ( 0, 0, 0 ) );
+				world = worldScale * worldTranslation * worldRotate;
+
+				alphaValue = 0.99f;
+				this.octahedron.Draw ( world, this.viewMatrix, this.projectionMatrix, Color.TransparentBlack, alphaValue );
+
+			}
+			catch ( Exception )
+			{
+				//occasionally data is in transition and causes exception, abort draw when this is the case
+				return;
+			}
 
 
+		}
+
+		private void DrawHtmRegion(bool inactiveCells)
+		{
+			Matrix worldTranslationZ = Matrix.CreateTranslation ( new Vector3 ( 0, 0, zHtmRegion ) );
+			Matrix worldTranslation;
+			Matrix worldScale;
+			Matrix worldRotate = Matrix.CreateRotationX ( this.pitchHtm ) * Matrix.CreateRotationY ( this.yawHtm );
+			var sumOf3DCoordinates = new Vector3 ();
+			var regionCenter = new Vector3 ();
+			int numberPointsToCalculateAverageOfCenter = 0;
+
+			this.FillHtmOverview (this.Region);
+
+			try
+			{
+				foreach ( var colY in this.HtmRegionColumns )
+				{
+					foreach ( var column in colY )
+					{
+						int predictionCounter = 0;
+
+						foreach ( var cell in column.Cells )
+						{
+							if ( column.IsDataGridSelected )
+							{
+								this.FillHtmOverview ( column );
+							}
+
+							if ( cell.IsDataGridSelected )
+							{
+								this.FillHtmOverview ( cell );
+							}
+
+							//calculate cell world coordinates
+							var translationVector = new Vector3 ( column.X, cell.Index, column.Y );
+							worldTranslation = Matrix.CreateTranslation ( translationVector ) * worldTranslationZ;
+
+
+							if ( inactiveCells )
+							{
+								//Calculate region center
+								sumOf3DCoordinates += translationVector;
+								numberPointsToCalculateAverageOfCenter ++;
+							}
+
+							Color color;
+							float alphaValue;
+							this.GetColorFromCell ( cell, out color, out alphaValue );
+
+							if ( ( !inactiveCells && alphaValue < 1.0f ) || ( inactiveCells && alphaValue == 1.0f))
+							{
+								continue;
+							}
+
+							//Check for cell selection
+							if ( column.IsDataGridSelected )
+							{
+								alphaValue = 1.0f;
+								color = this.dictionaryCellColors[HtmCellColors.Selected].HtmColor;
+								worldScale = Matrix.CreateScale ( new Vector3 ( 0.5f, 0.5f, 0.5f ) );
+							}
+							else if ( column.IsInhibited )
+							{
+								alphaValue = 1.0f;
+								color = this.dictionaryCellColors[HtmCellColors.Inhibited].HtmColor;
+								worldScale = Matrix.CreateScale ( new Vector3 ( 0.3f, 0.3f, 0.3f ) );
+							}
+
+							if(cell.IsDataGridSelected)
+							{
+								alphaValue = 1.0f;
+								worldScale = Matrix.CreateScale ( new Vector3 ( 0.5f, 0.5f, 0.5f ) );
+							}
+							else
+							{
+								worldScale = Matrix.CreateScale ( new Vector3 ( 0.3f, 0.3f, 0.3f ) );
+							}
+
+							if(cell.IsPredicting)
+							{
+								//Closed for region prediction visualization 
+								predictionCounter++;
+							}
+
+							if ( cell.mouseSelected )
+								color = Color.Red;
+
+							if(cell.mouseOver)
+							{
+								color = mouseOverColor;
+							}
+
+							//apply scale factor
+							Matrix world = worldScale * worldTranslation * worldRotate;
+
+							//Draw cube 
+							this.cube.Draw ( world, this.viewMatrix, this.projectionMatrix, color, alphaValue );
+
+							//Draw synapse connection
+							this.DrawBasalSynapseConnections ( ref worldTranslation, ref worldRotate, column, cell );
+						}
+
+						// 20160090-1
+						if(!inactiveCells)
+						{
+							//Send column indices with actual proecition value in 2-dim Array
+							float result = predictionCounter / (float)Program.netForm1.Net.Lr.NumCellsInColumn;
+							this.predictions[column.X, column.Y] = result;
+						}
+
+						//Draw proximal synapse connections
+						this.DrawProximalSynapseConnections ( ref worldRotate, column );
+
+						//Define value to draw ColumnMap
+						{
+							if ( column.IsActive )
+								this.activeColumns[column.X, column.Y] = 1;
+							else
+								this.activeColumns[column.X, column.Y] = 0;
+						}
+					}
+				}
+			}
+			catch(Exception)
+			{
+
+			}
+
+			if(inactiveCells)
+			{
+				//Calculate region center to focus camera on
+				regionCenter = new Vector3 (
+					sumOf3DCoordinates.X / numberPointsToCalculateAverageOfCenter,
+					sumOf3DCoordinates.Y / numberPointsToCalculateAverageOfCenter,
+					sumOf3DCoordinates.Z / numberPointsToCalculateAverageOfCenter );
+				regionCenter.Z += zHtmRegion;
+				this.lookAt = regionCenter;
+			}
+		}
+
+
+		private void DrawHtmRegionPredictionPlane()
+		{
+			if ( !Viewer3D.Form.ShowPredictedGrid )
+				return;
+
+			int x = 10;
+			int y = this.GraphicsDevice.PresentationParameters.BackBufferHeight - this.activeColumns.GetLength ( 0 ) *
+				( gridHeight + gridHeightBuffer ) - 50;
+
+			Vector2 startVectorLeft = new Vector2 ( x, y );
+			//20160109-1
+			this.DrawHtmActivationMap ( startVectorLeft, this.predictions, "Region Prediction" );
+		}
+
+		public void DrawHtmRegionPredictionReconstructionPlane() // 20160109-1
+		{
+			if(!Viewer3D.Form.ShowPredictionReconstructiondGrid)
+			{
+				return;
+			}
+
+			//prediction reconstruction commented out in this commit
+			//float[,] inputPredictionReconstruction = this.Region.PredictionReconstruction;//20170818-1
+			float[,] inputPredictionReconstruction = new float[5,5]; // dummy
+
+			int x = 10;
+			int y = this.GraphicsDevice.PresentationParameters.BackBufferHeight -
+					this.activeColumns.GetLength ( 0 ) * ( gridHeight + gridHeightBuffer ) - 50;
+			var startVectorLeft = new Vector2 ( x, y );
+			//20160109-1
+			this.DrawHtmInputPredictionReconstructionMap ( startVectorLeft, inputPredictionReconstruction, "Input Prediction" );
+		}
+
+		private void DrawBasalSynapseConnections(ref Matrix worldTranslation,
+			ref Matrix worldRotate, Column column, Cell cell)
+		{
+			try
+			{
+				//Draw connections if existing
+				if(cell.IsDataGridSelected 
+					|| (Viewer3D.Form.ShowTemporalLearning && cell.IsPredicting))
+				{
+					foreach ( SynapseBasal synapse in cell.BasalDendrite.Synapses )
+					{
+						//Get the two vectors to draw line between
+						Vector3 startPosition = new Vector3 ( column.X,
+							cell.Index, column.Y );
+
+						//Get input source position
+						int x = synapse.ColumnConnected.X;
+						int y = 0;
+						int z = synapse.ColumnConnected.Y;
+						Vector3 endPosition = new Vector3 ( x, y, z );
+
+						//Color color = synapse.IsActive ? Color.Black : Color.White
+
+						Color color;
+						float alphaValue;
+						GetColorFromBasalSynapse ( synapse, out color, out alphaValue );
+						this.connectionLine.SetUpVertices ( startPosition, endPosition, color );
+
+						//Draw line
+						this.connectionLine.Draw ( worldTranslation * worldRotate, this.viewMatrix, this.projectionMatrix );
+					}
+				}
+			}
+			catch ( Exception )
+			{
+				// Is sometimes raised because of collections modification by another thread.
+			}
+		}
+
+		private void DrawProximalSynapseConnections(ref Matrix worldRotate, Column column)
+		{
+			try
+			{
+				//Draw connections if existin
+				if(column.IsDataGridSelected ||(Viewer3D.Form.ShowSpatialLearning && column.IsActive))
+				{
+					foreach ( SynapseProximal synapse in column.ProximalDendrite.Synapses)
+					{
+						//Get the two vectors to draw line between
+						Vector3 startPosition = new Vector3 ( column.X, 0, column.Y + zHtmRegion );
+
+						//Get input source position
+						int x = synapse.ColumnConnected.X;
+						int y = 0;
+						int z = synapse.ColumnConnected.Y;
+						Vector3 endPosition = new Vector3 ( x, y, z );
+
+						Color color;
+						float alphaValue;
+						GetColorFromProximalSynapse ( synapse, out color, out alphaValue );
+						this.connectionLine.SetUpVertices ( startPosition, endPosition, color );
+
+						//Draw line
+						this.connectionLine.Draw ( worldRotate, this.viewMatrix, this.projectionMatrix );
+					}
+				}
+			}
+			catch ( Exception )
+			{
+
+			}
+
+		}
+
+		/// <summary>
+		/// Draws 2d map on screen at wanted position
+		/// </summary>
+		/// <param name="startVectorLeft"></param>
+		/// <param name="mapData"></param>
+		/// <param name="title"></param>
+		private void DrawHtmActivationMap(Vector2 startVectorLeft, float[,] mapData, string title)
+		{
+			//Count active elements
+			int activeCounter = 0;
+			var gridLeftStart = (int)startVectorLeft.X;
+
+			//Draw Prediction Legend
+			this.spriteBatch.Begin ( SpriteSortMode.Deferred, BlendState.NonPremultiplied,
+									SamplerState.AnisotropicClamp, null, null );
+			this.spriteBatch.DrawString ( this.spriteFont, title, startVectorLeft, Color.Black );
+			//Go one more line down
+			startVectorLeft.Y += gridHeight + gridHeightBuffer;
+
+			for ( int i = mapData.GetLength(0) - 1; i>= 0;  i-- )
+			{
+				//Go one more line down
+				startVectorLeft.Y += gridHeight + gridHeightBuffer;
+				for ( int j = 0; j < mapData.GetLength(0); j++ )
+				{
+					if(mapData[i, j] == 1)
+					{
+						activeCounter++;
+					}
+
+					//Adapt color
+					float component = ( 1 - mapData[i, j] ) * 255;
+					Color newColor = new Color ( (int)component, (int)component, (int)component );
+
+					this.spriteBatch.Draw ( this.gridTexture,
+										new Rectangle ( (int)startVectorLeft.X, (int)startVectorLeft.Y,
+														gridWidth, gridHeight ), newColor );
+				}
+				startVectorLeft.X = gridLeftStart;
+			}
+
+			string activeColumnString = "Active Colums per step:" + activeCounter.ToString ();
+			startVectorLeft.Y += gridHeight + gridHeightBuffer;
+			this.spriteBatch.DrawString ( this.spriteFont, activeColumnString, startVectorLeft, Color.Black );
+
+			this.spriteBatch.End ();
+
+		}
+
+		private void DrawHtmInputPredictionReconstructionMap (Vector2 startVectorLeft, float[,]mapData, string title)
+		{
+			// Count active elements
+			int activeCounter = 0;
+			var gridLeftStart = (int)startVectorLeft.X;
+
+			float minPrediction = 0, maxPrediction = 0;
+
+			//Finx max.
+			foreach ( var amount in mapData )
+			{
+				if(amount > maxPrediction)
+				{
+					maxPrediction = amount;
+				}
+			}
+
+			// The min feedforward input must be bigger thatn 0 (ignore the inputs who received
+			// zero
+			minPrediction = maxPrediction;
+
+			//Find min
+			foreach ( var amount in mapData )
+			{ 
+				if(amount < minPrediction && amount > 0)
+				{
+					minPrediction = amount;
+				}
+			}
+
+			// Draw prediction legend
+			this.spriteBatch.Begin ( SpriteSortMode.Deferred, BlendState.NonPremultiplied,
+									SamplerState.AnisotropicClamp, null, null );
+			this.spriteBatch.DrawString ( this.spriteFont, title, startVectorLeft, Color.Black );
+			// Go one more line down
+			startVectorLeft.Y += gridHeight + gridHeightBuffer;
+
+			for ( int i = mapData.GetLength(0); i < 0;	 i-- )
+			{
+				// Go one nore line down
+				startVectorLeft.Y += gridHeight + gridHeightBuffer;
+				for ( int j = 0; j < mapData.GetLength(0); j++ )
+				{
+					if(mapData[i, j] > 0)
+					{
+						activeCounter++;	//this is arbitrary
+					}
+
+					float reconstructionStrength = mapData[i, j];
+
+					if(reconstructionStrength > 0)
+					{
+						// Adapt color
+						// float component = (1 - mapData[i, j] * 255
+						float percentageFromReconstructionRange =
+							( reconstructionStrength - minPrediction ) /
+							( maxPrediction - minPrediction );
+
+						var colorByte = (byte)( ( 1 - percentageFromReconstructionRange ) * byte.MaxValue );
+						Color newColor = new Color ( (int)colorByte, (int)colorByte, (int)colorByte );
+
+						this.spriteBatch.Draw ( this.whiteTexture,
+									new Rectangle ( (int)startVectorLeft.X, (int)startVectorLeft.Y,
+									gridWidth, gridHeight ), newColor );
+					}
+					else
+					{
+						//this._spriteBatch.Draw ( this._whiteTexture,
+						//					   new Rectangle ( (int)startVectorLeft.X, (int)startVectorLeft.Y,
+						//									 _gridWidth, _gridHeight ), Color.White );
+					}
+
+					startVectorLeft.X += gridWidth + gridWidthBuffer;
+				}
+				startVectorLeft.X = gridLeftStart;
+			}
+
+			string activeColumnString = "Predicted Inputs: " + activeCounter.ToString ();
+			startVectorLeft.Y += gridHeight + gridHeightBuffer;
+			this.spriteBatch.DrawString ( this.spriteFont, activeColumnString, startVectorLeft, Color.Black );
+			this.spriteBatch.End ();
+		}
+
+
+		private void GetColorFromProximalSynapse(SynapseProximal proximalSynapse, out Color color, out float alphaValue)
+		{
+			color = this.dictionaryProximalSynapseColors[HtmProximalSynapseColors.Default].HtmColor;
+			alphaValue = 0.1f;  //All conditions can be false
+			Viewer3DForm visualiserForm = Viewer3D.Form;
+
+			try
+			{
+				if ( proximalSynapse.IsActive )
+				{
+					if ( proximalSynapse.IsConnected )
+					{
+						//this._connectionLine.SetUpVertices ( startPosition, endPosition, Color.Green );
+						{
+							alphaValue = 1.0f;
+							color = this.dictionaryProximalSynapseColors[HtmProximalSynapseColors.ActiveConnected].HtmColor;
+						}
+					}
+					else    //Active
+					{
+						//this._connectionLine.SetUpVertices ( startPosition, endPosition, Color.Orange );
+						alphaValue = 1.0f;
+						color = this.dictionaryProximalSynapseColors[HtmProximalSynapseColors.Active].HtmColor;
+					}
+				}
+				else    //Not active
+				{
+					//this._connectionLine.SetUpVertices ( startPosition, endPosition, Color.White );
+					alphaValue = 1.0f;
+					color = this.dictionaryProximalSynapseColors[HtmProximalSynapseColors.Default].HtmColor;
+				}
+
+				//Selected
+				if(proximalSynapse.mouseSelected)
+				{
+					alphaValue = 1.0f;
+					color = selectedColor;
+					//color = this._dictionaryProximalSynapseColors[HtmProximalSynapseColors.MouseSelected].HtmColor; //TODO add this color to dictionary
+				}
+
+				//mouseOver
+				if ( proximalSynapse.mouseOver )
+				{
+					alphaValue = 1.0f;
+					color = mouseOverColor;
+					//color = this._dictionaryProximalSynapseColors[HtmProximalSynapseColors.MouseOver].HtmColor; //TODO add this color to dictionary
+				}
+			}
+			catch ( Exception )
+			{
+
+			}
+		}
+
+		private void GetColorFromBasalSynapse(SynapseBasal basalSynapse, out Color color, out float alphaValue)
+		{
+			color = this.dictionaryDistalSynapseColors[HtmDistalSynapseColors.Default].HtmColor;
+			alphaValue = 1.0f;
+			Viewer3DForm visualizerForm = Viewer3D.Form;
+
+			//Color color = basalSynapse.IsActive ? Color.Black : Color.White;
+			try
+			{
+				if(basalSynapse.IsActive)
+				{
+					alphaValue = 1.0f;
+					color = this.dictionaryDistalSynapseColors[HtmDistalSynapseColors.Active].HtmColor;
+				}
+				else    //Not active
+				{
+					alphaValue = 1.0f;
+					color = this.dictionaryDistalSynapseColors[HtmDistalSynapseColors.Default].HtmColor;
+				}
+
+				//Selected
+				if(basalSynapse.mouseSelected)
+				{
+					color = selectedColor;
+					alphaValue = 1.0f;
+				}
+
+				//mouseOver
+				if(basalSynapse.mouseOver)
+				{
+					color = mouseOverColor;
+					alphaValue = 1.0f;
+				}
+			}
+			catch ( Exception )
+			{
+
+			}
+
+		}
+
+		/// <summary>
+		/// Helper method to get color from cell activity
+		/// </summary>
+		/// <param name="cell"></param>
+		/// <param name="color"></param>
+		/// <param name="alphaValue"></param>
+		private void GetColorFromCell (Cell cell, out Color color, out float alphaValue)
+		{
+			color = this.dictionaryCellColors[HtmCellColors.Inactive].HtmColor;
+			alphaValue = 0.1f;  //All conditions can be false
+			Viewer3DForm visualizerForm = Viewer3D.Form;
+
+			try
+			{
+				//Currently precidting cells
+				if ( visualizerForm.ShowPredictingCells && cell.IsPredicting )
+				{
+					if ( cell.IsPredicting )
+					{
+						//Sequence predicting cells (t+1)
+						if ( visualizerForm.ShowSeqPredictingCells )
+						{
+							alphaValue = 1f;
+							color = this.dictionaryCellColors[HtmCellColors.SequencePredicting].HtmColor;
+						}
+					}
+					else
+					{
+						//Lost predicting cells for t+k
+						alphaValue = 1f;
+						color = this.dictionaryCellColors[HtmCellColors.Selected].HtmColor;
+
+						//TOCHECK - original had logic for multiple dendrite segments
+						//-replaced that with single BasalDendrite logic
+
+						//New predicting cells for t+k
+						if ( cell.BasalDendrite.IsActive )
+						{
+							color = this.dictionaryCellColors[HtmCellColors.Predicting].HtmColor;
+						}
+					}
+				}
+
+				//Learning in t+0
+				if ( visualizerForm.ShowLearningCells && cell.IsLearning )  //TODO - need IsLearning logic (?)
+				{
+					alphaValue = 1f;
+					color = this.dictionaryCellColors[HtmCellColors.Learning].HtmColor;
+				}
+				else //Learning cells are all active
+				{
+					if ( visualizerForm.ShowActiveCells && cell.IsActive )
+					{
+						alphaValue = 1f;
+						color = this.dictionaryCellColors[HtmCellColors.Active].HtmColor;
+					}
+				}
+
+				//Sequence predicted cells
+				if ( cell.GetSequencePredictingBasalSegment () != null )	//TODO: see if HTM theory uses multiple segments 
+				{
+					//False predicted cells
+					if ( visualizerForm.ShowFalsePredictedCells && !cell.IsActive )
+					{
+						alphaValue = 1f;
+						color = this.dictionaryCellColors[HtmCellColors.FalsePrediction].HtmColor;
+					}
+
+					//Correctly predicting in t+0
+					if ( visualizerForm.ShowCorrectPredictedCells && cell.IsActive )
+					{
+						alphaValue = 1f;
+						color = this.dictionaryCellColors[HtmCellColors.RightPrediction].HtmColor;
+					}
+				}
+			}
+			catch ( Exception )
+			{
+
+			}
+		}
+
+		
 
 		#endregion
 
@@ -909,15 +1532,72 @@ namespace Net1
 
 		#region Update
 
+		protected override void Update (GameTime gameTime)
+		{
+			this.UpdateCamera ();
+
+			//store input variables for this scan
+			keyState = Keyboard.GetState ();
+			prevKeyState = keyState;
+			mouseState = Mouse.GetState ();
+			prevMouseState = mouseState;
+
+			mouseLClick = ( mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed )
+				&& ( prevMouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Released );
+			mouseRClick = ( mouseState.RightButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed )
+				&& ( prevMouseState.RightButton == Microsoft.Xna.Framework.Input.ButtonState.Released );
+
+			//mouseOver color change
+			colorChangeMilliseconds += gameTime.ElapsedGameTime.Milliseconds;
+			if(colorChangeMilliseconds >= 150)
+			{
+				if ( mouseOverColor == color1 )
+					mouseOverColor = color2;
+				else
+					mouseOverColor = color1;
+
+				colorChangeMilliseconds = 0;
+			}
+
+			if ( keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.Up ) || keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.W ) )
+				AddToCameraPosition ( new Vector3 ( 0, 0, -sensitivity ) );
+			if ( keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.Down ) || keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.S ) )
+				AddToCameraPosition ( new Vector3 ( 0, 0, sensitivity ) );
+			if ( keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.Right ) || keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.D ) )
+				AddToCameraPosition ( new Vector3 ( sensitivity, 0, 0 ) );
+			if ( keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.Left ) || keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.A ) )
+				AddToCameraPosition ( new Vector3 ( -sensitivity, 0, 0 ) );
+			if ( keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.Q ))
+				AddToCameraPosition ( new Vector3 ( 0, sensitivity, 0 ) );
+			if ( keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.Z ))
+				AddToCameraPosition ( new Vector3 ( 0, -sensitivity, 0 ) );
+
+
+			base.Update ( gameTime );
+		}
+		/// <summary>
+		/// Rotation angle for camera in world space
+		/// </summary>
+		public void RotateWorldSpaceCamera(float diffX, float diffY)
+		{
+			this.yawCamera += diffX * rotateSpeedCamera;
+			this.pitchCamera += diffY * rotateSpeedCamera;
+		}
+
 		/// <summary>
 		/// Rotation angle for htm objects in world space
 		/// </summary>
-		/// <param name="diffX"></param>
-		/// <param name="diffY"></param>
 		public void RotateWorldSpaceHtmObjects(float diffX, float diffY)
 		{
 			this.yawHtm += diffX * rotateSpeedCamera;
 			this.pitchHtm += diffY * rotateSpeedCamera;
+		}
+
+		public void AddToCameraPosition(Vector3 vectorToAdd)
+		{
+			Matrix cameraRotation = Matrix.CreateRotationX ( this.pitchCamera ) * Matrix.CreateRotationY ( this.yawCamera );
+			Vector3 rotatedVector = Vector3.Transform ( vectorToAdd, cameraRotation );
+			this.posCamera += this.moveSpeedCamera * rotatedVector;
 		}
 
 		#endregion
@@ -943,19 +1623,47 @@ namespace Net1
 		/// <summary>
 		/// Reset camera to default position, rotation angle and zoom factor values
 		/// </summary>
-		internal void ResetCamera()
+		//internal void ResetCamera()
+		//{
+		//	//position camera relative to region size
+		//	//Y=4 slightly raised
+		//	//pitch = -10 look slightly down
+		//	//Z=size/3 + 3 - shift to right to give angled view (+3 provides shift for small regions)
+		//	////this.posCamera = new Vector3 ( -25, 4, GetSize ().X / 3 + 3 );
+		//	float dimensionZ = GetSize ().X / 3 + 3;
+		//	//this.posCamera = new Vector3 ( 30, 4, GetSize ().X / 3 + 3 );
+		//	this.posCamera = new Vector3 ( 0, 0, 10);
+
+		//	//Reset rotation angle for camera
+		//	////this.yawCamera = (float)MathHelper.ToRadians ( -90 );
+		//	this.yawCamera = (float)MathHelper.ToRadians ( 90 );
+		//	this.pitchCamera = (float)MathHelper.ToRadians(-10);
+
+		//	//Reset rotation angle for htm objects
+		//	this.yawHtm = 0f;
+		//	this.pitchHtm = 0f;
+
+		//	//Reset zoom
+		//	this.zoomCamera = 35f;
+
+		//	this.UpdateCamera();
+		//}
+
+		internal void ResetCamera ()
 		{
 			//position camera relative to region size
 			//Y=4 slightly raised
 			//pitch = -10 look slightly down
 			//Z=size/3 + 3 - shift to right to give angled view (+3 provides shift for small regions)
 			////this.posCamera = new Vector3 ( -25, 4, GetSize ().X / 3 + 3 );
-			this.posCamera = new Vector3 ( 30, 4, GetSize ().X / 3 + 3 );
+			float dimensionZ = GetSize ().X / 3 + 3;
+			//this.posCamera = new Vector3 ( 30, 4, GetSize ().X / 3 + 3 );
+			this.posCamera = new Vector3 ( 5, 5, GetSize ().X * 3 + 3 );
 
 			//Reset rotation angle for camera
 			////this.yawCamera = (float)MathHelper.ToRadians ( -90 );
-			this.yawCamera = (float)MathHelper.ToRadians ( 90 );
-			this.pitchCamera = (float)MathHelper.ToRadians(-10);
+			this.yawCamera = (float)MathHelper.ToRadians ( 0 );
+			this.pitchCamera = (float)MathHelper.ToRadians ( 0 );
 
 			//Reset rotation angle for htm objects
 			this.yawHtm = 0f;
@@ -964,7 +1672,7 @@ namespace Net1
 			//Reset zoom
 			this.zoomCamera = 35f;
 
-			this.UpdateCamera();
+			this.UpdateCamera ();
 
 
 		}

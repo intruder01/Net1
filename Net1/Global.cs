@@ -11,8 +11,8 @@ namespace Net1
 		public static Random rnd = new Random();
 
 		//initial values
-		public static double SYNAPSE_INITIAL_PERMANENCE_MIN = 0.45;		//Synapse initialisation value minimum
-		public static double SYNAPSE_INITIAL_PERMANENCE_MAX = 0.55;		//Synapse initialisation value minimum
+		public static double SYNAPSE_INITIAL_PERMANENCE_MIN = 0.45;     //Synapse initialisation value minimum
+		public static double SYNAPSE_INITIAL_PERMANENCE_MAX = 0.55;     //Synapse initialisation value minimum
 		public static int DENDRITE_INITIAL_ACTIVATION_THRESHOLD = 1;	//Dendrite minimum connected synapses to activate
 		public static double COLUMN_INITIAL_BOOST_VALUE = 1.0;			//Initial (default) boost value for Column
 		public static double COLUMN_BOOST_ADJ_FACTOR = 0.1;				//Column Boost adaptation speed 
@@ -37,7 +37,7 @@ namespace Net1
 
 		public static class Tests
 		{
-			public static int TestNumLoops = 10;		//Number of loops in Tests
+			public static int TestNumLoops = 100;		//Number of loops in Tests
 		}
 
 #endif

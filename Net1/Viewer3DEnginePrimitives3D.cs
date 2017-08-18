@@ -32,29 +32,53 @@ namespace Net1
 		{
 			this._vertices = new VertexPositionColor[30];
 
-			//X
-			this._vertices[0] = new VertexPositionColor(new Vector3(0, 0, 0), Color.Red);
-			this._vertices[1] = new VertexPositionColor(Vector3.Right * 5, Color.Red);
-			this._vertices[2] = new VertexPositionColor(new Vector3(5, 0, 0), Color.Red);
-			this._vertices[3] = new VertexPositionColor(new Vector3(4.5f, 0.5f, 0), Color.Red);
-			//this._vertices[4] = new VertexPositionColor(new Vector3(5, 0, 0), Color.Red);
-			//this._vertices[5] = new VertexPositionColor(new Vector3(4.5f, -0.5f, 0), Color.Red);
+			////X
+			//this._vertices[0] = new VertexPositionColor(new Vector3(0, 0, 0), Color.Red);
+			//this._vertices[1] = new VertexPositionColor(Vector3.Right * 5, Color.Red);
+			//this._vertices[2] = new VertexPositionColor(new Vector3(5, 0, 0), Color.Red);
+			//this._vertices[3] = new VertexPositionColor(new Vector3(4.5f, 0.5f, 0), Color.Red);
+			//this._vertices[4] = new VertexPositionColor ( new Vector3 ( 5, 0, 0 ), Color.Red );
+			//this._vertices[5] = new VertexPositionColor ( new Vector3 ( 4.5f, -0.5f, 0 ), Color.Red );
 
-			//Y
-			this._vertices[6] = new VertexPositionColor(new Vector3(0, 0, 0), Color.Green);
-			this._vertices[7] = new VertexPositionColor(Vector3.Up * 5, Color.Green);
-			//this._vertices[8] = new VertexPositionColor(new Vector3(0, 5, 0), Color.Green);
-			//this._vertices[9] = new VertexPositionColor(new Vector3(0.5f, 4.5f, 0), Color.Green);
-			//this._vertices[10] = new VertexPositionColor(new Vector3(0, 5, 0), Color.Green);
-			//this._vertices[11] = new VertexPositionColor(new Vector3(-0.5f, 4.5f, 0), Color.Green);
+			////Y
+			//this._vertices[6] = new VertexPositionColor(new Vector3(0, 0, 0), Color.Green);
+			//this._vertices[7] = new VertexPositionColor(Vector3.Up * 5, Color.Green);
+			//this._vertices[8] = new VertexPositionColor ( new Vector3 ( 0, 5, 0 ), Color.Green );
+			//this._vertices[9] = new VertexPositionColor ( new Vector3 ( 0.5f, 4.5f, 0 ), Color.Green );
+			//this._vertices[10] = new VertexPositionColor ( new Vector3 ( 0, 5, 0 ), Color.Green );
+			//this._vertices[11] = new VertexPositionColor ( new Vector3 ( -0.5f, 4.5f, 0 ), Color.Green );
 
-			//Z
-			this._vertices[12] = new VertexPositionColor ( new Vector3 ( 0, 0, 0 ), Color.Blue );
-			this._vertices[13] = new VertexPositionColor ( Vector3.Forward * 5, Color.Blue );
+			////Z
+			//this._vertices[12] = new VertexPositionColor ( new Vector3 ( 0, 0, 0 ), Color.Blue );
+			//this._vertices[13] = new VertexPositionColor ( Vector3.Forward * 5, Color.Blue );
 			//this._vertices[14] = new VertexPositionColor ( new Vector3 ( 0, 0, -5 ), Color.Blue );
 			//this._vertices[15] = new VertexPositionColor ( new Vector3 ( 0, 0.5f, -4.5f ), Color.Blue );
 			//this._vertices[16] = new VertexPositionColor ( new Vector3 ( 0, 0, -5 ), Color.Blue );
 			//this._vertices[17] = new VertexPositionColor ( new Vector3 ( 0, -0.5f, -4.5f ), Color.Blue );
+
+			//X
+			this._vertices[0] = new VertexPositionColor ( new Vector3 ( 0, 0, 0 ), Color.Red );
+			this._vertices[1] = new VertexPositionColor ( new Vector3 ( 5, 0, 0 ), Color.Red );
+			this._vertices[2] = new VertexPositionColor ( new Vector3 ( 5, 0, 0 ), Color.Red );
+			this._vertices[3] = new VertexPositionColor ( new Vector3 ( 4.5f, 0.5f, 0 ), Color.Red );
+			this._vertices[4] = new VertexPositionColor ( new Vector3 ( 5, 0, 0 ), Color.Red );
+			this._vertices[5] = new VertexPositionColor ( new Vector3 ( 4.5f, -0.5f, 0 ), Color.Red );
+
+			//Y
+			this._vertices[6] = new VertexPositionColor ( new Vector3 ( 0, 0, 0 ), Color.Green );
+			this._vertices[7] = new VertexPositionColor ( new Vector3 ( 0, 5, 0 ), Color.Green );
+			this._vertices[8] = new VertexPositionColor ( new Vector3 ( 0, 5, 0 ), Color.Green );
+			this._vertices[9] = new VertexPositionColor ( new Vector3 ( 0.5f, 4.5f, 0 ), Color.Green );
+			this._vertices[10] = new VertexPositionColor ( new Vector3 ( 0, 5, 0 ), Color.Green );
+			this._vertices[11] = new VertexPositionColor ( new Vector3 ( -0.5f, 4.5f, 0 ), Color.Green );
+
+			//Z
+			this._vertices[12] = new VertexPositionColor ( new Vector3 ( 0, 0, 0 ), Color.Blue );
+			this._vertices[13] = new VertexPositionColor ( new Vector3 ( 0, 0, 5 ), Color.Blue );
+			this._vertices[14] = new VertexPositionColor ( new Vector3 ( 0, 0, 5 ), Color.Blue );
+			this._vertices[15] = new VertexPositionColor ( new Vector3 ( 0, 0.5f, 4.5f ), Color.Blue );
+			this._vertices[16] = new VertexPositionColor ( new Vector3 ( 0, 0, 5 ), Color.Blue );
+			this._vertices[17] = new VertexPositionColor ( new Vector3 ( 0, -0.5f, 4.5f ), Color.Blue );
 		}
 
 		public void Draw(Matrix viewMatrix, Matrix projectionMatrix)
@@ -118,7 +142,9 @@ namespace Net1
 			}
 		}
 
-		public static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration(new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0), new VertexElement(12, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0));
+		public static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration(
+			new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0), 
+			new VertexElement(12, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0));
 
 		#endregion
 	}
@@ -151,9 +177,9 @@ namespace Net1
 
 		#region Properties
 
-		//I added these for storing mouse activity over the primitives
-		public bool mouseOver { get; set; }
-		public bool mouseSelected { get; set; }
+		////I added these for storing mouse activity over the primitives
+		//public bool mouseOver { get; set; }
+		//public bool mouseSelected { get; set; }
 
 		/// <summary>
 		/// Queries the index of the current vertex. This starts at
@@ -229,11 +255,18 @@ namespace Net1
 		{
 			GraphicsDevice graphicsDevice = effect.GraphicsDevice;
 
-			var rs = new RasterizerState()
-			{
-				CullMode = CullMode.None
-			};
-			graphicsDevice.RasterizerState = rs;
+			////////////////////////////////////////////////////////////////////
+			//code below causes performance problems with 3D display very jumpy
+			//disabled for now
+
+			//var rs = new RasterizerState ()
+			//{
+			//	CullMode = CullMode.None
+			//};
+
+			//graphicsDevice.RasterizerState = rs;
+			////////////////////////////////////////////////////////////////////
+
 
 			// Set our vertex declaration, vertex buffer, and index buffer.
 			graphicsDevice.SetVertexBuffer(this._vertexBuffer);
@@ -299,11 +332,11 @@ namespace Net1
 
 		#region Constructor
 
-		public GeometricPrimitive()
-		{
-			mouseOver = false;
-			mouseSelected = false;
-		}
+		//public GeometricPrimitive()
+		//{
+		//	mouseOver = false;
+		//	mouseSelected = false;
+		//}
 		/// <summary>
 		/// Finalizer.
 		/// </summary>
@@ -364,24 +397,11 @@ namespace Net1
 		{
 			this._device = graphicsDevice;
 			this._basicEffect = new BasicEffect(this._device);
-			//mouseOver = false;
-			//mouseSelected = false;
 		}
 
 		#endregion
 
 		#region Methods
-
-		//public void SetUpVertices(Vector3 v1, Vector3 v2, Color color)
-		//{
-		//	var v3 = new Vector3(v2.X - 0.1f, v2.Y - 0.1f, v2.Z - 0.1f);
-
-		//	this._vertices = new VertexPositionColor[3];
-
-		//	this._vertices[0] = new VertexPositionColor(v1, color);
-		//	this._vertices[1] = new VertexPositionColor(v2, color);
-		//	this._vertices[2] = new VertexPositionColor(v3, color);
-		//}
 
 		public void SetUpVertices(Vector3 v1, Vector3 v2, Color color)
 		{
@@ -474,7 +494,9 @@ namespace Net1
 		public CubePrimitive(GraphicsDevice graphicsDevice, float size)
 		{
 			// A cube has six faces, each one pointing in a different direction.
-			Vector3[] normals = { new Vector3(0, 0, 1), new Vector3(0, 0, -1), new Vector3(1, 0, 0), new Vector3(-1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, -1, 0) };
+			Vector3[] normals = { new Vector3(0, 0, 1), new Vector3(0, 0, -1),
+								new Vector3(1, 0, 0), new Vector3(-1, 0, 0),
+								new Vector3(0, 1, 0), new Vector3(0, -1, 0) };
 
 			// Create each face in turn.
 			foreach (var normal in normals)
@@ -505,8 +527,211 @@ namespace Net1
 			}
 
 			this.InitializePrimitive(graphicsDevice);
+		}
+
+	
+
+		#endregion
+	}
+
+	public class PyramidPrimitive : GeometricPrimitive
+	{
+		#region Constructor
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="device"></param>
+		public PyramidPrimitive (GraphicsDevice device)
+		{
+
+			// A pyramid has five faces, each one pointing in a different direction.
+			Vector3[] normals = { new Vector3 ( 0, -1, 0 ), new Vector3 ( 0, 0, -1 ), new Vector3 ( 1, 0, 0 ), new Vector3 ( -1, 0, 0 ), new Vector3 ( 0, 1, 0 ) };
+
+			// Square does have 4 vertices
+
+			// Coordinates in world-space origin
+			var v1 = new Vector3 ( 0.5f, 0f, 0.5f );
+			var v2 = new Vector3 ( -0.5f, 0f, 0.5f );
+			var v3 = new Vector3 ( -0.5f, 0f, -0.5f );
+			var v4 = new Vector3 ( 0.5f, 0f, -0.5f );
+
+			// Apex vector
+			var v5 = new Vector3 ( 0, 1f, 0 );
+
+			// Add Indices for index buffer
+
+			// Triangle 1 (base)
+			this.AddIndex ( 0 );
+			this.AddIndex ( 1 );
+			this.AddIndex ( 2 );
+
+			// Triangle 2 (base)
+			this.AddIndex ( 2 );
+			this.AddIndex ( 3 );
+			this.AddIndex ( 0 );
+
+			// Pyramid side 1
+			this.AddIndex ( 0 );
+			this.AddIndex ( 1 );
+			this.AddIndex ( 4 );
+
+			// Pyramid side 2
+			this.AddIndex ( 1 );
+			this.AddIndex ( 2 );
+			this.AddIndex ( 5 );
+
+			// Pyramid side 3
+			this.AddIndex ( 2 );
+			this.AddIndex ( 3 );
+			this.AddIndex ( 6 );
+
+			// Pyramid side 4
+			this.AddIndex ( 3 );
+			this.AddIndex ( 0 );
+			this.AddIndex ( 7 );
+
+			// Base with Normal: Up-Vector
+			this.AddVertex ( v1, new Vector3 ( 0, 1, 0 ) );
+			this.AddVertex ( v2, new Vector3 ( 0, 1, 0 ) );
+			this.AddVertex ( v3, new Vector3 ( 0, 1, 0 ) );
+			this.AddVertex ( v4, new Vector3 ( 0, 1, 0 ) );
+
+			// Pyramid 4 sides with normals at 45deg
+			//float n = 0.7853982f;	//45 deg to radians
+			//Calculate normal angle from v5.Y point
+			float n = (float)Math.Atan ( v5.Y / 1.0f );
+
+			//add v5 vertex with 4 different normals corresponding to the 4 sides of the pyramid
+			this.AddVertex ( v5, new Vector3 ( 0, n, n ) );
+			this.AddVertex ( v5, new Vector3 ( -n, n, 0 ) );
+			this.AddVertex ( v5, new Vector3 ( 0, n, -n ) );
+			this.AddVertex ( v5, new Vector3 ( n, n, 0 ) );
+
+			// Initialize Buffers
+			this.InitializePrimitive ( device );
+		}
+
+		#endregion
+	}
+
+	public class OctahedronPrimitive : GeometricPrimitive
+	{
+		#region Constructor
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="device"></param>
+		public OctahedronPrimitive (GraphicsDevice device)
+		{
+			// Square does have 4 vertices
+
+			// Coordinates in world-space origin
+			var v1 = new Vector3 ( 0.5f, 0, 0.5f );
+			var v2 = new Vector3 ( -0.5f, 0, 0.5f );
+			var v3 = new Vector3 ( -0.5f, 0, -0.5f );
+			var v4 = new Vector3 ( 0.5f, 0, -0.5f );
+
+			// Apex vectors
+			var v5 = new Vector3 ( 0, 0.5f, 0 );
+			var v6 = new Vector3 ( 0, -0.5f, 0 );
+
+			// Add Indices for index buffer
+
+			// Triangle 1 (base)
+			this.AddIndex ( 0 );
+			this.AddIndex ( 1 );
+			this.AddIndex ( 2 );
+
+			// Triangle 2 (base)
+			this.AddIndex ( 2 );
+			this.AddIndex ( 3 );
+			this.AddIndex ( 0 );
+
+			// Pyramid side 1
+			this.AddIndex ( 0 );
+			this.AddIndex ( 1 );
+			this.AddIndex ( 4 );
+
+			// Pyramid side 2
+			this.AddIndex ( 1 );
+			this.AddIndex ( 2 );
+			this.AddIndex ( 5 );
+
+			// Pyramid side 3
+			this.AddIndex ( 2 );
+			this.AddIndex ( 3 );
+			this.AddIndex ( 6 );
+
+			// Pyramid side 4
+			this.AddIndex ( 3 );
+			this.AddIndex ( 0 );
+			this.AddIndex ( 7 );
+
+			// Inverted Pyramid side 1
+			this.AddIndex ( 0 );
+			this.AddIndex ( 1 );
+			this.AddIndex ( 8 );
+
+			// Inverted Pyramid side 2
+			this.AddIndex ( 1 );
+			this.AddIndex ( 2 );
+			this.AddIndex ( 9 );
+
+			// Inverted Pyramid side 3
+			this.AddIndex ( 2 );
+			this.AddIndex ( 3 );
+			this.AddIndex ( 10 );
+
+			// Inverted Pyramid side 4
+			this.AddIndex ( 3 );
+			this.AddIndex ( 0 );
+			this.AddIndex ( 11 );
+
+			// Base with Normal: Up-Vector
+			this.AddVertex ( v1, new Vector3 ( 0, 1, 0 ) );
+			this.AddVertex ( v2, new Vector3 ( 0, 1, 0 ) );
+			this.AddVertex ( v3, new Vector3 ( 0, 1, 0 ) );
+			this.AddVertex ( v4, new Vector3 ( 0, 1, 0 ) );
+
+			// Pyramid 4 sides with normals at 45deg
+			//float n = 0.7853982f;	//45 deg to radians
+			//Calculate normal angle from v5.Y point
+
+			//
+			// https://stackoverflow.com/questions/1243614/how-do-i-calculate-the-normal-vector-of-a-line-segmen
+			//
+			//normal of (x1,y1) (x2,y2)
+			//
+			// = dx=x2-x1      dy=y2-y1
+			//
+			// normals are (-dy, dx) and (dy, -dx)
 
 
+			float n = (float)Math.Abs(Math.Atan ( v5.Y / 1.0f ));
+
+			//add v5 vertex with 4 different normals corresponding to the 4 sides of the pyramid
+			//this.AddVertex ( v5, new Vector3 ( 0, 0, n ) );
+			//this.AddVertex ( v5, new Vector3 ( -n, 0, 0 ) );
+			//this.AddVertex ( v5, new Vector3 ( 0, 0, -n ) );
+			//this.AddVertex ( v5, new Vector3 ( n, 0, 0 ) );
+
+			//these normals need more work but they are good enough for now
+
+			this.AddVertex ( v5, new Vector3 ( 0, n, n ) );
+			this.AddVertex ( v5, new Vector3 ( -n, n, 0 ) );
+			this.AddVertex ( v5, new Vector3 ( 0, n, -n ) );
+			this.AddVertex ( v5, new Vector3 ( n, n, 0 ) );
+
+			n = (float)Math.Abs(Math.Atan ( v6.Y / 1.0f ));
+			this.AddVertex ( v6, new Vector3 ( 0, -n, n ) );
+			this.AddVertex ( v6, new Vector3 ( -n, -n, 0 ) );
+			this.AddVertex ( v6, new Vector3 ( 0, -n, -n ) );
+			this.AddVertex ( v6, new Vector3 ( n, -n, 0 ) );
+
+			// Initialize Buffers
+			this.InitializePrimitive ( device );
 		}
 
 		#endregion

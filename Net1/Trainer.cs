@@ -62,48 +62,50 @@ namespace Net1
 
 		public bool OpenFile(string filename)
 		{
-
-			//determine file structure
-			ParseFile(filename);
-
-			reader = File.OpenText(filename);
-			parser = new CsvParser(reader);
-
-			//clear data
-			FileData = new List<List<List<int>>>();
-			List<List<int>> CaseData = new List<List<int>>();
-
 			if (Path.GetExtension(filename) == ".csv")
 			{
-				while (true)
+				//determine file structure
+				ParseFile(filename);
+
+				//clear data
+				FileData = new List<List<List<int>>>();
+				List<List<int>> CaseData = new List<List<int>>();
+				List<int> LineData = new List<int> ();
+
+				//read data
+				using ( reader = File.OpenText ( Filename ) )
 				{
-					string[] row = parser.Read();
-
-					//end of file - add current case and break
-					if (row == null)
+					parser = new CsvParser ( reader );
+					while ( true )
 					{
-						//if Casedata populated - add it to FileData
-						if (CaseData.Count > 0)
-							FileData.Add(CaseData);
-						break;
-					}
+						string[] row = parser.Read ();
 
-					//"Case" line - add current case and clear it
-					if (row[0].Trim() == "Case")
-					{
-						//if Casedata populated - add it to FileData
-						if (CaseData.Count > 0)
-							FileData.Add(CaseData);
-						CaseData = new List<List<int>>();
-					}
+						//end of file - add current case and break
+						if ( row == null )
+						{
+							//if Casedata populated - add it to FileData
+							if ( CaseData.Count > 0 )
+								FileData.Add ( CaseData );
+							break;
+						}
 
-					//read case data
-					if (row[0].Trim() != "Case")
-					{
-						//List<int> line = Array.ConvertAll(row, s => int.Parse(s)).ToList();
-						List<int> line = Array.ConvertAll(row, int.Parse).ToList(); //lambda
-						//List<int> line2 = row.Select(int.Parse).ToList(); //linq
-						CaseData.Add(line);
+						//"Case" line - add current case and clear it
+						if ( row[0].Trim () == "Case" )
+						{
+							//if Casedata populated - add it to FileData
+							if ( CaseData.Count > 0 )
+								FileData.Add ( CaseData );
+							CaseData = new List<List<int>> ();
+						}
+
+						//read case data
+						if ( row[0].Trim () != "Case" )
+						{
+							//LineData = Array.ConvertAll(row, s => int.Parse(s)).ToList();
+							//LineData = Array.ConvertAll(row, int.Parse).ToList(); //lambda
+							LineData = row.Select ( int.Parse ).ToList (); //linq
+							CaseData.Add ( LineData );
+						}
 					}
 				}
 
@@ -116,7 +118,7 @@ namespace Net1
 			else
 			{
 				Filename = "";
-				ScreenUpdateData.Filename = Filename;
+				ScreenUpdateData.Filename = "";
 				ScreenUpdateData.FileNumColumnsX = 0;
 				ScreenUpdateData.FileNumColumnsY = 0;
 				return false;
@@ -126,41 +128,44 @@ namespace Net1
 		//determine file structure and field/case counts
 		public bool ParseFile(string filename)
 		{
-			reader = File.OpenText(Filename);
-			parser = new CsvParser(reader);
-
 			NumColumnsX = 0;
 			NumColumnsY = 0;
 			NumCases = 0;
 
 			bool firstCase = true;
 
-			while (true)
+			using ( reader = File.OpenText ( Filename ) )
 			{
-				string[] row = parser.Read();
-				if (row == null) break;
+				parser = new CsvParser ( reader );
 
-				//"Case" - count cases in file
-				if (row[0].Trim() == "Case")
+				while ( true )
 				{
-					if (NumColumnsX > 0)
-						firstCase = false;  //first case done
-					NumCases++;         //count cases
-				}
+					string[] row = parser.Read ();
+					if ( row == null ) break;
 
-				//use first case to count fields
-				if (row[0].Trim() != "Case")
-				{
-					if (firstCase)
+					//"Case" - count cases in file
+					if ( row[0].Trim () == "Case" )
 					{
-						//find maximum X in first case
-						if (row.Length > NumColumnsX)
-							NumColumnsX = row.Length;
-						//count number of lines (Y) in first case
-						NumColumnsY++;
+						if ( NumColumnsX > 0 )
+							firstCase = false;  //first case done
+						NumCases++;         //count cases
+					}
+
+					//use first case to count fields
+					if ( row[0].Trim () != "Case" )
+					{
+						if ( firstCase )
+						{
+							//find maximum X in first case
+							if ( row.Length > NumColumnsX )
+								NumColumnsX = row.Length;
+							//count number of lines (Y) in first case
+							NumColumnsY++;
+						}
 					}
 				}
 			}
+			
 			return true;
 		}
 
@@ -190,7 +195,7 @@ namespace Net1
 		}
 
 		//present requested training case to InputPlane
-		public bool NextCase(InputPlane ip, int caseNum)
+		public bool LoadCase(InputPlane ip, int caseNum)
 		{
 			if (NumColumnsX == ip.NumColumnsX && NumColumnsY == ip.NumColumnsY && caseNum >= 0 && caseNum < NumCases)
 			{
@@ -204,20 +209,19 @@ namespace Net1
 			return true;
 		}
 
-		private void copyCaseToInputPlane(InputPlane ip)
+		private void copyCaseToInputPlane (InputPlane ip)
 		{
 			//present case to InputPlane
 			List<List<int>> CaseData = FileData[CurrCaseNum];
 
-			for (int y = 0; y < CaseData.Count; y++)
-				for (int x = 0; x < CaseData[y].Count; x++)
+			//Reverse xy here to transfer data row-wise
+			for ( int x = 0; x < ip.NumColumnsX; x++ )
+			{
+				for ( int y = 0; y < ip.NumColumnsY; y++ )
 				{
-					//ip.Columns[x][y].SetActive(Case[x][y] > 0 ? true : false);
-					if (CaseData[x][y] > 0)
-						ip.Columns[x][y].SetActive(true);
-					else
-						ip.Columns[x][y].SetActive(false);
+					ip.Columns[y][x].SetActive ( CaseData[y][x] > 0 );
 				}
+			}
 		}
 	}
 }
