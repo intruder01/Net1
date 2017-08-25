@@ -12,8 +12,16 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Net1
 {
+	//declare key pressed event
+	public delegate void Viewer3DKeyForm_KeyPressed_Event (object sender, KeyEventArgs e);
+	public delegate void Viewer3DKeyForm_Closing_Event (object sender, FormClosingEventArgs e);
+
 	public partial class Viewer3DForm : DockContent
 	{
+
+		public static event Viewer3DKeyForm_KeyPressed_Event Viewer3DFormKeyPressedEvent = delegate { };
+		public static event Viewer3DKeyForm_Closing_Event Viewer3DFormClosingEvent = delegate { };
+
 		#region Fields
 
 		private Microsoft.Xna.Framework.Point mousePosition;
@@ -194,11 +202,27 @@ namespace Net1
 			Viewer3D.Engine.ResetGraphicsDevice ();
 		}
 
-		
+
+
 
 
 		#endregion
 
+		private void Viewer3DForm_KeyDown (object sender, KeyEventArgs e)
+		{
+			//broadcase key event to Engine
+			Keys key = e.KeyCode;
+
+			Viewer3DFormKeyPressedEvent?.Invoke ( sender, e );
+
+			e.Handled = true;
 	
+		}
+
+		private void Viewer3DForm_FormClosing (object sender, FormClosingEventArgs e)
+		{
+			Viewer3DFormClosingEvent?.Invoke (sender, e);
+		}
+
 	}
 }

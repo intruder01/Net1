@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Net1.Stats;
+using System.IO;
 
 
 //Network contains 
@@ -63,11 +64,14 @@ namespace Net1
 			ScreenUpdateData.DataChanged();
 		}
 
+	
+
 		//create network layer structures to correspond to Trainer parameters
 		public void CreateLayers()
 		{
 			Ip = new InputPlane(Trainer.NumColumnsX, Trainer.NumColumnsY);
-			Lr = new Layer(Ip, Trainer.NumColumnsX, Trainer.NumColumnsY, NetConfigData.NumCellsInColumn);
+			//Lr = new Layer ( Ip, Trainer.NumColumnsX, Trainer.NumColumnsY, NetConfigData.NumCellsInColumn );
+			Lr = new Layer ( Ip, 2, 2, NetConfigData.NumCellsInColumn );
 		}
 
 		//create network synaptic connections per NetConfigData

@@ -19,6 +19,8 @@ namespace Net1
 	public class Viewer3DEngine : Game
 	{
 		public event SimEngineSelectionChanged_Event SelectionChangedEvent = delegate { };
+
+		
 		#region Fields
 
 		#region HTM
@@ -48,7 +50,7 @@ namespace Net1
 		// Coordinates constants
 		private const float zHtmRegion = 0.0f;    //was-5.0f
 		private const float zHtmPlane = 0f; // Shift to the side //was -5.0f 
-		private const float yHtmPlane = 0f; // Shift down  was -5f
+		private const float yHtmPlane = -5f; // Shift down  was -5f
 
 		private bool contentLoaded; //used in LoadContent()
 
@@ -458,26 +460,81 @@ namespace Net1
 			this.drawSurface = drawSurface;
 
 			this.graphics.PreparingDeviceSettings += this.graphics_PreparingDeviceSettings;
-			Control.FromHandle(this.Window.Handle).VisibleChanged += this.Game1_VisibleChanged;
+			Control.FromHandle(this.Window.Handle).VisibleChanged += this.Viever3D_VisibleChanged;
 
 			IsFixedTimeStep = false;
+
+			//listen to Form events
+			Viewer3DForm.Viewer3DFormKeyPressedEvent += Handler_Viewer3DKeyForm_KeyPressed_Event;
+			Viewer3DForm.Viewer3DFormClosingEvent += Handler_Viewer3DKeyForm_Closing_Event;
 		}
+
+		~Viewer3DEngine ()
+		{
+			//Stop monitoring Form key events
+			Viewer3DForm.Viewer3DFormKeyPressedEvent -= Handler_Viewer3DKeyForm_KeyPressed_Event;
+		}
+
 		#endregion
 
 		#region Methods
+
+		#endregion
+
+
 
 		#region Form
 
 		/// <summary>
 		/// Occurs when original windows' visibility changs and makes sure it stays invisible 
 		/// </summary>
-		private void Game1_VisibleChanged(object sender, EventArgs e)
+		private void Viever3D_VisibleChanged(object sender, EventArgs e)
 		{
-			if (Control.FromHandle(this.Window.Handle).Visible)
-			{
-				Control.FromHandle(this.Window.Handle).Visible = false;
-			}
+			Control.FromHandle ( this.Window.Handle ).Visible = false;
 		}
+
+		/// <summary>
+		/// Respond to key down events from the Form.
+		/// Move camera.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Handler_Viewer3DKeyForm_KeyPressed_Event(object sender, KeyEventArgs e)
+		{
+			//store input variables for this scan
+			System.Windows.Forms.Keys key = e.KeyCode;
+
+			// X = left/right
+			if ( key == System.Windows.Forms.Keys.Right || key == System.Windows.Forms.Keys.D )
+				AddToCameraPosition ( new Vector3 ( -sensitivity, 0, 0 ) );
+			if ( key == System.Windows.Forms.Keys.Left || key == System.Windows.Forms.Keys.A )
+				AddToCameraPosition ( new Vector3 ( sensitivity, 0, 0 ) );
+
+			// Y = up/dn
+			if ( key == System.Windows.Forms.Keys.Up || key == System.Windows.Forms.Keys.W )
+				AddToCameraPosition ( new Vector3 ( 0, -sensitivity, 0 ) );
+			if ( key == System.Windows.Forms.Keys.Down || key == System.Windows.Forms.Keys.S )
+				AddToCameraPosition ( new Vector3 ( 0, sensitivity, 0 ) );
+
+			// Z = in/out
+			if ( key == System.Windows.Forms.Keys.Q )
+				AddToCameraPosition ( new Vector3 ( 0, 0, -sensitivity ) );
+			if ( key == System.Windows.Forms.Keys.E )
+				AddToCameraPosition ( new Vector3 ( 0, 0, sensitivity ) );
+		}
+
+		/// <summary>
+		/// Stop monitoring Form key events when form closing.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Handler_Viewer3DKeyForm_Closing_Event (object sender, FormClosingEventArgs e)
+		{
+			//Stop monitoring Form key events
+			Viewer3DForm.Viewer3DFormKeyPressedEvent -= Handler_Viewer3DKeyForm_KeyPressed_Event;
+		}
+
+
 		#endregion
 
 		#region Graphics Device
@@ -496,7 +553,6 @@ namespace Net1
 		#endregion
 
 
-		#endregion
 
 
 		#region Content
@@ -659,25 +715,25 @@ namespace Net1
 		{
 			this.GraphicsDevice.Clear(this.clearColor);
 
-			//TEST only
-			//this.DrawHtmInputPlane ();
+			////TEST only
+			////this.DrawHtmInputPlane ();
 			//this.DrawTest ();
 
 			//Draw Legend
-			this.DrawLegend(); 
+			this.DrawLegend ();
 
 			//Draw HTM
 			this.DrawHtmInputPlane ();
-			this.DrawHtmRegion(false);
-			this.DrawHtmRegion(true);
+			this.DrawHtmRegion ( false );
+			this.DrawHtmRegion ( true );
 
 			//Draw Prediction Plane
-			this.DrawHtmRegionPredictionPlane();
-			this.DrawHtmRegionPredictionReconstructionPlane();  //20160109 - 1
+			this.DrawHtmRegionPredictionPlane ();
+			this.DrawHtmRegionPredictionReconstructionPlane ();  //20160109 - 1
 
 			//TOCONTINUE
 			//Draw Active Columns Plane
-			this.DrawHtmActiveColsPlane();
+			this.DrawHtmActiveColsPlane ();
 
 			//Draw CoordinateSystem
 			if ( Viewer3D.Form.ShowCoordinateSystem)
@@ -979,15 +1035,18 @@ namespace Net1
 
 			this.FillHtmOverview (this.Region);
 
+			//TEMP ONLY
+			this.HtmRegionColumns = Program.netForm1.Net.Lr.Columns;
+
 			try
 			{
-				foreach ( var colY in this.HtmRegionColumns )
+				foreach ( List<Column> colY in this.HtmRegionColumns )
 				{
-					foreach ( var column in colY )
+					foreach ( Column column in colY )
 					{
 						int predictionCounter = 0;
 
-						foreach ( var cell in column.Cells )
+						foreach ( Cell cell in column.Cells )
 						{
 							if ( column.IsDataGridSelected )
 							{
@@ -1015,7 +1074,7 @@ namespace Net1
 							float alphaValue;
 							this.GetColorFromCell ( cell, out color, out alphaValue );
 
-							if ( ( !inactiveCells && alphaValue < 1.0f ) || ( inactiveCells && alphaValue == 1.0f))
+							if ( ( !inactiveCells && alphaValue < 1.0f ) || ( inactiveCells && alphaValue == 1.0f ) )
 							{
 								continue;
 							}
@@ -1536,9 +1595,10 @@ namespace Net1
 		{
 			this.UpdateCamera ();
 
-			//store input variables for this scan
-			keyState = Keyboard.GetState ();
-			prevKeyState = keyState;
+			//Mouse is handled here.
+			//Keys are handled by the Form since PictureBox control does not support keyboard events. 
+			//Keys are detected in the Form (keyPreview = True) and passed to 
+			//Handler_Viewer3DKeyForm_KeyPressed_Event() method 
 			mouseState = Mouse.GetState ();
 			prevMouseState = mouseState;
 
@@ -1549,7 +1609,7 @@ namespace Net1
 
 			//mouseOver color change
 			colorChangeMilliseconds += gameTime.ElapsedGameTime.Milliseconds;
-			if(colorChangeMilliseconds >= 150)
+			if ( colorChangeMilliseconds >= 50 )
 			{
 				if ( mouseOverColor == color1 )
 					mouseOverColor = color2;
@@ -1558,20 +1618,6 @@ namespace Net1
 
 				colorChangeMilliseconds = 0;
 			}
-
-			if ( keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.Up ) || keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.W ) )
-				AddToCameraPosition ( new Vector3 ( 0, 0, -sensitivity ) );
-			if ( keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.Down ) || keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.S ) )
-				AddToCameraPosition ( new Vector3 ( 0, 0, sensitivity ) );
-			if ( keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.Right ) || keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.D ) )
-				AddToCameraPosition ( new Vector3 ( sensitivity, 0, 0 ) );
-			if ( keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.Left ) || keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.A ) )
-				AddToCameraPosition ( new Vector3 ( -sensitivity, 0, 0 ) );
-			if ( keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.Q ))
-				AddToCameraPosition ( new Vector3 ( 0, sensitivity, 0 ) );
-			if ( keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.Z ))
-				AddToCameraPosition ( new Vector3 ( 0, -sensitivity, 0 ) );
-
 
 			base.Update ( gameTime );
 		}
@@ -1656,12 +1702,10 @@ namespace Net1
 			//pitch = -10 look slightly down
 			//Z=size/3 + 3 - shift to right to give angled view (+3 provides shift for small regions)
 			////this.posCamera = new Vector3 ( -25, 4, GetSize ().X / 3 + 3 );
-			float dimensionZ = GetSize ().X / 3 + 3;
-			//this.posCamera = new Vector3 ( 30, 4, GetSize ().X / 3 + 3 );
-			this.posCamera = new Vector3 ( 5, 5, GetSize ().X * 3 + 3 );
+			//this.posCamera = new Vector3 ( 5, 5, GetSize ().Y * 3 + 3 );
+			this.posCamera = new Vector3 ( 5, 5, GetSize ().Y * 3 + 15 );
 
 			//Reset rotation angle for camera
-			////this.yawCamera = (float)MathHelper.ToRadians ( -90 );
 			this.yawCamera = (float)MathHelper.ToRadians ( 0 );
 			this.pitchCamera = (float)MathHelper.ToRadians ( 0 );
 
@@ -1765,24 +1809,7 @@ namespace Net1
 
 		}
 
-		public Ray getPickingRay(System.Drawing.Point mousePosition)
-		{
-			mouseLocationClick = new Point ( mousePosition.X, mousePosition.Y );
-
-			Vector3 nearPoint = new Vector3 ( mousePosition.X, mousePosition.Y, 0.0f );
-			Vector3 farPoint = new Vector3 ( mousePosition.X, mousePosition.Y, 0.999999f );
-
-			Matrix worldRotate = Matrix.CreateRotationX ( this.pitchHtm ) * Matrix.CreateRotationY ( this.yawHtm );
-
-			Vector3 nearPointWorld = this.GraphicsDevice.Viewport.Unproject ( nearPoint, this.projectionMatrix, this.viewMatrix, worldRotate );
-			Vector3 farPointWorld = this.GraphicsDevice.Viewport.Unproject ( farPoint, this.projectionMatrix, this.viewMatrix, worldRotate );
-
-			Vector3 direction = farPointWorld - nearPointWorld;
-			direction.Normalize ();
-
-			Ray ray = new Ray ( nearPointWorld, direction );
-			return ray;
-		}
+		
 
 		public void PickHtmRegion (Ray ray, bool bSelectionEnable)
 		{
@@ -1905,6 +1932,25 @@ namespace Net1
 			//	//test only
 			//	DataSet ds = ViewListToDataset_Cells ( );
 			//}
+		}
+		
+		public Ray getPickingRay (System.Drawing.Point mousePosition)
+		{
+			mouseLocationClick = new Point ( mousePosition.X, mousePosition.Y );
+
+			Vector3 nearPoint = new Vector3 ( mousePosition.X, mousePosition.Y, 0.0f );
+			Vector3 farPoint = new Vector3 ( mousePosition.X, mousePosition.Y, 0.999999f );
+
+			Matrix worldRotate = Matrix.CreateRotationX ( this.pitchHtm ) * Matrix.CreateRotationY ( this.yawHtm );
+
+			Vector3 nearPointWorld = this.GraphicsDevice.Viewport.Unproject ( nearPoint, this.projectionMatrix, this.viewMatrix, worldRotate );
+			Vector3 farPointWorld = this.GraphicsDevice.Viewport.Unproject ( farPoint, this.projectionMatrix, this.viewMatrix, worldRotate );
+
+			Vector3 direction = farPointWorld - nearPointWorld;
+			direction.Normalize ();
+
+			Ray ray = new Ray ( nearPointWorld, direction );
+			return ray;
 		}
 
 		private float PickCell(Ray ray, Matrix worldTranslation, Column column, Cell cell, ref Cell returnedCell)

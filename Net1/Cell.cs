@@ -117,10 +117,16 @@ namespace Net1
 
 		}
 
-		//Set cell IsActive - used when setting up training case in InputPlane
+		//Set cell IsActive state - used when setting up training case in InputPlane
 		public void SetActiveState(bool active)
 		{
 			IsActive = active;
+		}
+
+		//Set cell IsLearning state
+		public void SetLearningState (bool learning)
+		{
+			IsLearning = learning;
 		}
 
 		//TODO: verify if HTM theory requires multiple Basal dendrites (segments) in a cell

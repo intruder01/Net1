@@ -134,10 +134,64 @@ namespace Net1
 						}
 					}
 				}
+
+				//set individual cells activation states
+				ActivateCells ();
 			}
 			return IsActive ? 1 : 0;
 		}
 
+		/// <summary>
+		/// Set individual cells activation / learning states
+		/// based on column activation state.
+		/// </summary>
+		private void ActivateCells ()
+		{
+			//Column active
+			if ( IsActive )
+			{
+				//find if any cells are predicting
+				//if so, activate predicting cells
+				bool cellsPredictingExist = false;
+				foreach ( Cell cell in Cells )
+				{
+					if ( cell.IsPredicting )
+					{
+						cell.SetActiveState ( true );
+						cellsPredictingExist = true;
+					}
+				}
+
+				//If no predicting cells exist -
+				//activate all cells in learning mode
+				if ( !cellsPredictingExist )
+				{
+					//Turn on all cells - Learning 
+					foreach ( Cell cell in Cells )
+					{
+						cell.SetActiveState ( true );
+						cell.SetLearningState ( true );
+					}
+				}
+			}
+			else //Column not active
+			{
+				//clear cell active and learning states
+				foreach ( Cell cell in Cells )
+				{
+					cell.SetActiveState ( false );
+					cell.SetLearningState ( false );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Dynamically adjust number of Cells in Column
+		/// Add and remove Cells as necessary.
+		/// When removing - remove from the end of list to preserve indexes.
+		/// </summary>
+		/// <param name="numCellsInColumn"></param>
+		/// <returns></returns>
 		public bool CreateCells(int numCellsInColumn)
 		{
 			int numNewCells = numCellsInColumn - this.Cells.Count;
@@ -148,7 +202,7 @@ namespace Net1
 			}
 			while (Cells.Count > 0 && Cells.Count > numCellsInColumn) //remove cells
 			{
-					RemoveCellAt(Global.rnd.Next(0, Cells.Count));
+					RemoveCellAt(Cells.Count - 1);
 			}
 			return true;
 		}

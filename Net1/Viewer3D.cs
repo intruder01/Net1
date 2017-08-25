@@ -35,6 +35,7 @@ namespace Net1
 
 		public static Viewer3DEngine Engine { get; private set; }
 
+
 		#endregion
 
 
@@ -71,30 +72,53 @@ namespace Net1
 				_thread.Abort();
 			}
 			IsActive = false;
+
+			Engine = null;
 		}
 
 		/// <summary>
 		/// Thred start method. Open the 3D viewer and start engine.
 		/// </summary>
-		private static void StartMethod()
+		private static void StartMethod ()
 		{
 			//Create the viewer form
-			var form = new Viewer3DForm();
+			var form = new Viewer3DForm ();
 			Form = form;
 
 			//if (!Properties.Settings.Default.StealthMode)
 			//	Form.Show();
 
 			//Show viewer form
-			Form.Show();
+			Form.Show ();
 
 			//Start the 3D engine
-			Engine = new Viewer3DEngine(Form.GetDrawSurface());
+			Engine = new Viewer3DEngine ( Form.GetDrawSurface () );
 
-			EngineStarted(Engine, new EventArgs());
+			EngineStarted ( Engine, new EventArgs () );
 
-			Engine.Run();
+			Engine.Run ();
 		}
+
+		//////////private static void StartMethod ()
+		//////////{
+		//////////	//Create the viewer form
+		//////////	var form = new Viewer3DForm ();
+		//////////	Form = form;
+
+		//////////	//if (!Properties.Settings.Default.StealthMode)
+		//////////	//	Form.Show();
+
+		//////////	//Show viewer form
+		//////////	Form.Show ();
+
+		//////////	//Start the 3D engine
+		//////////	//Engine = new Viewer3DEngine ( Form.GetDrawSurface () );
+
+		//////////	Game = new Game1 ( Form.GetDrawSurface () );
+		//////////	//EngineStarted ( Engine, new EventArgs () );
+
+		//////////	Game.Run ();
+		//////////}
 
 		#endregion
 

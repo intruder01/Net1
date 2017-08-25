@@ -16,9 +16,9 @@ namespace Net1
 {
 	public class Trainer
 	{
-		//training set width - X
+		//training set width - X dimension of InputPlane
 		public int NumColumnsX { get; private set; }
-		//training set height - Y
+		//training set height - Y dimansion of InputPlane
 		public int NumColumnsY { get; private set; }
 		//Trainer data string[case][X][Y]
 		public List<List<List<int>>> FileData { get; private set; }	
@@ -57,10 +57,10 @@ namespace Net1
 		public Trainer(string filename) : this()
 		{
 			Filename = filename;
-			DataReady = OpenFile(Filename);
+			DataReady = ReadFile(Filename);
 		}
 
-		public bool OpenFile(string filename)
+		public bool ReadFile(string filename)
 		{
 			if (Path.GetExtension(filename) == ".csv")
 			{
@@ -76,6 +76,8 @@ namespace Net1
 				using ( reader = File.OpenText ( Filename ) )
 				{
 					parser = new CsvParser ( reader );
+					SkipHeader ( parser );
+
 					while ( true )
 					{
 						string[] row = parser.Read ();
@@ -137,6 +139,7 @@ namespace Net1
 			using ( reader = File.OpenText ( Filename ) )
 			{
 				parser = new CsvParser ( reader );
+				SkipHeader ( parser );
 
 				while ( true )
 				{
@@ -167,6 +170,18 @@ namespace Net1
 			}
 			
 			return true;
+		}
+
+
+		/// <summary>
+		/// Skip initial lines in file that form the header of the file.
+		/// </summary>
+		/// <param name="parser"></param>
+		private void SkipHeader (CsvParser parser)
+		{
+			parser.Read (); //num Columns X
+			parser.Read (); //num Columns Y
+			parser.Read (); //num Cells in Column
 		}
 
 

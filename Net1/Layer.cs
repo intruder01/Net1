@@ -161,7 +161,8 @@ namespace Net1
 			SparsenessActual = SparsenessStat.MinVal();
 
 			//ParameterSearch control
-			ZoneCoveragePercProximal = ParamSearch_Sparseness_ZoneCoveragePercProximal.Update(SparsenessActual);
+			if( ParamSearch_Sparseness_ZoneCoveragePercProximal.Enabled )
+				ZoneCoveragePercProximal = ParamSearch_Sparseness_ZoneCoveragePercProximal.Update(SparsenessActual);
 
 			NetConfigData.ZoneCoveragePercProximal = ZoneCoveragePercProximal;
 		}
@@ -191,7 +192,7 @@ namespace Net1
 
 		}
 
-	
+
 		//Create Column grid according to internal parameters NumColumnsX, NumColumnsY, NumCellsInColumn
 		//Layer row/column structure:
 		//
@@ -205,6 +206,12 @@ namespace Net1
 		// 0 1 2 3 4 5 6 7 8 9
 		//
 
+
+		/// <summary>
+		/// Dynamically adjust number of Columns in Layer
+		/// Add and remove Columns as necessary.
+		/// When removing - remove from the end of list to preserve indexes.
+		/// </summary> 
 		public void CreateColumns ()
 		{
 			//Y dimension - add rows (of Column)

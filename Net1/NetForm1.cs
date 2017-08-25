@@ -676,5 +676,18 @@ namespace Net1
 			//Viewer3D.EngineStarted += WatchForm.Instance.Handler_SimEngineStarted;
 			//Viewer3D.EngineShutdown += WatchForm.Instance.Handler_SimEngineShutdown;
 		}
+
+		private void CleanUp ()
+		{
+			//this.buttonInitHTM.Enabled = true;
+			//this.EnableSteeringButtons ( false );
+			//this.menuView3DSimulation.Enabled = false;
+			//this.menuProjectProperties.Enabled = true;
+
+			if ( Viewer3D.IsActive )
+			{
+				Viewer3D.End ();
+			}
+		}
 	}
 }
