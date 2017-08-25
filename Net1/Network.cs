@@ -71,7 +71,7 @@ namespace Net1
 		{
 			Ip = new InputPlane(Trainer.NumColumnsX, Trainer.NumColumnsY);
 			//Lr = new Layer ( Ip, Trainer.NumColumnsX, Trainer.NumColumnsY, NetConfigData.NumCellsInColumn );
-			Lr = new Layer ( Ip, 2, 2, NetConfigData.NumCellsInColumn );
+			Lr = new Layer ( Ip, 4, 4, NetConfigData.NumCellsInColumn );
 		}
 
 		//create network synaptic connections per NetConfigData

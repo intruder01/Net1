@@ -1252,7 +1252,7 @@ namespace Net1
 
 						//Get input source position
 						int x = synapse.ColumnConnected.X;
-						int y = 0;
+						int y = (int)yHtmPlane;
 						int z = synapse.ColumnConnected.Y;
 						Vector3 endPosition = new Vector3 ( x, y, z );
 
@@ -1609,7 +1609,7 @@ namespace Net1
 
 			//mouseOver color change
 			colorChangeMilliseconds += gameTime.ElapsedGameTime.Milliseconds;
-			if ( colorChangeMilliseconds >= 50 )
+			if ( colorChangeMilliseconds >= 30 )
 			{
 				if ( mouseOverColor == color1 )
 					mouseOverColor = color2;
@@ -1703,11 +1703,11 @@ namespace Net1
 			//Z=size/3 + 3 - shift to right to give angled view (+3 provides shift for small regions)
 			////this.posCamera = new Vector3 ( -25, 4, GetSize ().X / 3 + 3 );
 			//this.posCamera = new Vector3 ( 5, 5, GetSize ().Y * 3 + 3 );
-			this.posCamera = new Vector3 ( 5, 5, GetSize ().Y * 3 + 15 );
+			this.posCamera = new Vector3 ( 5, 5, GetSize ().Y * 3 + 20 );
 
 			//Reset rotation angle for camera
 			this.yawCamera = (float)MathHelper.ToRadians ( 0 );
-			this.pitchCamera = (float)MathHelper.ToRadians ( 0 );
+			this.pitchCamera = (float)MathHelper.ToRadians ( -10 );
 
 			//Reset rotation angle for htm objects
 			this.yawHtm = 0f;
@@ -2117,6 +2117,8 @@ namespace Net1
 		{
 			if(distance < nearestDistance )
 			{
+				nearestDistance = distance;
+
 				if(returnedCell != null)
 				{
 					nearestCell = returnedCell;

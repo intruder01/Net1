@@ -80,7 +80,7 @@ namespace Net1
 
 		private void pictureBoxSurface_MouseDoubleClick (object sender, MouseEventArgs e)
 		{
-			Viewer3D.Engine.ResetCamera ();
+			//Viewer3D.Engine.ResetCamera ();
 		}
 
 		private void pictureBoxSurface_MouseMove (object sender, MouseEventArgs e)
