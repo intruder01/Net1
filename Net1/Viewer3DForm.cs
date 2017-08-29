@@ -45,6 +45,7 @@ namespace Net1
 		public bool ShowLearningCells { get; private set; }
 		public bool ShowActiveCells { get; private set; }
 		public bool ShowFalsePredictedCells { get; private set; }
+		public bool ShowInhibitedColumns { get; private set; }
 
 		#endregion
 
@@ -57,6 +58,7 @@ namespace Net1
 
 			ShowCoordinateSystem = true;
 		}
+
 
 		#endregion
 
@@ -73,10 +75,56 @@ namespace Net1
 
 		#region Events
 
+		private void Viewer3DForm_Load (object sender, EventArgs e)
+		{
+			//subscribe to engine started event
+			//used to set button colors per Engine color scheme
+			Viewer3DEngine.EngineStarted += this.Handler_EngineStarted;
+		}
+
+		private void Viewer3DForm_FormClosing (object sender, FormClosingEventArgs e)
+		{
+			//unsubscribe from engine started event
+			Viewer3DEngine.EngineStarted -= this.Handler_EngineStarted;
+
+			//notify listeners Viewer3DForm closed
+			Viewer3DFormClosingEvent?.Invoke ( sender, e );
+		}
+
 		private void pictureBoxSurface_MouseClick (object sender, MouseEventArgs e)
 		{
 			Viewer3D.Engine.Pick ( e.Location, true );
 		}
+
+		private void Handler_EngineStarted (object sender, EventArgs e)
+		{
+			Viewer3DEngine engine = (Viewer3DEngine)sender;
+			SetButtonColors ( engine.dictionaryCellColors );
+		}
+
+		internal void SetButtonColors (Dictionary<HtmCellColors, HtmColorInformation> dictionaryCellColors )
+		{
+			showCorrectButton.BackColor = ConvertColor(dictionaryCellColors[HtmCellColors.RightPrediction].HtmColor);
+			showSeqPredictingButton.BackColor = ConvertColor ( dictionaryCellColors[HtmCellColors.SequencePredicting].HtmColor );
+			showPredictingButton.BackColor = ConvertColor ( dictionaryCellColors[HtmCellColors.RightPrediction].HtmColor );
+			showLearningButton.BackColor = ConvertColor ( dictionaryCellColors[HtmCellColors.Learning].HtmColor );
+			showActiveButton.BackColor = ConvertColor ( dictionaryCellColors[HtmCellColors.Active].HtmColor );
+			showFalsePredictedButton.BackColor = ConvertColor ( dictionaryCellColors[HtmCellColors.FalsePrediction].HtmColor );
+			showInhibitedButton.BackColor = ConvertColor ( dictionaryCellColors[HtmCellColors.Inhibited].HtmColor );
+
+
+		}
+
+		public Microsoft.Xna.Framework.Color ConvertColor (System.Drawing.Color Value)
+		{
+			return new Microsoft.Xna.Framework.Color ( Value.R, Value.G, Value.B, Value.A );
+		}
+
+		public System.Drawing.Color ConvertColor (Microsoft.Xna.Framework.Color Value)
+		{
+			return System.Drawing.Color.FromArgb ( Value.A, Value.R, Value.G, Value.B );
+		}
+
 
 		private void pictureBoxSurface_MouseDoubleClick (object sender, MouseEventArgs e)
 		{
@@ -188,6 +236,12 @@ namespace Net1
 			this.showFalsePredictedButton.Text = this.ShowFalsePredictedCells ? "+" : "-";
 		}
 
+		private void showInhibitedButton_Click (object sender, EventArgs e)
+		{
+			this.ShowInhibitedColumns = !this.ShowInhibitedColumns;
+			this.showInhibitedButton.Text = this.ShowInhibitedColumns ? "+" : "-";
+		}
+
 		/// <summary>
 		/// Reset camera to origina view
 		/// </summary>
@@ -219,10 +273,6 @@ namespace Net1
 	
 		}
 
-		private void Viewer3DForm_FormClosing (object sender, FormClosingEventArgs e)
-		{
-			Viewer3DFormClosingEvent?.Invoke (sender, e);
-		}
 
 	}
 }

@@ -100,27 +100,29 @@ namespace Net1
 		//call after Update_Proximal
 		//activates Column based on InputOverlap value and 
 		//activity rank within the neighbourhood
-		public int Update_Activation(List<Column> columns, bool inhibitionEnabled)
+		public int Update_Activation(List<Column> neighbours, bool inhibitionEnabled)
 		{
 			IsActive = false;
-			IsInhibited = false;
+			//IsInhibited = false;
 
-			if (columns.Count > 0)
-			{
+			//if (neighbours.Count > 0)
+			//{
 				//find neighbour Columns in top percentile
 				List<Column> topPercentileList = FindWinningColumns(
-					columns,
+					neighbours,
 					NetConfigData.ColumnsTopPercentile,
 					NetConfigData.ColumnStimulusThreshold);
 
-				//Activate column only if it is on the list of top percentile columns
-				//inhibition occurs here
-				if (topPercentileList.Contains(this))
+				//Activate column only if:
+				// - it is not inhibited
+				// - it is on the list of top percentile columns
+				if (!IsInhibited && topPercentileList.Contains(this))
 				{
 					IsActive = true;
 					ColumnActivationCount++;
 				}
 
+				//inhibit other Columns
 				if (IsActive && inhibitionEnabled)
 				{
 					//disable other Columns
@@ -137,7 +139,7 @@ namespace Net1
 
 				//set individual cells activation states
 				ActivateCells ();
-			}
+			//}
 			return IsActive ? 1 : 0;
 		}
 
@@ -211,7 +213,8 @@ namespace Net1
 		//when adding/deleting elements
 		public bool CreateCell(int index)
 		{
-			Cell cell = new Cell(index);
+			//Cell cell = new Cell ( index );
+			Cell cell = new Cell ( index, this );
 			Cells.Add(cell);
 			return true;
 		}
@@ -232,7 +235,11 @@ namespace Net1
 		{
 			columns.Sort((x, y) => x.InputOverlap.CompareTo(y.InputOverlap));
 			int idx = Min((int)(Ceiling(columns.Count - (columns.Count * percentile))), columns.Count - 1);
-			double percentileValue = columns[idx].InputOverlap;
+			
+			//in case columns is empty, idx will be -1
+			//ensure return empty list when that happens
+			//double percentileValue = columns[idx].InputOverlap;
+			double percentileValue = idx >= 0 ? columns[idx].InputOverlap : double.MaxValue;
 
 			List<Column> result = (from col in columns
 					  where col.InputOverlap >= percentileValue
@@ -262,8 +269,8 @@ namespace Net1
 			//create random list of columns to connect - Exclusive of centre
 			List<Column> potentialColumns = lr.GetColumnsFromCentre(this.X, this.Y, radius, false);
 
-			foreach (Cell cell in Cells)
-				cell.CreateBasalSynapses(potentialColumns, zoneCoveragePerc);
+			foreach ( Cell cell in Cells )
+				cell.CreateBasalSynapses ( potentialColumns, zoneCoveragePerc );
 		}
 
 		internal void RemoveAllProximalSynapses()
@@ -338,6 +345,11 @@ namespace Net1
 		public void SetActive(bool active)
 		{
 			IsActive = active;
+		}
+		
+		public void SetInhibited (bool inhibited)
+		{
+			IsInhibited = inhibited;
 		}
 
 		//Set cell IsActive - used when setting up training case in InputPlane

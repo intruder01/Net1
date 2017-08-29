@@ -9,7 +9,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Net1
 {
-
+	public delegate void SimEngineStarted_Event (object sender, EventArgs e);
+	public delegate void SimEngineShutdown_Event (object sender, EventArgs e);
 	public delegate void SimEngineSelectionChanged_Event (object sender, EventArgs e, object obj);
 	
 	
@@ -18,6 +19,8 @@ namespace Net1
 	/// </summary>
 	public class Viewer3DEngine : Game
 	{
+		public static event SimEngineStarted_Event EngineStarted = delegate { };
+		public static event SimEngineShutdown_Event EngineShutdown = delegate { };
 		public event SimEngineSelectionChanged_Event SelectionChangedEvent = delegate { };
 
 		
@@ -59,7 +62,7 @@ namespace Net1
 		private Color clearColor = Color.CornflowerBlue;
 
 		// Colors
-		private Dictionary<HtmCellColors, HtmColorInformation> dictionaryCellColors;
+		public Dictionary<HtmCellColors, HtmColorInformation> dictionaryCellColors;
 		private Dictionary<HtmProximalSynapseColors, HtmColorInformation> dictionaryProximalSynapseColors;
 		private Dictionary<HtmDistalSynapseColors, HtmColorInformation> dictionaryDistalSynapseColors;
 
@@ -76,7 +79,6 @@ namespace Net1
 
 
 		//input state varialbles
-		KeyboardState keyState, prevKeyState;
 		MouseState mouseState, prevMouseState;
 
 		public Microsoft.Xna.Framework.Point mouseLocation;
@@ -582,7 +584,7 @@ namespace Net1
 				this.dictionaryCellColors.Add(HtmCellColors.RightPrediction, new HtmColorInformation(Color.LimeGreen, "Cell correctly predicted"));
 				this.dictionaryCellColors.Add(HtmCellColors.FalsePrediction, new HtmColorInformation(Color.Red, "Cell is falsely predicted"));
 				this.dictionaryCellColors.Add(HtmCellColors.Selected, new HtmColorInformation(Color.Brown, "Cell prediction is lost"));
-				this.dictionaryCellColors.Add(HtmCellColors.Inhibited, new HtmColorInformation(Color.Black, "Cell is inhibited"));
+				this.dictionaryCellColors.Add(HtmCellColors.Inhibited, new HtmColorInformation(Color.Yellow, "Cell is inhibited"));
 
 				this.dictionaryProximalSynapseColors = new Dictionary<HtmProximalSynapseColors, HtmColorInformation>();
 				this.dictionaryProximalSynapseColors.Add(HtmProximalSynapseColors.Default, new HtmColorInformation(Color.White, "Proximal synapse not active, not connected"));
@@ -616,8 +618,11 @@ namespace Net1
 
 				this.contentLoaded = true;
 
+				//send notification Engine started
+				EngineStarted?.Invoke ( this, new EventArgs () );
 			}
 		}
+
 
 		public static Texture2D LoadTexture2D(GraphicsDevice graphicsDevice, string path)
 		{
@@ -625,88 +630,10 @@ namespace Net1
 		}
 
 
-			#endregion
+		#endregion Content
 
 
-		#region Nested Classes
 
-		private struct HtmColorInformation
-		{
-			#region Fields
-
-			public Color HtmColor;
-			public string HtmInformation;
-
-			#endregion
-
-			#region Constructor
-
-			public HtmColorInformation(Color color, string info)
-			{
-				this.HtmColor = color;
-				this.HtmInformation = info;
-			}
-
-			#endregion
-		}
-
-		private enum HtmCellColors
-		{
-			Learning,
-			FalsePrediction,
-			RightPrediction,
-			Predicting,
-			SequencePredicting,
-			Active,
-			Inactive,
-			Selected,
-			Inhibited
-		}
-
-		private enum HtmProximalSynapseColors
-		{
-			Default,
-			Active,
-			ActiveConnected
-		}
-
-		private enum HtmDistalSynapseColors
-		{
-			Default,
-			Active
-		}
-
-		private class HtmOverViewInformation
-		{
-			#region Fields
-
-			public string StepCount;
-			public string ChosenHtmElement;
-			public string PositionElement;
-			public string ActivityRate;
-			public string PrecisionRate;
-
-			#endregion
-
-			#region Constructor
-
-			/// <summary>
-			/// Initializes a new instance of the <see cref="HtmOverViewInformation"/> class.
-			/// </summary>
-			public HtmOverViewInformation ()
-			{
-				this.StepCount = "";
-				this.ChosenHtmElement = "Region";
-				this.PositionElement = "";
-				this.ActivityRate = "";
-				this.PrecisionRate = "";
-			}
-
-			#endregion
-		}
-
-
-		#endregion
 
 
 		#region Draw
@@ -724,7 +651,7 @@ namespace Net1
 
 			//Draw HTM
 			this.DrawHtmInputPlane ();
-			this.DrawHtmRegion ( false );
+			//this.DrawHtmRegion ( false );
 			this.DrawHtmRegion ( true );
 
 			//Draw Prediction Plane
@@ -927,7 +854,7 @@ namespace Net1
 							Matrix worldTranslation = Matrix.CreateTranslation ( new Vector3 ( x * cf, 0, z * cf ) ) * worldTranslationBehindDown;
 							Matrix world = worldScale * worldTranslation * worldRotate;
 							Column column = inputData[z][x];
-							Color color = column.IsActive ? Color.White : Color.Black;
+							Color color = column.IsActive ? Color.Black : Color.White;
 
 							//Draw input bit square
 							this.bit.Draw ( world, this.viewMatrix, this.projectionMatrix, color, alphaValue );
@@ -1072,12 +999,12 @@ namespace Net1
 
 							Color color;
 							float alphaValue;
-							this.GetColorFromCell ( cell, out color, out alphaValue );
+							this.GetColorFromCell ( cell, column, out color, out alphaValue );
 
-							if ( ( !inactiveCells && alphaValue < 1.0f ) || ( inactiveCells && alphaValue == 1.0f ) )
-							{
-								continue;
-							}
+							//if ( ( !inactiveCells && alphaValue < 1.0f ) || ( inactiveCells && alphaValue == 1.0f ) )
+							//{
+							//	continue;
+							//}
 
 							//Check for cell selection
 							if ( column.IsDataGridSelected )
@@ -1086,13 +1013,7 @@ namespace Net1
 								color = this.dictionaryCellColors[HtmCellColors.Selected].HtmColor;
 								worldScale = Matrix.CreateScale ( new Vector3 ( 0.5f, 0.5f, 0.5f ) );
 							}
-							else if ( column.IsInhibited )
-							{
-								alphaValue = 1.0f;
-								color = this.dictionaryCellColors[HtmCellColors.Inhibited].HtmColor;
-								worldScale = Matrix.CreateScale ( new Vector3 ( 0.3f, 0.3f, 0.3f ) );
-							}
-
+							
 							if(cell.IsDataGridSelected)
 							{
 								alphaValue = 1.0f;
@@ -1242,10 +1163,13 @@ namespace Net1
 		{
 			try
 			{
-				//Draw connections if existin
-				if(column.IsDataGridSelected ||(Viewer3D.Form.ShowSpatialLearning && column.IsActive))
-				{
-					foreach ( SynapseProximal synapse in column.ProximalDendrite.Synapses)
+				//Draw connections if existing
+				//if ( column.IsDataGridSelected || ( Viewer3D.Form.ShowSpatialLearning && column.IsActive ) )
+				if ( column.IsDataGridSelected 
+					|| ( Viewer3D.Form.ShowSpatialLearning && Viewer3D.Form.ShowActiveCells && column.IsActive )
+					|| ( Viewer3D.Form.ShowSpatialLearning && Viewer3D.Form.ShowInhibitedColumns && column.IsInhibited ) )
+					{
+						foreach ( SynapseProximal synapse in column.ProximalDendrite.Synapses)
 					{
 						//Get the two vectors to draw line between
 						Vector3 startPosition = new Vector3 ( column.X, 0, column.Y + zHtmRegion );
@@ -1507,7 +1431,7 @@ namespace Net1
 		/// <param name="cell"></param>
 		/// <param name="color"></param>
 		/// <param name="alphaValue"></param>
-		private void GetColorFromCell (Cell cell, out Color color, out float alphaValue)
+		private void GetColorFromCell (Cell cell, Column column, out Color color, out float alphaValue)
 		{
 			color = this.dictionaryCellColors[HtmCellColors.Inactive].HtmColor;
 			alphaValue = 0.1f;  //All conditions can be false
@@ -1515,7 +1439,7 @@ namespace Net1
 
 			try
 			{
-				//Currently precidting cells
+				//Currently predicting cells
 				if ( visualizerForm.ShowPredictingCells && cell.IsPredicting )
 				{
 					if ( cell.IsPredicting )
@@ -1533,7 +1457,7 @@ namespace Net1
 						alphaValue = 1f;
 						color = this.dictionaryCellColors[HtmCellColors.Selected].HtmColor;
 
-						//TOCHECK - original had logic for multiple dendrite segments
+						//TODO: - original had logic for multiple dendrite segments
 						//-replaced that with single BasalDendrite logic
 
 						//New predicting cells for t+k
@@ -1541,11 +1465,19 @@ namespace Net1
 						{
 							color = this.dictionaryCellColors[HtmCellColors.Predicting].HtmColor;
 						}
+
 					}
 				}
 
+				//Inhibited in t+0
+				if ( visualizerForm.ShowInhibitedColumns && column.IsInhibited )
+				{
+					alphaValue = 1f;
+					color = this.dictionaryCellColors[HtmCellColors.Inhibited].HtmColor;
+				}
+				
 				//Learning in t+0
-				if ( visualizerForm.ShowLearningCells && cell.IsLearning )  //TODO - need IsLearning logic (?)
+				if ( visualizerForm.ShowLearningCells && cell.IsLearning )  
 				{
 					alphaValue = 1f;
 					color = this.dictionaryCellColors[HtmCellColors.Learning].HtmColor;
@@ -1560,7 +1492,7 @@ namespace Net1
 				}
 
 				//Sequence predicted cells
-				if ( cell.GetSequencePredictingBasalSegment () != null )	//TODO: see if HTM theory uses multiple segments 
+				if ( cell.GetSequencePredictingBasalSegment () != null )//TODO: see if HTM theory uses multiple segments 
 				{
 					//False predicted cells
 					if ( visualizerForm.ShowFalsePredictedCells && !cell.IsActive )
@@ -1577,9 +1509,9 @@ namespace Net1
 					}
 				}
 			}
-			catch ( Exception )
+			catch ( Exception ex)
 			{
-
+				MessageBox.Show ( "Exception occured in GetColorFromCell() : " + Environment.NewLine + ex.Message );
 			}
 		}
 
@@ -1882,56 +1814,49 @@ namespace Net1
 										returnedProximalSynapse, ref nearestProximalSynapse,
 										returnedApicalSynapse, ref nearestApicalSynapse );
 				}
+			}
 
-				//Find and process nearest object picked
-				Selectable3DObject selObject = null;
-				if ( nearestDistance < float.MaxValue )
+			//Find and process nearest object picked
+			Selectable3DObject selObject = null;
+			if ( nearestDistance < float.MaxValue )
+			{
+				if ( nearestCell != null )
 				{
-					if ( nearestCell != null )
-					{
-						selObject = nearestCell;
-						selObject.mouseOver = true;
-					}
-					if ( nearestBasalSynapse != null )
-					{
-						selObject = nearestBasalSynapse;
-						selObject.mouseOver = true;
-					}
-					if ( nearestProximalSynapse != null )
-					{
-						selObject = nearestProximalSynapse;
-						selObject.mouseOver = true;
-					}
-					if ( nearestApicalSynapse != null )
-					{
-						selObject = nearestApicalSynapse;
-						selObject.mouseOver = true;
-					}
+					selObject = nearestCell;
+					selObject.mouseOver = true;
+				}
+				if ( nearestBasalSynapse != null )
+				{
+					selObject = nearestBasalSynapse;
+					selObject.mouseOver = true;
+				}
+				if ( nearestProximalSynapse != null )
+				{
+					selObject = nearestProximalSynapse;
+					selObject.mouseOver = true;
+				}
+				if ( nearestApicalSynapse != null )
+				{
+					selObject = nearestApicalSynapse;
+					selObject.mouseOver = true;
+				}
 
-					if ( bSelectionEnable && selObject != null )
-					{
-						if ( !selObject.mouseSelected )
-							selObject.mouseSelected = true;
-						else
-							selObject.mouseSelected = false;
-					}
+				if ( bSelectionEnable && selObject != null )
+				{
+					if ( !selObject.mouseSelected )
+						selObject.mouseSelected = true;
+					else
+						selObject.mouseSelected = false;
 
 					////SHIFT key - deselect
 					//if (keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.LeftShift ) || keyState.IsKeyDown ( Microsoft.Xna.Framework.Input.Keys.RightShift ))
 					//	selObject.mouseSelected = false;
 
 					//update selected object list
-					//UpdateSelectedObjectList ( selObject, selObject.mouseSelected ); start here
+					//UpdateSelectedObjectList ( selObject, selObject.mouseSelected );
 					UpdateSelectedObjectList ( this.Region, selObject.mouseSelected );
 				}
 			}
-
-			//if (selObject != null)
-			//{
-
-			//	//test only
-			//	DataSet ds = ViewListToDataset_Cells ( );
-			//}
 		}
 		
 		public Ray getPickingRay (System.Drawing.Point mousePosition)
@@ -2161,4 +2086,86 @@ namespace Net1
 
 
 	}
+
+
+
+	#region Helper Color Classes
+
+	public struct HtmColorInformation
+	{
+		#region Fields
+
+		public Color HtmColor;
+		public string HtmInformation;
+
+		#endregion
+
+		#region Constructor
+
+		public HtmColorInformation (Color color, string info)
+		{
+			this.HtmColor = color;
+			this.HtmInformation = info;
+		}
+
+		#endregion
+	}
+
+	public enum HtmCellColors
+	{
+		Learning,
+		FalsePrediction,
+		RightPrediction,
+		Predicting,
+		SequencePredicting,
+		Active,
+		Inactive,
+		Selected,
+		Inhibited
+	}
+
+	public enum HtmProximalSynapseColors
+	{
+		Default,
+		Active,
+		ActiveConnected
+	}
+
+	public enum HtmDistalSynapseColors
+	{
+		Default,
+		Active
+	}
+
+	public class HtmOverViewInformation
+	{
+		#region Fields
+
+		public string StepCount;
+		public string ChosenHtmElement;
+		public string PositionElement;
+		public string ActivityRate;
+		public string PrecisionRate;
+
+		#endregion
+
+		#region Constructor
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="HtmOverViewInformation"/> class.
+		/// </summary>
+		public HtmOverViewInformation ()
+		{
+			this.StepCount = "";
+			this.ChosenHtmElement = "Region";
+			this.PositionElement = "";
+			this.ActivityRate = "";
+			this.PrecisionRate = "";
+		}
+
+		#endregion
+	}
+
+
+	#endregion
 }

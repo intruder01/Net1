@@ -42,9 +42,12 @@ namespace Net1
 		//create all Synaptic connections given list of potential columns and percentage coverage
 		public override bool CreateSynapses(List<Column> potentialColumns, double zoneCoveragePerc)
 		{
+#if !DEBUG
+			//calculate how many new synapses to create
 			int numSynapsesRequired = (int)(potentialColumns.Count * zoneCoveragePerc);
 			int numNewSynapses = numSynapsesRequired - this.Synapses.Count;
 
+			//add random synapses from list
 			if (numNewSynapses > 0) //add synapses
 			{
 				//remove columns already connected from the potential list
@@ -55,12 +58,39 @@ namespace Net1
 				foreach (Column col in connectColumns)
 					CreateSynapse(col);
 			}
+
+			//remove synapses from end
 			if (numNewSynapses < 0) //remove synapses
 			{
 				while (Synapses.Count > 0 && Synapses.Count > numSynapsesRequired)
 					RemoveSynapseAt(Global.rnd.Next(0, Synapses.Count));
 			}
 			return true;
+#else //DEBUG
+			//calculate how many new synapses to create
+			int numSynapsesRequired = (int)( potentialColumns.Count * zoneCoveragePerc );
+			int numNewSynapses = numSynapsesRequired - this.Synapses.Count;
+
+			//add first x synapses from the list
+			if ( numNewSynapses > 0 )
+			{
+				for ( int i = 0; i < numNewSynapses; i++ )
+				{
+					Column col = potentialColumns[i];
+					CreateSynapse ( col );
+				}
+			}
+
+			//remove synapses from end
+			if ( numNewSynapses < 0 )
+			{
+				while ( Synapses.Count > 0 && Synapses.Count > numSynapsesRequired )
+					RemoveSynapseAt ( Global.rnd.Next ( 0, Synapses.Count ) );
+			}
+			return true;
+
+
+#endif
 		}
 
 		//Make new Synaptic connection to a Cell
@@ -178,6 +208,6 @@ namespace Net1
 #endif
 
 
-		#endregion
+#endregion
 	}
 }

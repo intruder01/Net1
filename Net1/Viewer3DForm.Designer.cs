@@ -44,6 +44,7 @@
 			this.showLearningButton = new System.Windows.Forms.ToolStripButton();
 			this.showActiveButton = new System.Windows.Forms.ToolStripButton();
 			this.showFalsePredictedButton = new System.Windows.Forms.ToolStripButton();
+			this.showInhibitedButton = new System.Windows.Forms.ToolStripButton();
 			this.btnResetCamera = new System.Windows.Forms.ToolStripButton();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxSurface)).BeginInit();
 			this.toolStrip1.SuspendLayout();
@@ -72,6 +73,7 @@
             this.showLearningButton,
             this.showActiveButton,
             this.showFalsePredictedButton,
+            this.showInhibitedButton,
             this.btnResetCamera});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
@@ -158,7 +160,7 @@
 			this.showSeqPredictingButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.showSeqPredictingButton.Name = "showSeqPredictingButton";
 			this.showSeqPredictingButton.Size = new System.Drawing.Size(23, 22);
-			this.showSeqPredictingButton.ToolTipText = "Show Seq Predicting";
+			this.showSeqPredictingButton.ToolTipText = "Show Sequence Predicting";
 			this.showSeqPredictingButton.Click += new System.EventHandler(this.showSeqPredictingButton_Click);
 			// 
 			// showPredictingButton
@@ -209,6 +211,18 @@
 			this.showFalsePredictedButton.ToolTipText = "Show False Predicted";
 			this.showFalsePredictedButton.Click += new System.EventHandler(this.showFalsePredictedButton_Click);
 			// 
+			// showInhibitedButton
+			// 
+			this.showInhibitedButton.BackColor = System.Drawing.Color.Yellow;
+			this.showInhibitedButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.showInhibitedButton.ForeColor = System.Drawing.Color.Black;
+			this.showInhibitedButton.Image = ((System.Drawing.Image)(resources.GetObject("showInhibitedButton.Image")));
+			this.showInhibitedButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.showInhibitedButton.Name = "showInhibitedButton";
+			this.showInhibitedButton.Size = new System.Drawing.Size(23, 22);
+			this.showInhibitedButton.ToolTipText = "Show Inhibited Columns";
+			this.showInhibitedButton.Click += new System.EventHandler(this.showInhibitedButton_Click);
+			// 
 			// btnResetCamera
 			// 
 			this.btnResetCamera.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -232,6 +246,7 @@
 			this.TabText = "Viewer3DForm";
 			this.Text = "Viewer3DForm";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Viewer3DForm_FormClosing);
+			this.Load += new System.EventHandler(this.Viewer3DForm_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Viewer3DForm_KeyDown);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxSurface)).EndInit();
 			this.toolStrip1.ResumeLayout(false);
@@ -258,5 +273,6 @@
 		private System.Windows.Forms.ToolStripButton showActiveButton;
 		private System.Windows.Forms.ToolStripButton showFalsePredictedButton;
 		private System.Windows.Forms.ToolStripButton btnResetCamera;
+		private System.Windows.Forms.ToolStripButton showInhibitedButton;
 	}
 }

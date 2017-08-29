@@ -31,12 +31,20 @@ namespace Net1
 		//cell is predicting when cell's distal dendrite is active
 		//indicating that cell is anticipating activation
 		public bool IsPredicting { get; private set; }
+		//cell is sequence predicting when cell's apical dendrite is active
+		//indicating that cell is anticipating activation
+		public bool IsSeqPredicting { get; private set; }
 		//cell is learning when it's column is activated via proximal connection
 		//and no cell in the column predicted the activation.
 		//All cells turn on in 'Learning' mode indicating that any proximal input will be
 		//learned by one of the cells.
-		public bool IsLearning { get; private set; }	//TODO: need logic for this property
-
+		public bool IsLearning { get; private set; }    //TODO: need logic for this property
+		
+		public Column Column { get; private set; }		//TODO: reference to parent column. May need to remove later
+		//Column location reference for debug
+		//TODO: remove later
+		public int ColumnX;
+		public int ColumnY;
 		
 
 		#region Constructors
@@ -47,8 +55,18 @@ namespace Net1
 			Index = index;
 			IsActive = false;
 			IsPredicting = false;
+			IsSeqPredicting = false;
 			IsLearning = false;
 			BasalDendrite = new DendriteBasal(NetConfigData.DendriteActivationThresholdBasal);
+		}
+
+		//debug constructor with Column location reference
+		//TODO: remove this constructor 
+		public Cell(int index, Column column) : this(index)
+		{
+			Column = column;
+			ColumnX = column.X;
+			ColumnY = column.Y;
 		}
 
 		//Cell in Column/Layer
@@ -70,35 +88,43 @@ namespace Net1
 		{
 			BasalDendrite.Update();
 			IsPredicting = BasalDendrite.IsActive;
+
+			//ApicalDendrite.Update ();
+			//IsSeqPredicting = ApicalDendrite.IsActive;
 		}
 		
-		public void CreateBasalSynapses(List<Column> potentialColumns, double zoneCoveragePerc)
+		//public void CreateBasalSynapses(List<Column> potentialColumns, double zoneCoveragePerc)
+		//{
+		//	zoneCoveragePerc = zoneCoveragePerc < 0 ? 1.0 : zoneCoveragePerc;
+
+		//	//create random list of columns to connect
+		//	int numSynapsesRequired = (int)(potentialColumns.Count * zoneCoveragePerc);
+		//	int numNewSynapses = numSynapsesRequired - BasalDendrite.Synapses.Count;
+
+		//	if (numNewSynapses > 0) //add synapses
+		//	{
+		//		//remove columns already connected from the potential list
+		//		List<Column> alreadyConnected = BasalDendrite.GetConnectedColumnsList();
+		//		potentialColumns.RemoveAll(x => alreadyConnected.Contains(x));
+
+		//		IEnumerable<Column> connectColumns = potentialColumns.RandomSample(numNewSynapses, false);
+		//		foreach (Column col in connectColumns)
+		//			BasalDendrite.CreateSynapse(col);
+		//	}
+
+		//	if (numNewSynapses < 0)  //remove synapses
+		//	{
+		//		while (BasalDendrite.Synapses.Count > 0 && BasalDendrite.Synapses.Count > numSynapsesRequired)
+		//		{
+		//			//remove random synapse
+		//			BasalDendrite.RemoveSynapseAt(Global.rnd.Next(BasalDendrite.Synapses.Count));
+		//		}
+		//	}
+		//}
+
+		public void CreateBasalSynapses (List<Column> potentialColumns, double zoneCoveragePerc)
 		{
-			zoneCoveragePerc = zoneCoveragePerc < 0 ? 1.0 : zoneCoveragePerc;
-
-			//create random list of columns to connect
-			int numSynapsesRequired = (int)(potentialColumns.Count * zoneCoveragePerc);
-			int numNewSynapses = numSynapsesRequired - BasalDendrite.Synapses.Count;
-
-			if (numNewSynapses > 0) //add synapses
-			{
-				//remove columns already connected from the potential list
-				List<Column> alreadyConnected = BasalDendrite.GetConnectedColumnsList();
-				potentialColumns.RemoveAll(x => alreadyConnected.Contains(x));
-
-				IEnumerable<Column> connectColumns = potentialColumns.RandomSample(numNewSynapses, false);
-				foreach (Column col in connectColumns)
-					BasalDendrite.CreateSynapse(col);
-			}
-
-			if (numNewSynapses < 0)  //remove synapses
-			{
-				while (BasalDendrite.Synapses.Count > 0 && BasalDendrite.Synapses.Count > numSynapsesRequired)
-				{
-					//remove random synapse
-					BasalDendrite.RemoveSynapseAt(Global.rnd.Next(BasalDendrite.Synapses.Count));
-				}
-			}
+			BasalDendrite.CreateSynapses ( potentialColumns, zoneCoveragePerc );
 		}
 
 		internal void RemoveAllBasalSynapses()
@@ -179,6 +205,6 @@ namespace Net1
 #endif
 
 
-		#endregion
+#endregion
 	}
 }

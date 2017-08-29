@@ -134,6 +134,11 @@ namespace Net1
 				for (int y = 0; y < NumColumnsY; y++)
 				{
 					Column col = Columns[y][x];
+
+					//reset column state and get ready for another pass
+					col.SetInhibited(false);
+
+					//process proximal input
 					col.Update_Proximal();
 				}
 

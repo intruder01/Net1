@@ -1,0 +1,17 @@
+﻿1. debug functions and display:
+	a. cell
+		- active
+		- learning
+		- predicting
+			- correctly
+			- incorrectly
+	b. connections
+		- proximal
+			- strength display
+		- basal
+		- apical ?? 
+	c. added Column ref to Cell for debug purpose
+		- remove when done
+
+2. added PREDICTABLE conditional compilation symbol
+		- this will need to be managed going forward

@@ -9,16 +9,16 @@ namespace Net1
 {
 	//allow notifications of engine started and stopped
 	//used in ... TODO
-	public delegate void SimEngineStarted_Event(object sender, EventArgs e);
-	public delegate void SimEngineShutdown_Event(object sender, EventArgs e);
+	//public delegate void SimEngineStarted_Event(object sender, EventArgs e);
+	//public delegate void SimEngineShutdown_Event(object sender, EventArgs e);
 
 	/// <summary>
 	/// This is the main class to start the 3D visualization.
 	/// </summary>
 	public class Viewer3D 
 	{
-		public static event SimEngineStarted_Event EngineStarted = delegate { };
-		public static event SimEngineShutdown_Event EngineShutdown = delegate { };
+		//public static event SimEngineStarted_Event EngineStarted = delegate { };
+		//public static event SimEngineShutdown_Event EngineShutdown = delegate { };
 
 		#region Fields
 
@@ -66,10 +66,9 @@ namespace Net1
 		/// </summary>
 		public static void End()
 		{
-			EngineShutdown(Engine, EventArgs.Empty);
 			if(_thread != null)
 			{
-				_thread.Abort();
+				_thread.Abort ();
 			}
 			IsActive = false;
 
@@ -94,9 +93,8 @@ namespace Net1
 			//Start the 3D engine
 			Engine = new Viewer3DEngine ( Form.GetDrawSurface () );
 
-			EngineStarted ( Engine, new EventArgs () );
-
 			Engine.Run ();
+
 		}
 
 		//////////private static void StartMethod ()
