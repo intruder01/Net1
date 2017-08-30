@@ -65,14 +65,23 @@ namespace Net1
 			}
 			return true;
 #else //DEBUG
+			// remove existing synapses which are NOT in potential list (outside of radius)
+			List<Column> connectedList = GetConnectedColumnsList ();
+			List<Column> removeList = connectedList.Where ( x => !(potentialColumns.Contains ( x )) ).ToList();
+			RemoveSpecificSynapses ( removeList );
+
 			//calculate how many new synapses to create
 			int numSynapsesRequired = (int)( potentialColumns.Count * zoneCoveragePerc );
 			int numNewSynapses = numSynapsesRequired - this.Synapses.Count;
-
+			
 			//add first x synapses from the list
 			if ( numNewSynapses > 0 )
 			{
-				for ( int i = 0; i < numNewSynapses; i++ )
+				//remove columns already connected from the potential list
+				List<Column> alreadyConnected = GetConnectedColumnsList ();
+				potentialColumns.RemoveAll ( x => alreadyConnected.Contains ( x ) );
+
+				for ( int i = 0; i < Math.Max(numNewSynapses, potentialColumns.Count); i++ )
 				{
 					Column col = potentialColumns[i];
 					CreateSynapse ( col );
@@ -87,6 +96,17 @@ namespace Net1
 			}
 			return true;
 #endif
+		}
+
+		private void RemoveSpecificSynapses (List<Column> columnList)
+		{
+			foreach ( Column column in columnList )
+				for ( int i = 0; i < Synapses.Count; i++ )
+				{
+					SynapseProximal syn = Synapses[i];
+					if ( syn.ColumnConnected == column )
+						Synapses.Remove ( syn );
+				}
 		}
 
 		//Make new Synaptic connection to a Cell

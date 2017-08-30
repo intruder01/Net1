@@ -35,6 +35,7 @@
 			this.networkConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.btnViewer3D = new System.Windows.Forms.Button();
 			this.cbRefreshArea1 = new System.Windows.Forms.CheckBox();
 			this.label24 = new System.Windows.Forms.Label();
 			this.label23 = new System.Windows.Forms.Label();
@@ -71,6 +72,7 @@
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			this.cbRefreshArea2 = new System.Windows.Forms.CheckBox();
 			this.tabsNetDisplay = new System.Windows.Forms.TabControl();
+			this.tabInputPlane = new System.Windows.Forms.TabPage();
 			this.tabProximalSynapses = new System.Windows.Forms.TabPage();
 			this.tabInputOverlap = new System.Windows.Forms.TabPage();
 			this.tabBoost = new System.Windows.Forms.TabPage();
@@ -103,8 +105,7 @@
 			this.txtTabPrmsSparsenessInput = new System.Windows.Forms.TextBox();
 			this.label19 = new System.Windows.Forms.Label();
 			this.splitter1 = new System.Windows.Forms.Splitter();
-			this.tabInputPlane = new System.Windows.Forms.TabPage();
-			this.btnViewer3D = new System.Windows.Forms.Button();
+			this.button1 = new System.Windows.Forms.Button();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -144,7 +145,7 @@
 			// openToolStripMenuItem
 			// 
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
 			this.openToolStripMenuItem.Text = "Open";
 			// 
 			// configurationToolStripMenuItem
@@ -218,6 +219,16 @@
 			this.splitContainer1.Size = new System.Drawing.Size(798, 508);
 			this.splitContainer1.SplitterDistance = 183;
 			this.splitContainer1.TabIndex = 1;
+			// 
+			// btnViewer3D
+			// 
+			this.btnViewer3D.Location = new System.Drawing.Point(6, 309);
+			this.btnViewer3D.Name = "btnViewer3D";
+			this.btnViewer3D.Size = new System.Drawing.Size(70, 23);
+			this.btnViewer3D.TabIndex = 38;
+			this.btnViewer3D.Text = "3D View";
+			this.btnViewer3D.UseVisualStyleBackColor = true;
+			this.btnViewer3D.Click += new System.EventHandler(this.btnViewer3D_Click);
 			// 
 			// cbRefreshArea1
 			// 
@@ -565,6 +576,17 @@
 			this.tabsNetDisplay.Size = new System.Drawing.Size(607, 332);
 			this.tabsNetDisplay.TabIndex = 0;
 			// 
+			// tabInputPlane
+			// 
+			this.tabInputPlane.Location = new System.Drawing.Point(4, 22);
+			this.tabInputPlane.Name = "tabInputPlane";
+			this.tabInputPlane.Padding = new System.Windows.Forms.Padding(3);
+			this.tabInputPlane.Size = new System.Drawing.Size(599, 306);
+			this.tabInputPlane.TabIndex = 0;
+			this.tabInputPlane.Text = "Inp";
+			this.tabInputPlane.UseVisualStyleBackColor = true;
+			this.tabInputPlane.Paint += new System.Windows.Forms.PaintEventHandler(this.tabInputPlane_Paint);
+			// 
 			// tabProximalSynapses
 			// 
 			this.tabProximalSynapses.Location = new System.Drawing.Point(4, 22);
@@ -728,7 +750,7 @@
 			this.tabEntropyChart.Location = new System.Drawing.Point(4, 22);
 			this.tabEntropyChart.Name = "tabEntropyChart";
 			this.tabEntropyChart.Padding = new System.Windows.Forms.Padding(3);
-			this.tabEntropyChart.Size = new System.Drawing.Size(595, 138);
+			this.tabEntropyChart.Size = new System.Drawing.Size(596, 138);
 			this.tabEntropyChart.TabIndex = 1;
 			this.tabEntropyChart.Text = "Entr";
 			this.tabEntropyChart.UseVisualStyleBackColor = true;
@@ -804,7 +826,7 @@
 			this.tabParams.Controls.Add(this.label19);
 			this.tabParams.Location = new System.Drawing.Point(4, 22);
 			this.tabParams.Name = "tabParams";
-			this.tabParams.Size = new System.Drawing.Size(595, 138);
+			this.tabParams.Size = new System.Drawing.Size(596, 138);
 			this.tabParams.TabIndex = 2;
 			this.tabParams.Text = "Prms";
 			this.tabParams.UseVisualStyleBackColor = true;
@@ -878,36 +900,25 @@
 			this.splitter1.TabIndex = 0;
 			this.splitter1.TabStop = false;
 			// 
-			// tabInputPlane
+			// button1
 			// 
-			this.tabInputPlane.Location = new System.Drawing.Point(4, 22);
-			this.tabInputPlane.Name = "tabInputPlane";
-			this.tabInputPlane.Padding = new System.Windows.Forms.Padding(3);
-			this.tabInputPlane.Size = new System.Drawing.Size(599, 306);
-			this.tabInputPlane.TabIndex = 0;
-			this.tabInputPlane.Text = "Inp";
-			this.tabInputPlane.UseVisualStyleBackColor = true;
-			this.tabInputPlane.Paint += new System.Windows.Forms.PaintEventHandler(this.tabInputPlane_Paint);
+			this.button1.Location = new System.Drawing.Point(517, 0);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(62, 24);
+			this.button1.TabIndex = 2;
+			this.button1.Text = "button1";
+			this.button1.UseVisualStyleBackColor = true;
 			// 
-			// btnViewer3D
-			// 
-			this.btnViewer3D.Location = new System.Drawing.Point(6, 309);
-			this.btnViewer3D.Name = "btnViewer3D";
-			this.btnViewer3D.Size = new System.Drawing.Size(70, 23);
-			this.btnViewer3D.TabIndex = 38;
-			this.btnViewer3D.Text = "3D View";
-			this.btnViewer3D.UseVisualStyleBackColor = true;
-			this.btnViewer3D.Click += new System.EventHandler(this.btnViewer3D_Click);
-			// 
-			// NetForm1
+			// netForm1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Control;
 			this.ClientSize = new System.Drawing.Size(798, 532);
+			this.Controls.Add(this.button1);
 			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.menuStrip1);
-			this.Name = "NetForm1";
+			this.Name = "netForm1";
 			this.Text = "NetForm1";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form1_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.form1_FormClosed);
@@ -1017,6 +1028,7 @@
 		private System.Windows.Forms.CheckBox cbRefreshArea2;
 		private System.Windows.Forms.TabPage tabInputPlane;
 		private System.Windows.Forms.Button btnViewer3D;
+		private System.Windows.Forms.Button button1;
 	}
 }
 

@@ -74,7 +74,11 @@ namespace Net1
 			//add first x synapses from the list
 			if ( numNewSynapses > 0 )
 			{
-				for ( int i = 0; i < numNewSynapses; i++ )
+				//remove columns already connected from the potential list
+				List<Column> alreadyConnected = GetConnectedColumnsList ();
+				potentialColumns.RemoveAll ( x => alreadyConnected.Contains ( x ) );
+
+				for ( int i = 0; i < Math.Max ( numNewSynapses, potentialColumns.Count ); i++ )
 				{
 					Column col = potentialColumns[i];
 					CreateSynapse ( col );

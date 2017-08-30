@@ -114,7 +114,6 @@ namespace Net1
 
 
 
-
 #if TESTING
 
 		//General rule for Override functions:
