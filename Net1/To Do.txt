@@ -1,12 +1,13 @@
 ﻿1. debug functions and display:
 	a. cell
-		- active
+		- active		DONE
+		- inhibited		DONE
 		- learning
 		- predicting
 			- correctly
 			- incorrectly
 	b. connections
-		- proximal
+		- proximal		DONE
 			- strength display
 		- basal
 		- apical ?? 
@@ -15,3 +16,7 @@
 
 2. added PREDICTABLE conditional compilation symbol
 		- this will need to be managed going forward
+
+3. Test whether IsVisible is a viable method to utilize for Picking. 
+	Currently picking conditions need to reflect display conditions and this is hard to maintain.
+4. Can IsDataGridSelected be used as "IsPropertyWindowSelected" ??

@@ -36,7 +36,7 @@
 			this.temporalLearningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.coordinateSystemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.activeColumnGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.regionPredictionsGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.regionPredictionGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.regionPredictionReconstructionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showCorrectButton = new System.Windows.Forms.ToolStripButton();
 			this.showSeqPredictingButton = new System.Windows.Forms.ToolStripButton();
@@ -89,7 +89,7 @@
             this.temporalLearningToolStripMenuItem,
             this.coordinateSystemToolStripMenuItem,
             this.activeColumnGridToolStripMenuItem,
-            this.regionPredictionsGridToolStripMenuItem,
+            this.regionPredictionGridToolStripMenuItem,
             this.regionPredictionReconstructionToolStripMenuItem});
 			this.menuShow.Image = ((System.Drawing.Image)(resources.GetObject("menuShow.Image")));
 			this.menuShow.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -125,12 +125,12 @@
 			this.activeColumnGridToolStripMenuItem.Text = "Active Column Grid";
 			this.activeColumnGridToolStripMenuItem.Click += new System.EventHandler(this.activeColumnGridToolStripMenuItem_Click);
 			// 
-			// regionPredictionsGridToolStripMenuItem
+			// regionPredictionGridToolStripMenuItem
 			// 
-			this.regionPredictionsGridToolStripMenuItem.Name = "regionPredictionsGridToolStripMenuItem";
-			this.regionPredictionsGridToolStripMenuItem.Size = new System.Drawing.Size(251, 22);
-			this.regionPredictionsGridToolStripMenuItem.Text = "Region Predictions Grid";
-			this.regionPredictionsGridToolStripMenuItem.Click += new System.EventHandler(this.regionPredictionsGridToolStripMenuItem_Click);
+			this.regionPredictionGridToolStripMenuItem.Name = "regionPredictionGridToolStripMenuItem";
+			this.regionPredictionGridToolStripMenuItem.Size = new System.Drawing.Size(251, 22);
+			this.regionPredictionGridToolStripMenuItem.Text = "Region Prediction Grid";
+			this.regionPredictionGridToolStripMenuItem.Click += new System.EventHandler(this.regionPredictionsGridToolStripMenuItem_Click);
 			// 
 			// regionPredictionReconstructionToolStripMenuItem
 			// 
@@ -264,7 +264,7 @@
 		private System.Windows.Forms.ToolStripMenuItem temporalLearningToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem coordinateSystemToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem activeColumnGridToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem regionPredictionsGridToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem regionPredictionGridToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem regionPredictionReconstructionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton showCorrectButton;
 		private System.Windows.Forms.ToolStripButton showSeqPredictingButton;

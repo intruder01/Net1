@@ -31,9 +31,9 @@ namespace Net1
 			else
 				Permanence -= NetConfigData.SynapsePermanenceDecrease;
 
-			IsActive = Permanence >= NetConfigData.SynapsePermanenceThreshold && ColumnConnected.IsActive;
+			IsActive = ColumnConnected.IsActive && Permanence >= NetConfigData.SynapsePermanenceThreshold;
 
-			if (IsActive)
+			if ( IsActive)
 				return 1;
 			else
 				return 0;

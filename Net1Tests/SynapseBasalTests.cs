@@ -87,6 +87,13 @@ namespace Net1.Tests
 				Assert.IsTrue(syn.IsActive);    //true on second update
 
 				//column not predicting
+				col.OverridePredicting ( false, 0 );
+				syn.OverridePermanence ( NetConfigData.SynapsePermanenceThreshold + 2 * NetConfigData.SynapsePermanenceIncrease );
+				syn.Update ();
+				Assert.IsFalse ( syn.IsActive );
+
+
+				//column not predicting
 				col.OverridePredicting(false, 0);
 				syn.OverridePermanence(NetConfigData.SynapsePermanenceThreshold + NetConfigData.SynapsePermanenceIncrease);
 				syn.Update();

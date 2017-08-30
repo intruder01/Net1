@@ -143,6 +143,7 @@ namespace Net1
 		/// Reference to list of columns from Layer for traversing
 		/// </summary>
 		public List<List<Column>> HtmRegionColumns { get; private set; }
+		public List<List<Column>> InputPlaneColumns { get; private set; }
 
 		public Layer Region { get; set; } //TODO rename this later
 
@@ -601,6 +602,7 @@ namespace Net1
 				//Get references for traversing regions
 				this.Region = Program.netForm1.Net.Lr;
 				this.HtmRegionColumns = Program.netForm1.Net.Lr.Columns;
+				this.InputPlaneColumns = Program.netForm1.Net.Ip.Columns;
 
 				//Prepare Arrays for 2-dim-content
 				this.predictions = new float[this.Region.NumColumnsX, this.Region.NumColumnsY];
@@ -960,18 +962,16 @@ namespace Net1
 			var regionCenter = new Vector3 ();
 			int numberPointsToCalculateAverageOfCenter = 0;
 
-			this.FillHtmOverview (this.Region);
-
-			//TEMP ONLY
-			this.HtmRegionColumns = Program.netForm1.Net.Lr.Columns;
-
 			try
 			{
+				this.FillHtmOverview (this.Region);
+
 				foreach ( List<Column> colY in this.HtmRegionColumns )
 				{
 					foreach ( Column column in colY )
 					{
 						int predictionCounter = 0;
+						column.isVisible = false;
 
 						foreach ( Cell cell in column.Cells )
 						{
@@ -1046,6 +1046,18 @@ namespace Net1
 
 							//Draw synapse connection
 							this.DrawBasalSynapseConnections ( ref worldTranslation, ref worldRotate, column, cell );
+
+							
+							//set isVisible property if cell is displayed
+							if ( alphaValue > 0.11 )
+							{
+								cell.isVisible = true;
+								column.isVisible = true;
+							}
+							else
+							{
+								cell.isVisible = false;
+							}
 						}
 
 						// 20160090-1
@@ -1126,10 +1138,12 @@ namespace Net1
 			try
 			{
 				//Draw connections if existing
-				if(cell.IsDataGridSelected 
-					|| (Viewer3D.Form.ShowTemporalLearning && cell.IsPredicting))
+				foreach ( SynapseBasal synapse in cell.BasalDendrite.Synapses )
 				{
-					foreach ( SynapseBasal synapse in cell.BasalDendrite.Synapses )
+					//if(cell.IsDataGridSelected 
+					//|| (Viewer3D.Form.ShowTemporalLearning && cell.IsPredicting))
+				if ( cell.IsDataGridSelected
+					|| ( Viewer3D.Form.ShowTemporalLearning && cell.isVisible ) )
 					{
 						//Get the two vectors to draw line between
 						Vector3 startPosition = new Vector3 ( column.X,
@@ -1150,6 +1164,13 @@ namespace Net1
 
 						//Draw line
 						this.connectionLine.Draw ( worldTranslation * worldRotate, this.viewMatrix, this.projectionMatrix );
+
+						synapse.isVisible = true;
+						column.isVisible = true;
+					}
+					else
+					{
+						synapse.isVisible = false;
 					}
 				}
 			}
@@ -1165,11 +1186,13 @@ namespace Net1
 			{
 				//Draw connections if existing
 				//if ( column.IsDataGridSelected || ( Viewer3D.Form.ShowSpatialLearning && column.IsActive ) )
-				if ( column.IsDataGridSelected 
-					|| ( Viewer3D.Form.ShowSpatialLearning && Viewer3D.Form.ShowActiveCells && column.IsActive )
-					|| ( Viewer3D.Form.ShowSpatialLearning && Viewer3D.Form.ShowInhibitedColumns && column.IsInhibited ) )
-					{
-						foreach ( SynapseProximal synapse in column.ProximalDendrite.Synapses)
+				foreach ( SynapseProximal synapse in column.ProximalDendrite.Synapses)
+				{
+					//if ( column.IsDataGridSelected 
+					//|| ( Viewer3D.Form.ShowSpatialLearning && Viewer3D.Form.ShowActiveCells && column.IsActive )
+					//|| ( Viewer3D.Form.ShowSpatialLearning && Viewer3D.Form.ShowInhibitedColumns && column.IsInhibited ) )
+				if ( column.IsDataGridSelected
+				|| ( Viewer3D.Form.ShowSpatialLearning && column.isVisible ) )
 					{
 						//Get the two vectors to draw line between
 						Vector3 startPosition = new Vector3 ( column.X, 0, column.Y + zHtmRegion );
@@ -1187,8 +1210,16 @@ namespace Net1
 
 						//Draw line
 						this.connectionLine.Draw ( worldRotate, this.viewMatrix, this.projectionMatrix );
+
+						synapse.isVisible = true;
+						column.isVisible = true;
+					}
+					else
+					{
+						synapse.isVisible = false;
 					}
 				}
+
 			}
 			catch ( Exception )
 			{
@@ -1417,6 +1448,17 @@ namespace Net1
 					color = mouseOverColor;
 					alphaValue = 1.0f;
 				}
+
+				//set isVisible property if synapse is displayed
+				if ( alphaValue > 0.1 )
+				{
+					basalSynapse.isVisible = true;
+				}
+				else
+				{
+					basalSynapse.isVisible = false;
+				}
+
 			}
 			catch ( Exception )
 			{
@@ -1449,6 +1491,7 @@ namespace Net1
 						{
 							alphaValue = 1f;
 							color = this.dictionaryCellColors[HtmCellColors.SequencePredicting].HtmColor;
+
 						}
 					}
 					else
@@ -1597,49 +1640,29 @@ namespace Net1
 			e.GraphicsDeviceInformation.PresentationParameters.BackBufferWidth = Viewer3D.Form.pictureBoxSurface.Width;
 			e.GraphicsDeviceInformation.PresentationParameters.BackBufferHeight = Viewer3D.Form.pictureBoxSurface.Height;
 		}
-
-		/// <summary>
-		/// Reset camera to default position, rotation angle and zoom factor values
-		/// </summary>
-		//internal void ResetCamera()
-		//{
-		//	//position camera relative to region size
-		//	//Y=4 slightly raised
-		//	//pitch = -10 look slightly down
-		//	//Z=size/3 + 3 - shift to right to give angled view (+3 provides shift for small regions)
-		//	////this.posCamera = new Vector3 ( -25, 4, GetSize ().X / 3 + 3 );
-		//	float dimensionZ = GetSize ().X / 3 + 3;
-		//	//this.posCamera = new Vector3 ( 30, 4, GetSize ().X / 3 + 3 );
-		//	this.posCamera = new Vector3 ( 0, 0, 10);
-
-		//	//Reset rotation angle for camera
-		//	////this.yawCamera = (float)MathHelper.ToRadians ( -90 );
-		//	this.yawCamera = (float)MathHelper.ToRadians ( 90 );
-		//	this.pitchCamera = (float)MathHelper.ToRadians(-10);
-
-		//	//Reset rotation angle for htm objects
-		//	this.yawHtm = 0f;
-		//	this.pitchHtm = 0f;
-
-		//	//Reset zoom
-		//	this.zoomCamera = 35f;
-
-		//	this.UpdateCamera();
-		//}
+				
 
 		internal void ResetCamera ()
 		{
+			Vector3 sizeRegion = GetSize_Region ();
+			Vector3 sizeInputPlane = GetSize_InputPlane ();
+
+			float maxX = Math.Max ( sizeRegion.X, sizeInputPlane.X );
+			float maxY = Math.Max ( sizeRegion.Y, sizeInputPlane.Y );
+			float maxZ = Math.Max ( sizeRegion.Z, sizeInputPlane.Z );
+
 			//position camera relative to region size
 			//Y=4 slightly raised
 			//pitch = -10 look slightly down
 			//Z=size/3 + 3 - shift to right to give angled view (+3 provides shift for small regions)
-			////this.posCamera = new Vector3 ( -25, 4, GetSize ().X / 3 + 3 );
-			//this.posCamera = new Vector3 ( 5, 5, GetSize ().Y * 3 + 3 );
-			this.posCamera = new Vector3 ( 5, 5, GetSize ().Y * 3 + 20 );
+			
+			//this.posCamera = new Vector3 ( 5, 5, GetSize ().Y * 3 + 20 );
+			//this.posCamera = new Vector3 ( 5, 15, GetSize_Region ().Y * 1 + 20 );
+			this.posCamera = new Vector3 ( 5, maxY * 2 + 10, maxZ * 2 );
 
 			//Reset rotation angle for camera
 			this.yawCamera = (float)MathHelper.ToRadians ( 0 );
-			this.pitchCamera = (float)MathHelper.ToRadians ( -10 );
+			this.pitchCamera = (float)MathHelper.ToRadians ( -50 );
 
 			//Reset rotation angle for htm objects
 			this.yawHtm = 0f;
@@ -1677,7 +1700,7 @@ namespace Net1
 		/// Calculate size of the region in world coordinates
 		/// </summary>
 		/// <returns>Vector3 size</returns>
-		private Vector3 GetSize()
+		private Vector3 GetSize_Region()
 		{
 			Matrix worldTranslationZ = Matrix.CreateTranslation(new Vector3(0, 0, zHtmRegion));
 			Matrix worldTranslation;
@@ -1698,6 +1721,37 @@ namespace Net1
 						size.X = Math.Max(translationVector.X, size.X);
 						size.Y = Math.Max(translationVector.Y, size.Y);
 						size.Z = Math.Max(translationVector.Z, size.Z);
+					}
+				}
+			}
+			return size;
+		}
+
+		/// <summary>
+		/// Calculate size of the region in world coordinates
+		/// </summary>
+		/// <returns>Vector3 size</returns>
+		private Vector3 GetSize_InputPlane ()
+		{
+			Matrix worldTranslationZ = Matrix.CreateTranslation ( new Vector3 ( 0, 0, zHtmRegion ) );
+			Matrix worldTranslation;
+			Matrix worldRotate = Matrix.CreateRotationX ( this.pitchHtm ) * Matrix.CreateRotationY ( this.yawHtm );
+			Vector3 size = new Vector3 ();
+
+			foreach ( List<Column> colList in this.InputPlaneColumns )
+			{
+				foreach ( Column column in colList )
+				{
+					foreach ( Cell cell in column.Cells )
+					{
+						//calculate cell world coordinates
+						var translationVector = new Vector3 ( column.X, cell.Index, column.Y );
+						worldTranslation = Matrix.CreateTranslation ( translationVector ) * worldTranslationZ;
+
+						//Z extent for initial camera position
+						size.X = Math.Max ( translationVector.X, size.X );
+						size.Y = Math.Max ( translationVector.Y, size.Y );
+						size.Z = Math.Max ( translationVector.Z, size.Z );
 					}
 				}
 			}
@@ -1825,17 +1879,17 @@ namespace Net1
 					selObject = nearestCell;
 					selObject.mouseOver = true;
 				}
-				if ( nearestBasalSynapse != null )
+				else if ( nearestBasalSynapse != null )
 				{
 					selObject = nearestBasalSynapse;
 					selObject.mouseOver = true;
 				}
-				if ( nearestProximalSynapse != null )
+				else if ( nearestProximalSynapse != null )
 				{
 					selObject = nearestProximalSynapse;
 					selObject.mouseOver = true;
 				}
-				if ( nearestApicalSynapse != null )
+				else if ( nearestApicalSynapse != null )
 				{
 					selObject = nearestApicalSynapse;
 					selObject.mouseOver = true;
@@ -1903,8 +1957,8 @@ namespace Net1
 			returnedProximalSynapse = null;
 
 			//Draw Connections if existing
-			if ( column.IsDataGridSelected || ( Viewer3D.Form.ShowSpatialLearning && column.IsActive ) )
-			{
+			//if ( column.IsDataGridSelected || ( Viewer3D.Form.ShowSpatialLearning && column.IsActive ) )
+			//{
 				Vector3 rayP1 = ray.Position;
 				Vector3 rayP2 = rayP1 + ray.Direction;
 
@@ -1912,9 +1966,11 @@ namespace Net1
 				{
 					synapse.mouseOver = false;
 
-					//TODO: implement Statictics concept for my elements...
-					//if ( column.Statistics.StepCounter > 0 )
-					//{
+					if ( synapse.isVisible )
+					{
+						//TODO: implement Statictics concept for my elements...
+						//if ( column.Statistics.StepCounter > 0 )
+						//{
 						//Get the two vectors to draw line between
 						var startPosition = new Vector3 ( column.X, 0, column.Y + zHtmRegion );
 
@@ -1929,14 +1985,15 @@ namespace Net1
 						Vector3 Line2ClosestPt = new Vector3 ();
 						intersect = Math3D.ClosestPointsLineSegmentToLine ( out Line1ClosestPt, out Line2ClosestPt, startPosition, endPosition, rayP1, rayP2, 0.1f, out intersectDistance );
 
-						if (intersect && intersectDistance < minDistance)
+						if ( intersect && intersectDistance < minDistance )
 						{
 							minDistance = intersectDistance;
 							returnedProximalSynapse = synapse;
 						}
-					//}
+						//}
+					}
 				}
-			}
+			//}
 
 			return minDistance;
 		}
@@ -1949,8 +2006,8 @@ namespace Net1
 			returnedBasalSynapse = null;
 
 			//Draw Connections if existing
-			if ( cell.IsDataGridSelected || ( Viewer3D.Form.ShowSpatialLearning && cell.IsPredicting ) )
-			{
+			//if ( cell.IsDataGridSelected || ( Viewer3D.Form.ShowSpatialLearning && cell.IsPredicting ) )
+			//{
 				Vector3 rayP1 = ray.Position;
 				Vector3 rayP2 = rayP1 + ray.Direction;
 
@@ -1958,30 +2015,32 @@ namespace Net1
 				{
 					synapse.mouseOver = false;
 
-					var basalSynapse = synapse as SynapseBasal;
-
-					//Get the two vectors to draw line between
-					var startPosition = new Vector3 ( column.X, cell.Index, column.Y + zHtmRegion );
-
-					//Get input plane position   TODO: straighten out xyz here....
-					int x = synapse.ColumnConnected.X;
-					int y = synapse.ColumnConnected.Cells[0].Index; //TODO: - this just = 0. It point to first cell in connected column. May need a better solution to represent connection to entire column
-					int z = synapse.ColumnConnected.Y;
-					var endPosition = new Vector3 ( x, y, x + zHtmPlane );
-
-					bool intersect;
-					Vector3 Line1ClosestPt = new Vector3 ();
-					Vector3 Line2ClosestPt = new Vector3 ();
-					intersect = Math3D.ClosestPointsLineSegmentToLine ( out Line1ClosestPt, out Line2ClosestPt, startPosition, endPosition, rayP1, rayP2, 0.1f, out intersectDistance );
-
-					if ( intersect && intersectDistance < minDistance )
+					if ( synapse.isVisible )
 					{
-						minDistance = intersectDistance;
-						returnedBasalSynapse = synapse;
-					}
+						var basalSynapse = synapse as SynapseBasal;
 
-				}
-			}
+						//Get the two vectors to draw line between
+						var startPosition = new Vector3 ( column.X, cell.Index, column.Y + zHtmRegion );
+
+						//Get input plane position   TODO: straighten out xyz here....
+						int x = synapse.ColumnConnected.X;
+						int y = synapse.ColumnConnected.Cells[0].Index; //TODO: - this just = 0. It point to first cell in connected column. May need a better solution to represent connection to entire column
+						int z = synapse.ColumnConnected.Y;
+						var endPosition = new Vector3 ( x, y, x + zHtmPlane );
+
+						bool intersect;
+						Vector3 Line1ClosestPt = new Vector3 ();
+						Vector3 Line2ClosestPt = new Vector3 ();
+						intersect = Math3D.ClosestPointsLineSegmentToLine ( out Line1ClosestPt, out Line2ClosestPt, startPosition, endPosition, rayP1, rayP2, 0.1f, out intersectDistance );
+
+						if ( intersect && intersectDistance < minDistance )
+						{
+							minDistance = intersectDistance;
+							returnedBasalSynapse = synapse;
+						}
+					}
+			//}
+		}
 
 			return minDistance;
 		}
@@ -2005,28 +2064,31 @@ namespace Net1
 			//	{
 			//		synapse.mouseOver = false;
 
-			//		if ( column.Statistics.StepCounter > 0 )
-			//		{
-			//			//Get the two vectors to draw line between
-			//			var startPosition = new Vector3 ( column.X, 0, column.Y + zHtmRegion );
+			//if ( synapse.isVisible )
+			//{
+				//		if ( column.Statistics.StepCounter > 0 )
+				//		{
+				//			//Get the two vectors to draw line between
+				//			var startPosition = new Vector3 ( column.X, 0, column.Y + zHtmRegion );
 
-			//			//Get input plane position   TODO: straighten out xyz here....
-			//			int x = synapse.ColumnConnected.X;
-			//			int y = (int)yHtmPlane; //TODO: need Y of the other layer here....
-			//			int z = synapse.ColumnConnected.Y;
-			//			var endPosition = new Vector3 ( x, y, x + zHtmPlane );
+				//			//Get input plane position   TODO: straighten out xyz here....
+				//			int x = synapse.ColumnConnected.X;
+				//			int y = (int)yHtmPlane; //TODO: need Y of the other layer here....
+				//			int z = synapse.ColumnConnected.Y;
+				//			var endPosition = new Vector3 ( x, y, x + zHtmPlane );
 
-			//			bool intersect;
-			//			Vector3 Line1ClosestPt = new Vector3 ();
-			//			Vector3 Line2ClosestPt = new Vector3 ();
-			//			intersect = Math3D.ClosestPointLineSegmentToLine ( out Line1ClosestPt, out Line2ClosestPt, startPosition, endPosition, rayP1, rayP2, out intersectDistance );
+				//			bool intersect;
+				//			Vector3 Line1ClosestPt = new Vector3 ();
+				//			Vector3 Line2ClosestPt = new Vector3 ();
+				//			intersect = Math3D.ClosestPointLineSegmentToLine ( out Line1ClosestPt, out Line2ClosestPt, startPosition, endPosition, rayP1, rayP2, out intersectDistance );
 
-			//			if ( intersect && intersectDistance < minDistance )
-			//			{
-			//				minDistance = intersectDistance;
-			//				returnedApicalSynapse = synapse;
-			//			}
-			//		}
+				//			if ( intersect && intersectDistance < minDistance )
+				//			{
+				//				minDistance = intersectDistance;
+				//				returnedApicalSynapse = synapse;
+				//			}
+				//		}
+				//}
 			//	}
 			//}
 

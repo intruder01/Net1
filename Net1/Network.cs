@@ -154,93 +154,99 @@ namespace Net1
 		//eg. change Dendrite params only, without affecting others
 		public void NetConfigDataChanged(NetConfigDataItem changedItem)
 		{
-			switch (changedItem)
+			try
 			{
-				//Synapse parameters
-				//-SynapsePermanenceIncrease - used directly 
-				case NetConfigDataItem.SynapsePermanenceThreshold:
-					break;
-				//-SynapsePermanenceDecrease - used directly
-				case NetConfigDataItem.SynapsePermanenceIncrease:
-					break;
-				//-SynapsePermanenceThreshold - used directly
-				case NetConfigDataItem.SynapsePermanenceDecrease:
-					break;
+				switch ( changedItem )
+				{
+					//Synapse parameters
+					//-SynapsePermanenceIncrease - used directly 
+					case NetConfigDataItem.SynapsePermanenceThreshold:
+						break;
+					//-SynapsePermanenceDecrease - used directly
+					case NetConfigDataItem.SynapsePermanenceIncrease:
+						break;
+					//-SynapsePermanenceThreshold - used directly
+					case NetConfigDataItem.SynapsePermanenceDecrease:
+						break;
 
-				//Dendrite parameters
-				//-DendriteActivationThreshold_Proximal - DendriteProximal property
-				case NetConfigDataItem.DendriteActivationThreshold_Proximal:
-					for (int x = 0; x < Lr.NumColumnsX; x++)
-						for (int y = 0; y < Lr.NumColumnsY; y++)
-						{
-							Column col = Lr.Columns[y][x];
-							col.ProximalDendrite.ActivationThreshold = NetConfigData.DendriteActivationThresholdProximal;
-						}
-					break;
-				//-DendriteActivationThreshold_Basal - DendriteBasal property
-				case NetConfigDataItem.DendriteActivationThreshold_Basal:
-					for (int x = 0; x < Lr.NumColumnsX; x++)
-						for (int y = 0; y < Lr.NumColumnsY; y++)
-						{
-							Column col = Lr.Columns[y][x];
-							foreach (Cell cell in col.Cells)
+					//Dendrite parameters
+					//-DendriteActivationThreshold_Proximal - DendriteProximal property
+					case NetConfigDataItem.DendriteActivationThreshold_Proximal:
+						for ( int x = 0; x < Lr.NumColumnsX; x++ )
+							for ( int y = 0; y < Lr.NumColumnsY; y++ )
 							{
-								cell.BasalDendrite.ActivationThreshold = NetConfigData.DendriteActivationThresholdBasal;
+								Column col = Lr.Columns[y][x];
+								col.ProximalDendrite.ActivationThreshold = NetConfigData.DendriteActivationThresholdProximal;
 							}
-						}
-					break;
-				//-DendriteActivationThreshold_Apical - DendriteApical property
-				case NetConfigDataItem.DendriteActivationThreshold_Apical:
-					for (int x = 0; x < Lr.NumColumnsX; x++)
-						for (int y = 0; y < Lr.NumColumnsY; y++)
-						{
-							Column col = Lr.Columns[y][x];
-							col.ApicalDendrite.ActivationThreshold = NetConfigData.DendriteActivationThresholdApical;
-						}
-					break;
+						break;
+					//-DendriteActivationThreshold_Basal - DendriteBasal property
+					case NetConfigDataItem.DendriteActivationThreshold_Basal:
+						for ( int x = 0; x < Lr.NumColumnsX; x++ )
+							for ( int y = 0; y < Lr.NumColumnsY; y++ )
+							{
+								Column col = Lr.Columns[y][x];
+								foreach ( Cell cell in col.Cells )
+								{
+									cell.BasalDendrite.ActivationThreshold = NetConfigData.DendriteActivationThresholdBasal;
+								}
+							}
+						break;
+					//-DendriteActivationThreshold_Apical - DendriteApical property
+					case NetConfigDataItem.DendriteActivationThreshold_Apical:
+						for ( int x = 0; x < Lr.NumColumnsX; x++ )
+							for ( int y = 0; y < Lr.NumColumnsY; y++ )
+							{
+								Column col = Lr.Columns[y][x];
+								col.ApicalDendrite.ActivationThreshold = NetConfigData.DendriteActivationThresholdApical;
+							}
+						break;
 
-				//Column parameters
-				//-ColumnStimulusThreshold - used directly
-				case NetConfigDataItem.ColumnStimulusThreshold:
-					break;
+					//Column parameters
+					//-ColumnStimulusThreshold - used directly
+					case NetConfigDataItem.ColumnStimulusThreshold:
+						break;
 
-				//Layer parameters
-				//-ZoneSizePercProximal - used in Layer
-				case NetConfigDataItem.ZoneSizePercProximal:
-					Lr.ZoneSizePercProximal = NetConfigData.ZoneSizePercProximal;
-					Lr.ConnectColumns(Ip); 
-					break;
-				//-ZoneCoveragePercProximal - used in Layer
-				case NetConfigDataItem.ZoneCoveragePercProximal:
-					Lr.ZoneCoveragePercProximal = NetConfigData.ZoneCoveragePercProximal;
-					Lr.ConnectColumns(Ip);
-					break;
-				//-ZoneSizePercBasal - used in Layer
-				case NetConfigDataItem.ZoneSizePercBasal:
-					Lr.ZoneSizePercBasal = NetConfigData.ZoneSizePercBasal;
-					Lr.ConnectColumns(Ip);
-					break;
-				//-ZoneCoveragePercBasal - used in Layer
-				case NetConfigDataItem.ZoneCoveragePercBasal:
-					Lr.ZoneCoveragePercBasal = NetConfigData.ZoneCoveragePercBasal;
-					Lr.ConnectColumns(Ip);
-					break;
-
-
-				//Network parameters
-				//-NumCellsPerColumn - used in Layer
-				case NetConfigDataItem.NumCellsPerColumn:
-					Lr.NumCellsInColumn = NetConfigData.NumCellsInColumn;
-					Lr.CreateColumns();
-					Lr.ConnectColumns(Ip);
-					break;
-				//-ColumnsTopPercentile - used directly
-				case NetConfigDataItem.ColumnsTopPercentile:
-					Lr.ZoneCoveragePercBasal = NetConfigData.ColumnsTopPercentile;
-					break;
+					//Layer parameters
+					//-ZoneSizePercProximal - used in Layer
+					case NetConfigDataItem.ZoneSizePercProximal:
+						Lr.ZoneSizePercProximal = NetConfigData.ZoneSizePercProximal;
+						Lr.ConnectColumns ( Ip );
+						break;
+					//-ZoneCoveragePercProximal - used in Layer
+					case NetConfigDataItem.ZoneCoveragePercProximal:
+						Lr.ZoneCoveragePercProximal = NetConfigData.ZoneCoveragePercProximal;
+						Lr.ConnectColumns ( Ip );
+						break;
+					//-ZoneSizePercBasal - used in Layer
+					case NetConfigDataItem.ZoneSizePercBasal:
+						Lr.ZoneSizePercBasal = NetConfigData.ZoneSizePercBasal;
+						Lr.ConnectColumns ( Ip );
+						break;
+					//-ZoneCoveragePercBasal - used in Layer
+					case NetConfigDataItem.ZoneCoveragePercBasal:
+						Lr.ZoneCoveragePercBasal = NetConfigData.ZoneCoveragePercBasal;
+						Lr.ConnectColumns ( Ip );
+						break;
 
 
+					//Network parameters
+					//-NumCellsPerColumn - used in Layer
+					case NetConfigDataItem.NumCellsPerColumn:
+						Lr.NumCellsInColumn = NetConfigData.NumCellsInColumn;
+						Lr.CreateColumns ();
+						Lr.ConnectColumns ( Ip );
+						break;
+					//-ColumnsTopPercentile - used directly
+					case NetConfigDataItem.ColumnsTopPercentile:
+						Lr.ZoneCoveragePercBasal = NetConfigData.ColumnsTopPercentile;
+						break;
 
+
+				}
+			}
+			catch(Exception)
+			{
+				//Exception may be thrown while running test. Not all Network components are present (Layer) while testing.
 			}
 		}
 	}

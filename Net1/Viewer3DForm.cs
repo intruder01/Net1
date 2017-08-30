@@ -169,21 +169,25 @@ namespace Net1
 		private void spatialLearningToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.ShowSpatialLearning = !this.ShowSpatialLearning;
+			( sender as ToolStripMenuItem ).Checked = this.ShowSpatialLearning;
 		}
 
 		private void temporalLearningToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.ShowTemporalLearning = !this.ShowTemporalLearning;
+			( sender as ToolStripMenuItem ).Checked = this.ShowTemporalLearning;
 		}
 
 		private void coordinateSystemToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.ShowCoordinateSystem = !this.ShowCoordinateSystem;
+			( sender as ToolStripMenuItem ).Checked = this.ShowCoordinateSystem;
 		}
 
 		private void activeColumnGridToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.ShowActiveColumnGrid = !this.ShowActiveColumnGrid;
+			( sender as ToolStripMenuItem ).Checked = this.ShowActiveColumnGrid;
 		}
 
 		private void regionPredictionsGridToolStripMenuItem_Click(object sender, EventArgs e)
@@ -191,6 +195,11 @@ namespace Net1
 			this.ShowPredictedGrid = !this.ShowPredictedGrid;
 			if (this.ShowPredictedGrid)
 				this.ShowPredictionReconstructiondGrid = false; //mutually exclusive since painted in the same corner
+			( sender as ToolStripMenuItem ).Checked = this.ShowPredictedGrid;
+
+			ToolStripDropDownButton main = (ToolStripDropDownButton)toolStrip1.Items["menuShow"];
+			ToolStripMenuItem sub = (ToolStripMenuItem)main.DropDownItems["regionPredictionReconstructionToolStripMenuItem"];
+			sub.Checked = this.ShowPredictionReconstructiondGrid;
 		}
 
 		private void regionPredictionReconstructionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -198,6 +207,12 @@ namespace Net1
 			this.ShowPredictionReconstructiondGrid = !this.ShowPredictionReconstructiondGrid;
 			if (this.ShowPredictionReconstructiondGrid)
 				this.ShowPredictedGrid = false; //mutually exclusive since painted in the same corner
+			( sender as ToolStripMenuItem ).Checked = this.ShowPredictionReconstructiondGrid;
+
+			ToolStripDropDownButton main = (ToolStripDropDownButton)toolStrip1.Items["menuShow"];
+			ToolStripMenuItem sub = (ToolStripMenuItem)main.DropDownItems["regionPredictionGridToolStripMenuItem"];
+			sub.Checked = this.ShowPredictedGrid;
+
 		}
 
 		private void showCorrectButton_Click(object sender, EventArgs e)

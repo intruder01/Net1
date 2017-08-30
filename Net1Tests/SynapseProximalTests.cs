@@ -75,7 +75,7 @@ namespace Net1.Tests
 
 				//active column
 				col.OverrideActive(true, 0);
-				syn.OverridePermanence(NetConfigData.SynapsePermanenceThreshold + NetConfigData.SynapsePermanenceIncrease);
+				syn.OverridePermanence(NetConfigData.SynapsePermanenceThreshold - NetConfigData.SynapsePermanenceIncrease);
 				syn.Update();
 				Assert.IsTrue(syn.IsActive);
 
@@ -85,11 +85,17 @@ namespace Net1.Tests
 				syn.Update();
 				Assert.IsFalse(syn.IsActive);	//false on first update
 				syn.Update();
-				Assert.IsTrue(syn.IsActive);	//true on second update
+				Assert.IsTrue(syn.IsActive);    //true on second update
+
+				//inactive column
+				col.OverrideActive ( false, 0 );
+				syn.OverridePermanence ( NetConfigData.SynapsePermanenceThreshold + 2 * NetConfigData.SynapsePermanenceIncrease );
+				syn.Update ();
+				Assert.IsFalse ( syn.IsActive );     
 
 				//column not active
 				col.OverrideActive(false, 0);
-				syn.OverridePermanence(NetConfigData.SynapsePermanenceThreshold + NetConfigData.SynapsePermanenceIncrease);
+				syn.OverridePermanence(NetConfigData.SynapsePermanenceThreshold);
 				syn.Update();
 				Assert.IsFalse(syn.IsActive);
 
@@ -113,7 +119,7 @@ namespace Net1.Tests
 				syn.OverridePermanence(rnd.NextDouble());
 				syn.Update();
 				if (syn.Permanence >= NetConfigData.SynapsePermanenceThreshold)
-					Assert.IsFalse(syn.IsActive);
+					Assert.IsFalse ( syn.IsActive);
 				else
 					Assert.IsFalse(syn.IsActive);
 

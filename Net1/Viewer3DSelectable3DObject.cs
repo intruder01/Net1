@@ -46,6 +46,7 @@ namespace Net1
 
 		#endregion Properties
 
+
 		#region Constructor
 
 		public Selectable3DObject ()
