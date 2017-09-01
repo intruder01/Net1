@@ -480,11 +480,6 @@ namespace Net1
 
 		#endregion
 
-		#region Methods
-
-		#endregion
-
-
 
 		#region Form
 
@@ -540,6 +535,7 @@ namespace Net1
 
 		#endregion
 
+
 		#region Graphics Device
 
 		public void ResetGraphicsDevice ()
@@ -555,9 +551,7 @@ namespace Net1
 
 		#endregion
 
-
-
-
+		
 		#region Content
 
 		protected override void LoadContent()
@@ -589,8 +583,8 @@ namespace Net1
 
 				this.dictionaryProximalSynapseColors = new Dictionary<HtmProximalSynapseColors, HtmColorInformation>();
 				this.dictionaryProximalSynapseColors.Add(HtmProximalSynapseColors.Default, new HtmColorInformation(Color.White, "Proximal synapse not active, not connected"));
-				this.dictionaryProximalSynapseColors.Add(HtmProximalSynapseColors.Active, new HtmColorInformation(Color.White, "Proximal synapse active"));
-				this.dictionaryProximalSynapseColors.Add(HtmProximalSynapseColors.ActiveConnected, new HtmColorInformation(Color.White, "Proximal synapse is active and connected"));
+				this.dictionaryProximalSynapseColors.Add(HtmProximalSynapseColors.Active, new HtmColorInformation(Color.Blue, "Proximal synapse active"));
+				this.dictionaryProximalSynapseColors.Add(HtmProximalSynapseColors.ActiveConnected, new HtmColorInformation(Color.Red, "Proximal synapse is active and connected"));
 
 				this.dictionaryDistalSynapseColors = new Dictionary<HtmDistalSynapseColors, HtmColorInformation>();
 				this.dictionaryDistalSynapseColors.Add(HtmDistalSynapseColors.Default, new HtmColorInformation(Color.White, "Basal synapse not active"));
@@ -634,9 +628,7 @@ namespace Net1
 
 		#endregion Content
 
-
-
-
+		
 
 		#region Draw
 
@@ -1014,7 +1006,7 @@ namespace Net1
 								worldScale = Matrix.CreateScale ( new Vector3 ( 0.5f, 0.5f, 0.5f ) );
 							}
 							
-							if(cell.IsDataGridSelected)
+							if( cell.IsDataGridSelected )
 							{
 								alphaValue = 1.0f;
 								worldScale = Matrix.CreateScale ( new Vector3 ( 0.5f, 0.5f, 0.5f ) );
@@ -1024,7 +1016,7 @@ namespace Net1
 								worldScale = Matrix.CreateScale ( new Vector3 ( 0.3f, 0.3f, 0.3f ) );
 							}
 
-							if(cell.IsPredicting)
+							if( cell.IsPredicting )
 							{
 								//Closed for region prediction visualization 
 								predictionCounter++;
@@ -1375,21 +1367,25 @@ namespace Net1
 					{
 						//this._connectionLine.SetUpVertices ( startPosition, endPosition, Color.Green );
 						{
-							alphaValue = 1.0f;
+							//alphaValue = 1.0f;
+							//alphaValue = (float)( 0.1f + Math.Max ( 0, proximalSynapse.Permanence - NetConfigData.SynapsePermanenceThreshold ) * 0.9f );
+							alphaValue = (float)( 0.1f + proximalSynapse.Permanence * 0.9f );
 							color = this.dictionaryProximalSynapseColors[HtmProximalSynapseColors.ActiveConnected].HtmColor;
 						}
 					}
 					else    //Active
 					{
 						//this._connectionLine.SetUpVertices ( startPosition, endPosition, Color.Orange );
-						alphaValue = 1.0f;
+						//alphaValue = 1.0f;
+						alphaValue = (float)( 0.1f + proximalSynapse.Permanence * 0.9f );
 						color = this.dictionaryProximalSynapseColors[HtmProximalSynapseColors.Active].HtmColor;
 					}
 				}
 				else    //Not active
 				{
 					//this._connectionLine.SetUpVertices ( startPosition, endPosition, Color.White );
-					alphaValue = 1.0f;
+					//alphaValue = 1.0f;
+					alphaValue = (float)( 0.1f + proximalSynapse.Permanence * 0.9f );
 					color = this.dictionaryProximalSynapseColors[HtmProximalSynapseColors.Default].HtmColor;
 				}
 
@@ -1426,12 +1422,14 @@ namespace Net1
 			{
 				if(basalSynapse.IsActive)
 				{
-					alphaValue = 1.0f;
+					//alphaValue = 1.0f;
+					alphaValue = (float)( 0.1f + basalSynapse.Permanence * 0.9f );
 					color = this.dictionaryDistalSynapseColors[HtmDistalSynapseColors.Active].HtmColor;
 				}
 				else    //Not active
 				{
-					alphaValue = 1.0f;
+					//alphaValue = 1.0f;
+					alphaValue = (float)( 0.1f + basalSynapse.Permanence * 0.9f );
 					color = this.dictionaryDistalSynapseColors[HtmDistalSynapseColors.Default].HtmColor;
 				}
 
@@ -1562,8 +1560,7 @@ namespace Net1
 
 		#endregion
 
-
-
+		
 		#region Update
 
 		protected override void Update (GameTime gameTime)
@@ -1623,8 +1620,7 @@ namespace Net1
 
 		#endregion
 
-
-
+		
 		#region Events
 
 		/// <summary>
@@ -1759,7 +1755,6 @@ namespace Net1
 		}
 
 		#endregion
-
 
 
 		#region Picking

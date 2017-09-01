@@ -105,7 +105,6 @@
 			this.txtTabPrmsSparsenessInput = new System.Windows.Forms.TextBox();
 			this.label19 = new System.Windows.Forms.Label();
 			this.splitter1 = new System.Windows.Forms.Splitter();
-			this.button1 = new System.Windows.Forms.Button();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -591,7 +590,7 @@
 			// 
 			this.tabProximalSynapses.Location = new System.Drawing.Point(4, 22);
 			this.tabProximalSynapses.Name = "tabProximalSynapses";
-			this.tabProximalSynapses.Size = new System.Drawing.Size(599, 306);
+			this.tabProximalSynapses.Size = new System.Drawing.Size(595, 303);
 			this.tabProximalSynapses.TabIndex = 4;
 			this.tabProximalSynapses.Text = "Prox";
 			this.tabProximalSynapses.UseVisualStyleBackColor = true;
@@ -601,7 +600,7 @@
 			// 
 			this.tabInputOverlap.Location = new System.Drawing.Point(4, 22);
 			this.tabInputOverlap.Name = "tabInputOverlap";
-			this.tabInputOverlap.Size = new System.Drawing.Size(599, 306);
+			this.tabInputOverlap.Size = new System.Drawing.Size(595, 303);
 			this.tabInputOverlap.TabIndex = 3;
 			this.tabInputOverlap.Text = "InpOverlap";
 			this.tabInputOverlap.UseVisualStyleBackColor = true;
@@ -611,7 +610,7 @@
 			// 
 			this.tabBoost.Location = new System.Drawing.Point(4, 22);
 			this.tabBoost.Name = "tabBoost";
-			this.tabBoost.Size = new System.Drawing.Size(599, 306);
+			this.tabBoost.Size = new System.Drawing.Size(595, 303);
 			this.tabBoost.TabIndex = 5;
 			this.tabBoost.Text = "Boost";
 			this.tabBoost.UseVisualStyleBackColor = true;
@@ -622,7 +621,7 @@
 			this.tabActivation.Location = new System.Drawing.Point(4, 22);
 			this.tabActivation.Name = "tabActivation";
 			this.tabActivation.Padding = new System.Windows.Forms.Padding(3);
-			this.tabActivation.Size = new System.Drawing.Size(599, 306);
+			this.tabActivation.Size = new System.Drawing.Size(595, 303);
 			this.tabActivation.TabIndex = 1;
 			this.tabActivation.Text = "Act";
 			this.tabActivation.UseVisualStyleBackColor = true;
@@ -633,7 +632,7 @@
 			this.tabPrediction.Location = new System.Drawing.Point(4, 22);
 			this.tabPrediction.Name = "tabPrediction";
 			this.tabPrediction.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPrediction.Size = new System.Drawing.Size(599, 306);
+			this.tabPrediction.Size = new System.Drawing.Size(595, 303);
 			this.tabPrediction.TabIndex = 2;
 			this.tabPrediction.Text = "Pred";
 			this.tabPrediction.UseVisualStyleBackColor = true;
@@ -750,7 +749,7 @@
 			this.tabEntropyChart.Location = new System.Drawing.Point(4, 22);
 			this.tabEntropyChart.Name = "tabEntropyChart";
 			this.tabEntropyChart.Padding = new System.Windows.Forms.Padding(3);
-			this.tabEntropyChart.Size = new System.Drawing.Size(596, 138);
+			this.tabEntropyChart.Size = new System.Drawing.Size(592, 137);
 			this.tabEntropyChart.TabIndex = 1;
 			this.tabEntropyChart.Text = "Entr";
 			this.tabEntropyChart.UseVisualStyleBackColor = true;
@@ -793,7 +792,7 @@
 			this.chartEntropy.Dock = System.Windows.Forms.DockStyle.Left;
 			this.chartEntropy.Location = new System.Drawing.Point(3, 3);
 			this.chartEntropy.Name = "chartEntropy";
-			this.chartEntropy.Size = new System.Drawing.Size(465, 132);
+			this.chartEntropy.Size = new System.Drawing.Size(465, 131);
 			this.chartEntropy.TabIndex = 1;
 			this.chartEntropy.Text = "cartesianChart1";
 			// 
@@ -826,7 +825,7 @@
 			this.tabParams.Controls.Add(this.label19);
 			this.tabParams.Location = new System.Drawing.Point(4, 22);
 			this.tabParams.Name = "tabParams";
-			this.tabParams.Size = new System.Drawing.Size(596, 138);
+			this.tabParams.Size = new System.Drawing.Size(592, 137);
 			this.tabParams.TabIndex = 2;
 			this.tabParams.Text = "Prms";
 			this.tabParams.UseVisualStyleBackColor = true;
@@ -900,22 +899,12 @@
 			this.splitter1.TabIndex = 0;
 			this.splitter1.TabStop = false;
 			// 
-			// button1
-			// 
-			this.button1.Location = new System.Drawing.Point(517, 0);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(62, 24);
-			this.button1.TabIndex = 2;
-			this.button1.Text = "button1";
-			this.button1.UseVisualStyleBackColor = true;
-			// 
 			// netForm1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Control;
 			this.ClientSize = new System.Drawing.Size(798, 532);
-			this.Controls.Add(this.button1);
 			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.menuStrip1);
 			this.Name = "netForm1";
@@ -1028,7 +1017,6 @@
 		private System.Windows.Forms.CheckBox cbRefreshArea2;
 		private System.Windows.Forms.TabPage tabInputPlane;
 		private System.Windows.Forms.Button btnViewer3D;
-		private System.Windows.Forms.Button button1;
 	}
 }
 

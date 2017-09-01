@@ -7,7 +7,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2FA6C5B4-436C-4560-81BF-32FA6887C40D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Net1</RootNamespace>
     <AssemblyName>Net1</AssemblyName>
@@ -42,7 +42,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>Net1.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Cell.cs" />
