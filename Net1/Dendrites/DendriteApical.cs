@@ -59,7 +59,7 @@ namespace Net1
 					CreateSynapse(col);
 			}
 
-			//remove synapses from end
+			//Live - remove random synapses
 			if (numNewSynapses < 0) //remove synapses
 			{
 				while (Synapses.Count > 0 && Synapses.Count > numSynapsesRequired)
@@ -67,6 +67,11 @@ namespace Net1
 			}
 			return true;
 #else //DEBUG
+			// remove existing synapses which are NOT in potential list (outside of zone)
+			List<Column> connectedList = GetConnectedColumnsList ();
+			List<Column> removeList = connectedList.Where ( x => !( potentialColumns.Contains ( x ) ) ).ToList ();
+			RemoveSpecificSynapses ( removeList );
+
 			//calculate how many new synapses to create
 			int numSynapsesRequired = (int)( potentialColumns.Count * zoneCoveragePerc );
 			int numNewSynapses = numSynapsesRequired - this.Synapses.Count;
@@ -78,23 +83,35 @@ namespace Net1
 				List<Column> alreadyConnected = GetConnectedColumnsList ();
 				potentialColumns.RemoveAll ( x => alreadyConnected.Contains ( x ) );
 
-				for ( int i = 0; i < Math.Max ( numNewSynapses, potentialColumns.Count ); i++ )
+				for ( int i = 0; i < Math.Min ( numNewSynapses, potentialColumns.Count ); i++ )
 				{
 					Column col = potentialColumns[i];
 					CreateSynapse ( col );
 				}
 			}
 
-			//remove synapses from end
+			//DEBUG - remove synapses from end
 			if ( numNewSynapses < 0 )
 			{
 				while ( Synapses.Count > 0 && Synapses.Count > numSynapsesRequired )
-					RemoveSynapseAt ( Global.rnd.Next ( 0, Synapses.Count ) );
+					RemoveSynapseAt ( Synapses.Count - 1 );
 			}
 			return true;
 
-
 #endif
+		}
+
+		protected void RemoveSpecificSynapses (List<Column> columnList)
+		{
+			foreach ( Column column in columnList )
+			{
+				for ( int i = 0; i < Synapses.Count; i++ )
+				{
+					SynapseApical syn = Synapses[i];
+					if ( syn.ColumnConnected == column )
+						Synapses.Remove ( syn );
+				}
+			}
 		}
 
 		//Make new Synaptic connection to a Cell

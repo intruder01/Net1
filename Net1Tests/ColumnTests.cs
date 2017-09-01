@@ -100,8 +100,8 @@ namespace Net1.Tests
 				{
 					foreach (Column col in colRow)
 					{
-						col.CreateProximalSynapses(lr, ip, double.MaxValue, 1);
-						col.CreateBasalSynapses(lr, double.MaxValue, 1);
+						col.CreateProximalSynapses(lr, ip, 1, 1);
+						col.CreateBasalSynapses(lr, 1, 1);
 						Assert.AreEqual(col.ProximalDendrite.Synapses.Count, ipNumColumns);
 
 						//need to implement following tests:
@@ -144,7 +144,7 @@ namespace Net1.Tests
 						Assert.IsFalse(col.IsPredicting);
 						Assert.AreEqual(col.InputOverlap, 1);
 						col.Update_Proximal();
-						List<Column> neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, double.MaxValue, true, 1);
+						List<Column> neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, 1, true, 1);
 						col.Update_Activation(neighbours, false);
 						col.Update_Basal();
 						Assert.IsTrue(col.IsActive);
@@ -157,7 +157,7 @@ namespace Net1.Tests
 						Assert.IsTrue(col.IsPredicting);
 						Assert.AreEqual(col.InputOverlap, 1);
 						col.Update_Proximal();
-						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, double.MaxValue, true, 1);
+						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, 1, true, 1);
 						col.Update_Activation(neighbours, false);
 						col.Update_Basal();
 						Assert.IsFalse(col.IsActive);
@@ -170,7 +170,7 @@ namespace Net1.Tests
 						Assert.IsTrue(col.IsPredicting);
 						Assert.AreEqual(col.InputOverlap, 1);
 						col.Update_Proximal();
-						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, double.MaxValue, true, 1);
+						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, 1, true, 1);
 						col.Update_Activation(neighbours, false);
 						col.Update_Basal();
 						Assert.IsTrue(col.IsActive);
@@ -186,7 +186,7 @@ namespace Net1.Tests
 						Assert.IsTrue(col.IsPredicting);
 						Assert.AreEqual(col.InputOverlap, 1);
 						col.Update_Proximal();
-						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, double.MaxValue, true, 1);
+						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, 1, true, 1);
 						col.Update_Activation(neighbours, false);
 						col.Update_Basal();
 						Assert.IsFalse(col.IsActive);
@@ -203,7 +203,7 @@ namespace Net1.Tests
 						Assert.IsTrue(col.IsPredicting);
 						Assert.AreEqual(col.InputOverlap, 1);
 						col.Update_Proximal();
-						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, double.MaxValue, true, 1);
+						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, 1, true, 1);
 						col.Update_Activation(neighbours, false);
 						col.Update_Basal();
 						Assert.IsTrue(col.IsActive);
@@ -225,7 +225,7 @@ namespace Net1.Tests
 						Assert.IsTrue(col.IsPredicting);
 						Assert.AreEqual(col.InputOverlap, 1);
 						col.Update_Proximal();
-						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, double.MaxValue, true, 1);
+						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, 1, true, 1);
 						col.Update_Activation(neighbours, false);
 						col.Update_Basal();
 						Assert.IsTrue(col.IsActive);
@@ -254,7 +254,7 @@ namespace Net1.Tests
 						Assert.AreEqual(col.InputOverlap, 0);
 
 						col.Update_Proximal();
-						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, double.MaxValue, true, 0);
+						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, 1, true, 0);
 						col.Update_Activation(neighbours, false);
 						col.Update_Basal();
 						Assert.IsFalse(col.IsActive);           //first update - false           
@@ -262,7 +262,7 @@ namespace Net1.Tests
 						Assert.AreEqual(col.InputOverlap, 0);
 
 						col.Update_Proximal();
-						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, double.MaxValue, true, 0);
+						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, 1, true, 0);
 						col.Update_Activation(neighbours, false);
 						col.Update_Basal();
 						Assert.IsTrue(col.IsActive);           //second update - true //*********************** FAILS HERE
@@ -289,7 +289,7 @@ namespace Net1.Tests
 						Assert.IsTrue(col.IsPredicting);
 						Assert.AreEqual(col.InputOverlap, 0);
 						col.Update_Proximal();
-						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, double.MaxValue, true, 0);
+						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, 1, true, 0);
 						col.Update_Activation(neighbours, false);
 						col.Update_Basal();
 						Assert.IsTrue(col.IsActive);
@@ -316,7 +316,7 @@ namespace Net1.Tests
 						Assert.IsTrue(col.IsPredicting);
 						Assert.AreEqual(col.InputOverlap, 0);
 						col.Update_Proximal();
-						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, double.MaxValue, true, 0);
+						neighbours = lr.GetColumnsFromCentre_WithThreshold(col.X, col.Y, 1, true, 0);
 						col.Update_Activation(neighbours, false);
 						col.Update_Basal();
 						Assert.IsTrue(col.IsActive);
@@ -524,8 +524,8 @@ namespace Net1.Tests
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
 						Column col = lr.Columns[y][x];
-						col.CreateProximalSynapses(lr, ip, double.MaxValue, 1);
-						col.CreateBasalSynapses(lr, double.MaxValue, 1);
+						col.CreateProximalSynapses(lr, ip, 1, 1);
+						col.CreateBasalSynapses(lr, 1, 1);
 						col.OverrideProximalPermanence(1.0);
 						col.OverrideBasalPermanences(1.0);
 
@@ -618,9 +618,7 @@ namespace Net1.Tests
 				lr.ZoneSizePercBasal = zoneSizePerc;
 				lr.ZoneCoveragePercBasal = zoneCoveragePerc;
 
-				double radius = ip.CalcRadius(zoneSizePerc);
-
-				List<Column> PotentialColumnsList = new List<Column>(); //list of columns within radius (potential connections)
+				List<Column> PotentialColumnsList = new List<Column>(); //list of columns within zone (potential connections)
 				List<Column> ConnectedColumnsList = new List<Column>(); //list of columns connected to (actual connections)
 
 				for (int y = 0; y < lr.NumColumnsY; y++)
@@ -634,10 +632,10 @@ namespace Net1.Tests
 						lr.MapPoint(column.X, column.Y, ip, out scaledX, out scaledY);
 
 						//calculate number of connections that will be created
-						PotentialColumnsList = ip.GetColumnsFromCentre(scaledX, scaledY, radius, true);
+						PotentialColumnsList = ip.GetColumnsFromCentre(scaledX, scaledY, zoneSizePerc, true);
 						int numToConnect = column.CalcNumProximalSynapsesToCreate(lr, ip, zoneSizePerc, zoneCoveragePerc);
 
-						column.CreateProximalSynapses(lr, ip, radius, zoneCoveragePerc);
+						column.CreateProximalSynapses(lr, ip, zoneSizePerc, zoneCoveragePerc);
 						int numConnected = column.CountProximalSynapses();
 
 						//build check-list of connected columns
@@ -649,7 +647,7 @@ namespace Net1.Tests
 							Assert.AreNotSame(column, cc); //check column not connected to itself (here column is stand-alone...)
 													
 							double distance = Algebra.EuclideanDistance2D(scaledX, scaledY, cc.X, cc.Y); 
-							Assert.IsTrue(distance <= radius);
+							Assert.IsTrue( PotentialColumnsList.Contains( cc ) );
 
 							//add unique connected columns to list to obtain 
 							//connected columns counter for each synapse

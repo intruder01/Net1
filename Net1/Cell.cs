@@ -69,14 +69,6 @@ namespace Net1
 			ColumnY = column.Y;
 		}
 
-		//Cell in Column/Layer
-		//Given cell location and Layer, make Basal synaptic connections
-		public Cell(Layer lr, int colX, int colY, int index) : this(index)
-		{
-			//List<Column> potentialColumns = lr.GetColumnsFromCentre(colX, colY, lr.CalcRadius(lr.zoneSizePercBasal), false);
-			//CreateBasalSynapses(potentialColumns, lr.zoneCoveragePercBasal);
-		}
-
 
 		#endregion
 

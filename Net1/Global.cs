@@ -18,7 +18,6 @@ namespace Net1
 		public static double COLUMN_BOOST_ADJ_FACTOR = 0.1;				//Column Boost adaptation speed 
 
 		//constants
-		public static double NEIGHBOURHOOD_RADIUS_MIN = 1;				// radius 1.0 = 5 columns, radius 1.42 = 9 columns
 		public static int DEFAULT_TIME_AVERAGE_PERIOD = 10;				// default time period for time average function
 		public static int OVERRIDE_DEPTH = 2;
 
@@ -37,7 +36,7 @@ namespace Net1
 
 		public static class Tests
 		{
-			public static int TestNumLoops = 100;		//Number of loops in Tests
+			public static int TestNumLoops = 10;		//Number of loops in Tests
 		}
 
 #endif

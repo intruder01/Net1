@@ -9,6 +9,7 @@ using static System.Math;
 using System.Collections;
 using Net1.RunningStats;
 using Net1.Stats;
+using System.IO;
 
 namespace Net1
 {
@@ -127,8 +128,6 @@ namespace Net1
 
 		public void Update()
 		{
-			double radius = CalcRadius(ZoneSizePercProximal);
-
 			//Update InputOverlap for all Columns
 			for (int x = 0; x < NumColumnsX; x++)
 				for (int y = 0; y < NumColumnsY; y++)
@@ -148,7 +147,7 @@ namespace Net1
 				{
 					Column col = Columns[y][x];
 					List<Column> neighbours = GetColumnsFromCentre_WithThreshold(
-						col.X, col.Y, radius, true, NetConfigData.ColumnStimulusThreshold);
+						col.X, col.Y, ZoneSizePercProximal, true, NetConfigData.ColumnStimulusThreshold);
 					col.Update_Activation(neighbours, InhibitionEnabled);
 				}
 
@@ -174,15 +173,13 @@ namespace Net1
 
 		public void AdjustBoostFactors()
 		{
-			double radius = CalcRadius(ZoneSizePercBasal);
-
 			for (int x = 0; x < NumColumnsX; x++)
 				for (int y = 0; y < NumColumnsY; y++)
 				{
 					Column col = Columns[y][x];
 
 					//get neighbourhood Columns
-					List<Column> colList = GetColumnsFromCentre(x, y, radius, true);
+					List<Column> colList = GetColumnsFromCentre(x, y, ZoneSizePercBasal, true);
 
 					//neighbourhood average input overlap
 					double InputOverlapSum = 0.0;
@@ -271,20 +268,17 @@ namespace Net1
 		{
 			if (ip != null)	//may be null during testing
 			{
-				//calculate radius from INPUT Layer/Plane diagonal dimension (to allow 1-dimensional layers) 
-				double radius = ip.CalcRadius(ZoneSizePercProximal);
-
 				for (int x = 0; x < NumColumnsX; x++)
 					for (int y = 0; y < NumColumnsY; y++)
 					{
 						Column col = Columns[y][x];
-						col.CreateProximalSynapses(this, ip, radius, ZoneCoveragePercProximal);
+						col.CreateProximalSynapses(this, ip, ZoneSizePercProximal, ZoneCoveragePercProximal);
 					}
 
 				//// Allocate input prediction reconstruction 
 				//PredictionReconstruction = new float[ip.NumColumnsX, ip.NumColumnsY]; //20170818-1
 			}
-			else	//imput layer empty, remove all Synapses
+			else	//input layer empty, remove all Synapses
 			{
 				for (int x = 0; x < NumColumnsX; x++)
 					for (int y = 0; y < NumColumnsY; y++)
@@ -299,45 +293,91 @@ namespace Net1
 		//receptive area is this Layer
 		private void connectBasal()
 		{
-			//calculate radius from THIS LAYER diagonal dimension (to allow 1-dimensional layers) 
-			double radius = this.CalcRadius(ZoneSizePercBasal);
-
 			for (int x = 0; x < NumColumnsX; x++)
 				for (int y = 0; y < NumColumnsY; y++)
 				{
 					Column col = Columns[y][x];
-					col.CreateBasalSynapses(this, radius, ZoneCoveragePercBasal);
+					col.CreateBasalSynapses(this, ZoneSizePercBasal, ZoneCoveragePercBasal);
 				}
 		}
 
-		//return list of Columns within given radius
-		//radius is euclidean distance from centre point.
+		//return list of Columns within given zone
 		//includeCenter - true includes the centre column (for connecting to InputPlane)
 		//				  false does NOT include the centre column (for connecting Columns in the same Layer)
-		public List<Column> GetColumnsFromCentre(int centreX, int centreY, double radius, bool includeCentre)
+		public List<Column> GetColumnsFromCentre(int centreX, int centreY, double zoneSizePerc, bool includeCentre)
 		{
+			//centreX = 0;
+			//centreY = 0;
+			//zoneSizePerc = 0.20;
+			//includeCentre = true;
+
+			//subtract 1 when centre not included
+			int numToCreate = (int)((double)NumColumnsX * (double)NumColumnsY * zoneSizePerc - ( includeCentre ? 0 : 1 ) );
+
+			//StreamWriter file = new StreamWriter ( "AAA log.txt", true );
+			//using ( file )
+			//{
+			//	file.WriteLine ( "GetColumnsFromCentre() includeCentre {0}", includeCentre );
+			//	file.WriteLine ( "   NumColumnsX  {0}    NumColumnsY   {1}", NumColumnsX, NumColumnsY );
+			//	file.WriteLine ( "   centreX	     {0}    centreY       {1}", centreX, centreY );
+			//	file.WriteLine ( "   zoneSizePerc {0:F2} numToCreate   {1}", zoneSizePerc, numToCreate );
+			//	file.Close ();
+			//}
+
+			//find rectangular zone dimensions that gives minimum that many elements
+			int zoneWidth = 0;
+			int zoneHeight = 0;
+			bool alternate = false;
 			List<Column> result = new List<Column>();
-			for (int x = 0; x < NumColumnsX; x++)
-				for (int y = 0; y < NumColumnsY; y++)
+						
+			//subtract 1 when centre not included
+			//this will result in a larger rect zone if necessary
+			while ( zoneWidth * zoneHeight - ( includeCentre ? 0 : 1 ) < numToCreate )
+			{
+				alternate = !alternate;
+				if ( alternate )
+				{
+					if ( zoneWidth < NumColumnsX )
+						zoneWidth++;
+				}
+				else
+				{
+					if ( zoneHeight < NumColumnsY )
+						zoneHeight++;
+				}
+			}
+
+			int zoneLeft = Math.Max ( Math.Min(NumColumnsX - zoneWidth, centreX - zoneWidth / 2), 0 );
+			int zoneRight = Math.Min ( zoneLeft + zoneWidth - 1, NumColumnsX - 1 );
+			int zoneTop = Math.Max(Math.Min(NumColumnsY - zoneHeight, centreY - zoneHeight / 2), 0);
+			int zoneBottom = Math.Min ( zoneTop + zoneHeight - 1, NumColumnsY - 1 );
+
+			for ( int x = zoneLeft; x <= zoneRight; x++ )
+			{
+				for ( int y = zoneTop; y <= zoneBottom; y++ )
 				{
 					Column col = Columns[y][x];
-					double distance = Algebra.EuclideanDistance2D(centreX, centreY, col.X, col.Y);
 
-					if (distance <= radius) 
-						if (distance > 0 || includeCentre == true) //include? centre Column
-							result.Add(col);
+					if ( includeCentre || !( col.X == centreX && col.Y == centreY ) ) //include? centre Column
+					{
+						result.Add ( col );
+					}
+
+					//exit once correct number created
+					if ( result.Count >= numToCreate )
+						return result;
 				}
+			}
 
 			return result;
 		}
 
-		//return list of Columns within given radius and InputOverlap above given threshold
-		//radius is euclidean distance from centre point.
+		//return list of Columns within given zone and InputOverlap above given threshold
 		//includeCenter - true includes the centre column (for connecting to InputPlane)
 		//				  false does NOT include the centre column (for connecting Columns in the same Layer)
-		public List<Column> GetColumnsFromCentre_WithThreshold(int centreX, int centreY, double radius, bool includeCentre, int threshold)
+		public List<Column> GetColumnsFromCentre_WithThreshold(int centreX, int centreY, double zoneSizePerc, bool includeCentre, int threshold)
 		{
-			List<Column> result = GetColumnsFromCentre(centreX, centreY, radius, includeCentre);
+			List<Column> result = GetColumnsFromCentre(centreX, centreY, zoneSizePerc, includeCentre);
 			result = (from col in result
 						where col.InputOverlap >= threshold
 						select col).ToList();
@@ -345,19 +385,6 @@ namespace Net1
 			return result;
 		}
 		
-		/// <summary>
-		/// Calculate radius based on Layer dimensions
-		/// </summary>
-		/// <param name="zoneSizePerc">0.0-1.0 percentage of layer larger dimension to use as radius.
-		/// -1 means use infinite radius</param>
-		/// <returns>int radius as % or Layer's larger dimension</returns>
-		public double CalcRadius(double zoneSizePerc)
-		{
-			double radius = Max(Global.NEIGHBOURHOOD_RADIUS_MIN, 
-							Sqrt(this.NumColumnsX * this.NumColumnsX + this.NumColumnsY * this.NumColumnsY) * zoneSizePerc);
-			return radius;
-		}
-
 		private void calcMapping(Layer lr, out double scaleX, out double scaleY)
 		{
 			//scale between this and another Layer

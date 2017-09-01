@@ -248,26 +248,24 @@ namespace Net1
 
 			return result;
 		}
-
 		
-
-		//create Proximal connections from this Column to Columns in Input Layer/Plane
-		public void CreateProximalSynapses(Layer lr, Layer ip, double radius, double zoneCoveragePerc)
+		//create Proximal connections from this Column to Columns in InputPlane
+		public void CreateProximalSynapses (Layer lr, Layer ip, double zoneSizePerc, double zoneCoveragePerc)
 		{
-			//scale layer locations	to InputPlane
-			lr.MapPoint(X, Y, ip, out int scaledX, out int scaledY);
+			//map layer locations	to InputPlane
+			lr.MapPoint ( X, Y, ip, out int scaledX, out int scaledY );
 
 			//create random list of columns to connect - Inclusive of centre
-			List<Column> potentialColumns = ip.GetColumnsFromCentre(scaledX, scaledY, radius, true);
+			List<Column> potentialColumns = ip.GetColumnsFromCentre ( scaledX, scaledY, zoneSizePerc, true );
 
-			ProximalDendrite.CreateSynapses(potentialColumns, zoneCoveragePerc);
+			ProximalDendrite.CreateSynapses ( potentialColumns, zoneCoveragePerc );
 		}
 
 		//create Basal connections from each Cell to other Columns in same Layer
-		public void CreateBasalSynapses(Layer lr, double radius, double zoneCoveragePerc)
+		public void CreateBasalSynapses(Layer lr, double zoneSizePerc, double zoneCoveragePerc)
 		{
 			//create random list of columns to connect - Exclusive of centre
-			List<Column> potentialColumns = lr.GetColumnsFromCentre(this.X, this.Y, radius, false);
+			List<Column> potentialColumns = lr.GetColumnsFromCentre(this.X, this.Y, zoneSizePerc, false);
 
 			foreach ( Cell cell in Cells )
 				cell.CreateBasalSynapses ( potentialColumns, zoneCoveragePerc );
@@ -291,14 +289,11 @@ namespace Net1
 
 		public int CalcNumProximalSynapsesToCreate(Layer lr, InputPlane ip, double zoneSizePerc, double zoneCoveragePerc)
 		{
-			//calculate number of connections that will be created - Proximal
-			double radius = ip.CalcRadius(zoneSizePerc);
-
 			//scale between InputPlane and Layer location positions
 			int scaledX, scaledY;
 			lr.MapPoint(X, Y, ip, out scaledX, out scaledY);
 
-			List<Column> potentialColumns = ip.GetColumnsFromCentre(scaledX, scaledY, radius, true);
+			List<Column> potentialColumns = ip.GetColumnsFromCentre(scaledX, scaledY, zoneSizePerc, true);
 			int numToConnect = (int)(potentialColumns.Count * zoneCoveragePerc);
 			
 			return numToConnect;
@@ -307,8 +302,7 @@ namespace Net1
 		//calculate number of Basal connections to create 
 		public int CalcNumBasalSynapsesToCreate(Layer lr, double zoneSizePerc, double zoneCoveragePerc)
 		{
-			double radius = lr.CalcRadius(zoneSizePerc);
-			List<Column> potentialColumns = lr.GetColumnsFromCentre(this.X, this.Y, radius, false);
+			List<Column> potentialColumns = lr.GetColumnsFromCentre(this.X, this.Y, zoneSizePerc, false);
 			int numToConnect = (int)(potentialColumns.Count * zoneCoveragePerc);
 			return numToConnect;
 		}

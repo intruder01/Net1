@@ -68,20 +68,28 @@ namespace Net1.Tests
 
 				//Layer
 				int layerColumnsX = rnd.Next(1, 10);
+				//layerColumnsX = 2;////////////////////
 				//minimum 2 columns neeed for testing basal updates
-				int layerColumnsY = layerColumnsX != 1 ? layerColumnsY = rnd.Next(1, 10) : layerColumnsY = rnd.Next(1, 10);
+				int layerColumnsY = layerColumnsX != 1 ? layerColumnsY = rnd.Next(1, 10) 
+														: layerColumnsY = rnd.Next(1, 10);
+				//layerColumnsY = 4;////////////////////
 				int layerNumCellsInColumn = rnd.Next(1, 5);
+				layerNumCellsInColumn = 2;
 				Layer lr = new Layer(layerColumnsX, layerColumnsY, layerNumCellsInColumn);
 
 				//InputPlane
 				int ipColumnsX = rnd.Next(1, 20);
+				//ipColumnsX = 1;///////////////////////
 				int ipColumnsY = rnd.Next(1, 20);
+				//ipColumnsY = 2;/////////////////////
 				InputPlane ip = new InputPlane(ipColumnsX, ipColumnsY);
 				ip.OverrideActive(true);
 
 				// create synapses
 				double zoneSizePerc = rnd.NextDouble();
+				//zoneSizePerc = 0.625;/////////////////////
 				double zoneCoveragePerc = rnd.NextDouble();
+				//zoneCoveragePerc = 0.600;///////////////////
 
 				lr.ZoneSizePercProximal = zoneSizePerc;
 				lr.ZoneCoveragePercProximal = zoneCoveragePerc;
@@ -602,303 +610,306 @@ namespace Net1.Tests
 			NetConfigData.SetDefaults();
 		}
 
-		[TestMethod()]
-		public void LayerOverrideTest()
+		[TestMethod ()]
+		public void LayerOverrideTest ()
 		{
 			Random rnd = Global.rnd;
 
-			for (int testNum = 0; testNum < Global.Tests.TestNumLoops; testNum++)
+			for ( int testNum = 0; testNum < Global.Tests.TestNumLoops; testNum++ )
 			{
 				//Layer
-				int numColumnsX = rnd.Next(1, 10);
-				int numColumnsY = rnd.Next(1, 10);
-				int numCellsInCol = rnd.Next(1, 5);
+				int numColumnsX = rnd.Next ( 1, 10 );
+				int numColumnsY = rnd.Next ( 1, 10 );
+				int numCellsInCol = rnd.Next ( 1, 5 );
 
-				Layer lr = new Layer(numColumnsX, numColumnsY, numCellsInCol);
-				Assert.IsNotNull(lr.Columns);
-				Assert.AreEqual(lr.Columns.Count, numColumnsY);
-				Assert.AreEqual(lr.Columns[0].Count, numColumnsX);
+				Layer lr = new Layer ( numColumnsX, numColumnsY, numCellsInCol );
+				Assert.IsNotNull ( lr.Columns );
+				Assert.AreEqual ( lr.Columns.Count, numColumnsY );
+				Assert.AreEqual ( lr.Columns[0].Count, numColumnsX );
 
 				//InputPlane
-				int ipNumColumnsX = rnd.Next(1, 20);
-				int ipNumColumnsY = rnd.Next(1, 20);
-				InputPlane ip = new InputPlane(ipNumColumnsX, ipNumColumnsY);
-				ip.OverrideActive(true);
-
+				int ipNumColumnsX = rnd.Next ( 1, 20 );
+				int ipNumColumnsY = rnd.Next ( 1, 20 );
+				InputPlane ip = new InputPlane ( ipNumColumnsX, ipNumColumnsY );
+				ip.OverrideActive ( true );
+				
 				//create synapses
-				//lr.ConnectProximal(ip, 1, 1);
+				//lr.ConnectProximal(ip);
 				//lr.ConnectBasal(1, 1);
-				lr.ConnectColumns(ip);
+				lr.ConnectColumns ( ip );
 
 				//with Permanence = 1.0
-				lr.OverrideBasalPermanences(1.0);
-				lr.OverrideProximalPermanences(1.0);
+				lr.OverrideBasalPermanences ( 1.0 );
+				lr.OverrideProximalPermanences ( 1.0 );
 
-				lr.Override(false, false);
-				foreach (List<Column> colRow in lr.Columns)
-					foreach (Column column in colRow)
+				lr.Override ( false, false );
+				foreach ( List<Column> colRow in lr.Columns )
+					foreach ( Column column in colRow )
 					{
-						Assert.IsFalse(column.IsActive);
+						Assert.IsFalse ( column.IsActive );
 						//test deep override - active
-						Assert.IsFalse(column.ProximalDendrite.IsActive);
-						foreach (SynapseProximal syn in column.ProximalDendrite.Synapses)
+						Assert.IsFalse ( column.ProximalDendrite.IsActive );
+						foreach ( SynapseProximal syn in column.ProximalDendrite.Synapses )
 						{
-							Assert.IsFalse(syn.IsActive);
-							Assert.IsTrue(syn.Permanence == 0.0);
+							Assert.IsFalse ( syn.IsActive );
+							Assert.IsTrue ( syn.Permanence == 0.0 );
 						}
-						Assert.IsFalse(column.IsPredicting);
+						Assert.IsFalse ( column.IsPredicting );
 						//test deep override
-						foreach (Cell cell in column.Cells)
+						foreach ( Cell cell in column.Cells )
 						{
 
-							Assert.IsFalse(cell.BasalDendrite.IsActive);
-							foreach (SynapseBasal syn in cell.BasalDendrite.Synapses)
+							Assert.IsFalse ( cell.BasalDendrite.IsActive );
+							foreach ( SynapseBasal syn in cell.BasalDendrite.Synapses )
 							{
-								Assert.IsFalse(syn.IsActive);
-								Assert.IsTrue(syn.Permanence == 0.0);
+								Assert.IsFalse ( syn.IsActive );
+								Assert.IsTrue ( syn.Permanence == 0.0 );
 							}
 						}
 					}
 
-				lr.Override(false, true);
-				foreach (List<Column> colRow in lr.Columns)
-					foreach (Column column in colRow)
+				lr.Override ( false, true );
+				foreach ( List<Column> colRow in lr.Columns )
+					foreach ( Column column in colRow )
 					{
-						Assert.IsFalse(column.IsActive);
+						Assert.IsFalse ( column.IsActive );
 						//test deep override - active
-						Assert.IsFalse(column.ProximalDendrite.IsActive);
-						foreach (SynapseProximal syn in column.ProximalDendrite.Synapses)
+						Assert.IsFalse ( column.ProximalDendrite.IsActive );
+						foreach ( SynapseProximal syn in column.ProximalDendrite.Synapses )
 						{
-							Assert.IsFalse(syn.IsActive);
-							Assert.IsTrue(syn.Permanence == 0.0);
+							Assert.IsFalse ( syn.IsActive );
+							Assert.IsTrue ( syn.Permanence == 0.0 );
 						}
-						Assert.IsTrue(column.IsPredicting);
+						Assert.IsTrue ( column.IsPredicting );
 						//test deep override
-						foreach (Cell cell in column.Cells)
+						foreach ( Cell cell in column.Cells )
 						{
 
-							Assert.IsTrue(cell.BasalDendrite.IsActive);
-							foreach (SynapseBasal syn in cell.BasalDendrite.Synapses)
+							Assert.IsTrue ( cell.BasalDendrite.IsActive );
+							foreach ( SynapseBasal syn in cell.BasalDendrite.Synapses )
 							{
-								Assert.IsTrue(syn.IsActive);
-								Assert.IsTrue(syn.Permanence == 1.0);
+								Assert.IsTrue ( syn.IsActive );
+								Assert.IsTrue ( syn.Permanence == 1.0 );
 							}
 						}
 					}
 
-				lr.Override(true, false);
-				foreach (List<Column> colRow in lr.Columns)
-					foreach (Column column in colRow)
+				lr.Override ( true, false );
+				foreach ( List<Column> colRow in lr.Columns )
+					foreach ( Column column in colRow )
 					{
-						Assert.IsTrue(column.IsActive);
+						Assert.IsTrue ( column.IsActive );
 						//test deep override - active
-						Assert.IsTrue(column.ProximalDendrite.IsActive);
-						foreach (SynapseProximal syn in column.ProximalDendrite.Synapses)
+						Assert.IsTrue ( column.ProximalDendrite.IsActive );
+						foreach ( SynapseProximal syn in column.ProximalDendrite.Synapses )
 						{
-							Assert.IsTrue(syn.IsActive);
-							Assert.IsTrue(syn.Permanence == 1.0);
+							Assert.IsTrue ( syn.IsActive );
+							Assert.IsTrue ( syn.Permanence == 1.0 );
 						}
-						Assert.IsFalse(column.IsPredicting);
+						Assert.IsFalse ( column.IsPredicting );
 						//test deep override
-						foreach (Cell cell in column.Cells)
+						foreach ( Cell cell in column.Cells )
 						{
 
-							Assert.IsFalse(cell.BasalDendrite.IsActive);
-							foreach (SynapseBasal syn in cell.BasalDendrite.Synapses)
+							Assert.IsFalse ( cell.BasalDendrite.IsActive );
+							foreach ( SynapseBasal syn in cell.BasalDendrite.Synapses )
 							{
-								Assert.IsFalse(syn.IsActive);
-								Assert.IsTrue(syn.Permanence == 0.0);
+								Assert.IsFalse ( syn.IsActive );
+								Assert.IsTrue ( syn.Permanence == 0.0 );
 							}
 						}
 					}
 
-				lr.Override(true, true);
-				foreach (List<Column> colRow in lr.Columns)
-					foreach (Column column in colRow)
+				lr.Override ( true, true );
+				foreach ( List<Column> colRow in lr.Columns )
+					foreach ( Column column in colRow )
 					{
-						Assert.IsTrue(column.IsActive);
+						Assert.IsTrue ( column.IsActive );
 						//test deep override - active
-						Assert.IsTrue(column.ProximalDendrite.IsActive);
-						foreach (SynapseProximal syn in column.ProximalDendrite.Synapses)
+						Assert.IsTrue ( column.ProximalDendrite.IsActive );
+						foreach ( SynapseProximal syn in column.ProximalDendrite.Synapses )
 						{
-							Assert.IsTrue(syn.IsActive);
-							Assert.IsTrue(syn.Permanence == 1.0);
+							Assert.IsTrue ( syn.IsActive );
+							Assert.IsTrue ( syn.Permanence == 1.0 );
 						}
-						Assert.IsTrue(column.IsPredicting);
+						Assert.IsTrue ( column.IsPredicting );
 						//test deep override
-						foreach (Cell cell in column.Cells)
+						foreach ( Cell cell in column.Cells )
 						{
 
-							Assert.IsTrue(cell.BasalDendrite.IsActive);
-							foreach (SynapseBasal syn in cell.BasalDendrite.Synapses)
+							Assert.IsTrue ( cell.BasalDendrite.IsActive );
+							foreach ( SynapseBasal syn in cell.BasalDendrite.Synapses )
 							{
-								Assert.IsTrue(syn.IsActive);
-								Assert.IsTrue(syn.Permanence == 1.0);
+								Assert.IsTrue ( syn.IsActive );
+								Assert.IsTrue ( syn.Permanence == 1.0 );
 							}
 						}
 					}
 
-				lr.Override(false, false);
-				foreach (List<Column> colRow in lr.Columns)
-					foreach (Column column in colRow)
+				lr.Override ( false, false );
+				foreach ( List<Column> colRow in lr.Columns )
+					foreach ( Column column in colRow )
 					{
-						Assert.IsFalse(column.IsActive);
+						Assert.IsFalse ( column.IsActive );
 						//test deep override - active
-						Assert.IsFalse(column.ProximalDendrite.IsActive);
-						foreach (SynapseProximal syn in column.ProximalDendrite.Synapses)
+						Assert.IsFalse ( column.ProximalDendrite.IsActive );
+						foreach ( SynapseProximal syn in column.ProximalDendrite.Synapses )
 						{
-							Assert.IsFalse(syn.IsActive);
-							Assert.IsTrue(syn.Permanence == 0.0);
+							Assert.IsFalse ( syn.IsActive );
+							Assert.IsTrue ( syn.Permanence == 0.0 );
 						}
-						Assert.IsFalse(column.IsPredicting);
+						Assert.IsFalse ( column.IsPredicting );
 						//test deep override
-						foreach (Cell cell in column.Cells)
+						foreach ( Cell cell in column.Cells )
 						{
 
-							Assert.IsFalse(cell.BasalDendrite.IsActive);
-							foreach (SynapseBasal syn in cell.BasalDendrite.Synapses)
+							Assert.IsFalse ( cell.BasalDendrite.IsActive );
+							foreach ( SynapseBasal syn in cell.BasalDendrite.Synapses )
 							{
-								Assert.IsFalse(syn.IsActive);
-								Assert.IsTrue(syn.Permanence == 0.0);
+								Assert.IsFalse ( syn.IsActive );
+								Assert.IsTrue ( syn.Permanence == 0.0 );
 							}
 						}
 					}
 
 				//with Permanence = 0.0
-				lr.OverrideBasalPermanences(0.0);
-				lr.OverrideProximalPermanences(0.0);
+				lr.OverrideBasalPermanences ( 0.0 );
+				lr.OverrideProximalPermanences ( 0.0 );
 
-				lr.Override(false, false);
-				foreach (List<Column> colRow in lr.Columns)
-					foreach (Column column in colRow)
+				lr.Override ( false, false );
+				foreach ( List<Column> colRow in lr.Columns )
+					foreach ( Column column in colRow )
 					{
-						Assert.IsFalse(column.IsActive);
+						Assert.IsFalse ( column.IsActive );
 						//test deep override - active
-						Assert.IsFalse(column.ProximalDendrite.IsActive);
-						foreach (SynapseProximal syn in column.ProximalDendrite.Synapses)
+						Assert.IsFalse ( column.ProximalDendrite.IsActive );
+						foreach ( SynapseProximal syn in column.ProximalDendrite.Synapses )
 						{
-							Assert.IsFalse(syn.IsActive);
-							Assert.IsTrue(syn.Permanence == 0.0);
+							Assert.IsFalse ( syn.IsActive );
+							Assert.IsTrue ( syn.Permanence == 0.0 );
 						}
-						Assert.IsFalse(column.IsPredicting);
+						Assert.IsFalse ( column.IsPredicting );
 						//test deep override
-						foreach (Cell cell in column.Cells)
+						foreach ( Cell cell in column.Cells )
 						{
 
-							Assert.IsFalse(cell.BasalDendrite.IsActive);
-							foreach (SynapseBasal syn in cell.BasalDendrite.Synapses)
+							Assert.IsFalse ( cell.BasalDendrite.IsActive );
+							foreach ( SynapseBasal syn in cell.BasalDendrite.Synapses )
 							{
-								Assert.IsFalse(syn.IsActive);
-								Assert.IsTrue(syn.Permanence == 0.0);
+								Assert.IsFalse ( syn.IsActive );
+								Assert.IsTrue ( syn.Permanence == 0.0 );
 							}
 						}
 					}
 
-				lr.Override(false, true);
-				foreach (List<Column> colRow in lr.Columns)
-					foreach (Column column in colRow)
+				lr.Override ( false, true );
+				foreach ( List<Column> colRow in lr.Columns )
+					foreach ( Column column in colRow )
 					{
-						Assert.IsFalse(column.IsActive);
+						Assert.IsFalse ( column.IsActive );
 						//test deep override - active
-						Assert.IsFalse(column.ProximalDendrite.IsActive);
-						foreach (SynapseProximal syn in column.ProximalDendrite.Synapses)
+						Assert.IsFalse ( column.ProximalDendrite.IsActive );
+						foreach ( SynapseProximal syn in column.ProximalDendrite.Synapses )
 						{
-							Assert.IsFalse(syn.IsActive);
-							Assert.IsTrue(syn.Permanence == 0.0);
+							Assert.IsFalse ( syn.IsActive );
+							Assert.IsTrue ( syn.Permanence == 0.0 );
 						}
-						Assert.IsTrue(column.IsPredicting);
+						Assert.IsTrue ( column.IsPredicting );
 						//test deep override
-						foreach (Cell cell in column.Cells)
+						foreach ( Cell cell in column.Cells )
 						{
 
-							Assert.IsTrue(cell.BasalDendrite.IsActive);
-							foreach (SynapseBasal syn in cell.BasalDendrite.Synapses)
+							Assert.IsTrue ( cell.BasalDendrite.IsActive );
+							foreach ( SynapseBasal syn in cell.BasalDendrite.Synapses )
 							{
-								Assert.IsTrue(syn.IsActive);
-								Assert.IsTrue(syn.Permanence == 1.0);
+								Assert.IsTrue ( syn.IsActive );
+								Assert.IsTrue ( syn.Permanence == 1.0 );
 							}
 						}
 					}
 
-				lr.Override(true, false);
-				foreach (List<Column> colRow in lr.Columns)
-					foreach (Column column in colRow)
+				lr.Override ( true, false );
+				foreach ( List<Column> colRow in lr.Columns )
+					foreach ( Column column in colRow )
 					{
-						Assert.IsTrue(column.IsActive);
+						Assert.IsTrue ( column.IsActive );
 						//test deep override - active
-						Assert.IsTrue(column.ProximalDendrite.IsActive);
-						foreach (SynapseProximal syn in column.ProximalDendrite.Synapses)
+						Assert.IsTrue ( column.ProximalDendrite.IsActive );
+						foreach ( SynapseProximal syn in column.ProximalDendrite.Synapses )
 						{
-							Assert.IsTrue(syn.IsActive);
-							Assert.IsTrue(syn.Permanence == 1.0);
+							Assert.IsTrue ( syn.IsActive );
+							Assert.IsTrue ( syn.Permanence == 1.0 );
 						}
-						Assert.IsFalse(column.IsPredicting);
+						Assert.IsFalse ( column.IsPredicting );
 						//test deep override
-						foreach (Cell cell in column.Cells)
+						foreach ( Cell cell in column.Cells )
 						{
 
-							Assert.IsFalse(cell.BasalDendrite.IsActive);
-							foreach (SynapseBasal syn in cell.BasalDendrite.Synapses)
+							Assert.IsFalse ( cell.BasalDendrite.IsActive );
+							foreach ( SynapseBasal syn in cell.BasalDendrite.Synapses )
 							{
-								Assert.IsFalse(syn.IsActive);
-								Assert.IsTrue(syn.Permanence == 0.0);
+								Assert.IsFalse ( syn.IsActive );
+								Assert.IsTrue ( syn.Permanence == 0.0 );
 							}
 						}
 					}
 
-				lr.Override(true, true);
-				foreach (List<Column> colRow in lr.Columns)
-					foreach (Column column in colRow)
+				lr.Override ( true, true );
+				foreach ( List<Column> colRow in lr.Columns )
+					foreach ( Column column in colRow )
 					{
-						Assert.IsTrue(column.IsActive);
+						Assert.IsTrue ( column.IsActive );
 						//test deep override - active
-						Assert.IsTrue(column.ProximalDendrite.IsActive);
-						foreach (SynapseProximal syn in column.ProximalDendrite.Synapses)
+						Assert.IsTrue ( column.ProximalDendrite.IsActive );
+						foreach ( SynapseProximal syn in column.ProximalDendrite.Synapses )
 						{
-							Assert.IsTrue(syn.IsActive);
-							Assert.IsTrue(syn.Permanence == 1.0);
+							Assert.IsTrue ( syn.IsActive );
+							Assert.IsTrue ( syn.Permanence == 1.0 );
 						}
-						Assert.IsTrue(column.IsPredicting);
+						Assert.IsTrue ( column.IsPredicting );
 						//test deep override
-						foreach (Cell cell in column.Cells)
+						foreach ( Cell cell in column.Cells )
 						{
 
-							Assert.IsTrue(cell.BasalDendrite.IsActive);
-							foreach (SynapseBasal syn in cell.BasalDendrite.Synapses)
+							Assert.IsTrue ( cell.BasalDendrite.IsActive );
+							foreach ( SynapseBasal syn in cell.BasalDendrite.Synapses )
 							{
-								Assert.IsTrue(syn.IsActive);
-								Assert.IsTrue(syn.Permanence == 1.0);
+								Assert.IsTrue ( syn.IsActive );
+								Assert.IsTrue ( syn.Permanence == 1.0 );
 							}
 						}
 					}
 
-				lr.Override(false, false);
-				foreach (List<Column> colRow in lr.Columns)
-					foreach (Column column in colRow)
+				lr.Override ( false, false );
+				foreach ( List<Column> colRow in lr.Columns )
+					foreach ( Column column in colRow )
 					{
-						Assert.IsFalse(column.IsActive);
+						Assert.IsFalse ( column.IsActive );
 						//test deep override - active
-						Assert.IsFalse(column.ProximalDendrite.IsActive);
-						foreach (SynapseProximal syn in column.ProximalDendrite.Synapses)
+						Assert.IsFalse ( column.ProximalDendrite.IsActive );
+						foreach ( SynapseProximal syn in column.ProximalDendrite.Synapses )
 						{
-							Assert.IsFalse(syn.IsActive);
-							Assert.IsTrue(syn.Permanence == 0.0);
+							Assert.IsFalse ( syn.IsActive );
+							Assert.IsTrue ( syn.Permanence == 0.0 );
 						}
-						Assert.IsFalse(column.IsPredicting);
+						Assert.IsFalse ( column.IsPredicting );
 						//test deep override
-						foreach (Cell cell in column.Cells)
+						foreach ( Cell cell in column.Cells )
 						{
 
-							Assert.IsFalse(cell.BasalDendrite.IsActive);
-							foreach (SynapseBasal syn in cell.BasalDendrite.Synapses)
+							Assert.IsFalse ( cell.BasalDendrite.IsActive );
+							foreach ( SynapseBasal syn in cell.BasalDendrite.Synapses )
 							{
-								Assert.IsFalse(syn.IsActive);
-								Assert.IsTrue(syn.Permanence == 0.0);
+								Assert.IsFalse ( syn.IsActive );
+								Assert.IsTrue ( syn.Permanence == 0.0 );
 							}
 						}
 					}
 			}
 		}
+
+
+
 
 		[TestMethod()]
 		public void LayerOverrideActiveTest()
@@ -1299,8 +1310,8 @@ namespace Net1.Tests
 			for (int testNum = 0; testNum < Global.Tests.TestNumLoops; testNum++)
 			{
 				//Layer
-				int layerColumnsX = rnd.Next(1, 10);
-				int layerColumnsY = rnd.Next(1, 10);
+				int layerColumnsX = rnd.Next(1, 20);
+				int layerColumnsY = rnd.Next(1, 20);
 				int layerNumCellsInColumn = rnd.Next(1, 10);
 				//layerColumnsX = 1;
 				//layerColumnsY = 1;
@@ -1361,28 +1372,65 @@ namespace Net1.Tests
 			for (int testNum = 0; testNum < Global.Tests.TestNumLoops; testNum++)
 			{
 				//Layer
-				int layerColumnsX = rnd.Next(1, 50);
-				int layerColumnsY = rnd.Next(1, 50);
+				int layerColumnsX = rnd.Next(1, 20);
+				int layerColumnsY = rnd.Next(1, 20);
 				int layerNumCellsInColumn = rnd.Next(1, 10);
 				Layer lr = new Layer(layerColumnsX, layerColumnsY, layerNumCellsInColumn);
 				
-				//random radius
+				//random zone size
 				double zoneSizePerc = rnd.NextDouble();
 				lr.ZoneSizePercProximal = zoneSizePerc;
 				lr.ZoneSizePercBasal = zoneSizePerc;
 
-				double radius = lr.CalcRadius(zoneSizePerc);
+				bool includeCentre = true;
 
 				for (int y = 0; y < lr.NumColumnsY; y++)
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						List<Column> columns = lr.GetColumnsFromCentre(x, y, radius, true);
+						List<Column> columns = lr.GetColumnsFromCentre(x, y, zoneSizePerc, includeCentre );
+						
+						//********************************************************************
+						//this logic just mimicks the function code
+						//for test - run it here and compare results
+						int numToCreate = (int)( (double)lr.NumColumnsX * (double)lr.NumColumnsY * zoneSizePerc - ( includeCentre ? 0 : 1 ) );
 
+						//find rectangular zone dimensions that gives minimum that many elements
+						int zoneWidth = 0;
+						int zoneHeight = 0;
+						bool alternate = false;
+
+						//subtract 1 when centre not included
+						//this will result in a larger rect zone if necessary
+						//includeCentre = true in this test
+						while ( zoneWidth * zoneHeight - ( includeCentre ? 0 : 1 ) < numToCreate )
+						{
+							alternate = !alternate;
+							if ( alternate )
+							{
+								if ( zoneWidth < lr.NumColumnsX )
+									zoneWidth++;
+							}
+							else
+							{
+								if ( zoneHeight < lr.NumColumnsY )
+									zoneHeight++;
+							}
+						}
+
+						int zoneLeft = Math.Max ( Math.Min ( lr.NumColumnsX - zoneWidth, x - zoneWidth / 2 ), 0 );
+						int zoneRight = Math.Min ( zoneLeft + zoneWidth - 1, lr.NumColumnsX - 1 );
+						int zoneTop = Math.Max ( Math.Min ( lr.NumColumnsY - zoneHeight, y - zoneHeight / 2 ), 0 );
+						int zoneBottom = Math.Min ( zoneTop + zoneHeight - 1, lr.NumColumnsY - 1 );
+						//**********************************************************************
+
+						
 						foreach (Column col in columns)
 						{
-							double distance = Algebra.EuclideanDistance2D(x, y, col.X, col.Y);
-							Assert.IsTrue(distance <= radius);
+							Assert.IsTrue ( col.X >= zoneLeft );
+							Assert.IsTrue ( col.X <= zoneRight );
+							Assert.IsTrue ( col.Y >= zoneTop );
+							Assert.IsTrue ( col.Y <= zoneBottom );
 						}
 					}
 				}
@@ -1405,12 +1453,10 @@ namespace Net1.Tests
 				Layer lr = new Layer(layerColumnsX, layerColumnsY, layerNumCellsInColumn);
 
 
-				//random radius
+				//random zone
 				double zoneSizePerc = rnd.NextDouble();
 				lr.ZoneSizePercProximal = zoneSizePerc;
 				lr.ZoneSizePercBasal = zoneSizePerc;
-
-				double radius = lr.CalcRadius(zoneSizePerc);
 
 				//set InputOverlap > threshold
 				for (int y = 0; y < lr.NumColumnsY; y++)
@@ -1427,8 +1473,8 @@ namespace Net1.Tests
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						List<Column> columnsAll = lr.GetColumnsFromCentre(x, y, radius, true);
-						List<Column> columnsThreshold = lr.GetColumnsFromCentre_WithThreshold(x, y, radius, true, stimulusThreshold);
+						List<Column> columnsAll = lr.GetColumnsFromCentre(x, y, zoneSizePerc, true);
+						List<Column> columnsThreshold = lr.GetColumnsFromCentre_WithThreshold(x, y, zoneSizePerc, true, stimulusThreshold);
 
 						ctr = 0;
 						foreach (Column col in columnsThreshold)
@@ -1457,8 +1503,8 @@ namespace Net1.Tests
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						List<Column> columnsAll = lr.GetColumnsFromCentre(x, y, radius, true);
-						List<Column> columnsThreshold = lr.GetColumnsFromCentre_WithThreshold(x, y, radius, true, stimulusThreshold);
+						List<Column> columnsAll = lr.GetColumnsFromCentre(x, y, zoneSizePerc, true);
+						List<Column> columnsThreshold = lr.GetColumnsFromCentre_WithThreshold(x, y, zoneSizePerc, true, stimulusThreshold);
 
 						ctr = 0;
 						foreach (Column col in columnsThreshold)
@@ -1487,8 +1533,8 @@ namespace Net1.Tests
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						List<Column> columnsAll = lr.GetColumnsFromCentre(x, y, radius, true);
-						List<Column> columnsThreshold = lr.GetColumnsFromCentre_WithThreshold(x, y, radius, true, stimulusThreshold);
+						List<Column> columnsAll = lr.GetColumnsFromCentre(x, y, zoneSizePerc, true);
+						List<Column> columnsThreshold = lr.GetColumnsFromCentre_WithThreshold(x, y, zoneSizePerc, true, stimulusThreshold);
 
 						ctr = 0;
 						foreach (Column col in columnsAll)
@@ -1512,30 +1558,68 @@ namespace Net1.Tests
 			for (int testNum = 0; testNum < Global.Tests.TestNumLoops; testNum++)
 			{
 				//Layer
-				int layerColumnsX = rnd.Next(1, 50);
-				int layerColumnsY = rnd.Next(1, 50);
+				int layerColumnsX = rnd.Next(1, 20);
+				int layerColumnsY = rnd.Next(1, 20);
 				int layerNumCellsInColumn = rnd.Next(1, 10);
 				Layer lr = new Layer(layerColumnsX, layerColumnsY, layerNumCellsInColumn);
 
-				//random radius
+				//random zone
 				double zoneSizePerc = rnd.NextDouble();
 				lr.ZoneSizePercProximal = zoneSizePerc;
 				lr.ZoneSizePercBasal = zoneSizePerc;
 
-				double radius = lr.CalcRadius(zoneSizePerc);
+				bool includeCentre = false;
 
 				for (int y = 0; y < lr.NumColumnsY; y++)
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						List<Column> columns = lr.GetColumnsFromCentre(x, y, radius, false);
+						List<Column> columns = lr.GetColumnsFromCentre(x, y, zoneSizePerc, includeCentre );
 
-						foreach (Column col in columns)
+						//********************************************************************
+						//this logic just mimicks the function code
+						//for test - run it here and compare results
+						int numToCreate = (int)( (double)lr.NumColumnsX * (double)lr.NumColumnsY * zoneSizePerc - (includeCentre ? 0 : 1) );
+
+						//find rectangular zone dimensions that gives minimum that many elements
+						int zoneWidth = 0;
+						int zoneHeight = 0;
+						bool alternate = false;
+
+						//subtract 1 when centre not included
+						//this will result in a larger rect zone if necessary
+						//includeCentre = false in this test
+						while ( zoneWidth * zoneHeight - ( includeCentre ? 0 : 1 ) < numToCreate )
 						{
-							double distance = Algebra.EuclideanDistance2D(x, y, col.X, col.Y);
-							Assert.IsTrue(distance <= radius);
-							Assert.IsTrue(distance != 0);
-							Assert.AreNotSame(col, lr.Columns[y][x]); //centre column not included
+							alternate = !alternate;
+							if ( alternate )
+							{
+								if ( zoneWidth < lr.NumColumnsX )
+									zoneWidth++;
+							}
+							else
+							{
+								if ( zoneHeight < lr.NumColumnsY )
+									zoneHeight++;
+							}
+						}
+
+						int zoneLeft = Math.Max ( Math.Min ( lr.NumColumnsX - zoneWidth, x - zoneWidth / 2 ), 0 );
+						int zoneRight = Math.Min ( zoneLeft + zoneWidth - 1, lr.NumColumnsX - 1 );
+						int zoneTop = Math.Max ( Math.Min ( lr.NumColumnsY - zoneHeight, y - zoneHeight / 2 ), 0 );
+						int zoneBottom = Math.Min ( zoneTop + zoneHeight - 1, lr.NumColumnsY - 1 );
+						//**********************************************************************
+
+						Assert.AreEqual ( numToCreate, columns.Count );
+						foreach ( Column col in columns )
+						{
+							Assert.IsTrue ( col.X >= zoneLeft );
+							Assert.IsTrue ( col.X <= zoneRight );
+							Assert.IsTrue ( col.Y >= zoneTop );
+							Assert.IsTrue ( col.Y <= zoneBottom );
+
+							//assert exclusive
+							Assert.IsFalse ( col.X == x && col.Y == y );
 						}
 					}
 				}
@@ -1558,12 +1642,10 @@ namespace Net1.Tests
 				Layer lr = new Layer(layerColumnsX, layerColumnsY, layerNumCellsInColumn);
 
 
-				//random radius
+				//random zone
 				double zoneSizePerc = rnd.NextDouble();
 				lr.ZoneSizePercProximal = zoneSizePerc;
 				lr.ZoneSizePercBasal = zoneSizePerc;
-
-				double radius = lr.CalcRadius(zoneSizePerc);
 
 				//set InputOverlap > threshold
 				for (int y = 0; y < lr.NumColumnsY; y++)
@@ -1580,8 +1662,8 @@ namespace Net1.Tests
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						List<Column> columnsAll = lr.GetColumnsFromCentre(x, y, radius, false);
-						List<Column> columnsThreshold = lr.GetColumnsFromCentre_WithThreshold(x, y, radius, false, stimulusThreshold);
+						List<Column> columnsAll = lr.GetColumnsFromCentre(x, y, zoneSizePerc, false);
+						List<Column> columnsThreshold = lr.GetColumnsFromCentre_WithThreshold(x, y, zoneSizePerc, false, stimulusThreshold);
 
 						ctr = 0;
 						foreach (Column col in columnsThreshold)
@@ -1610,8 +1692,8 @@ namespace Net1.Tests
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						List<Column> columnsAll = lr.GetColumnsFromCentre(x, y, radius, false);
-						List<Column> columnsThreshold = lr.GetColumnsFromCentre_WithThreshold(x, y, radius, false, stimulusThreshold);
+						List<Column> columnsAll = lr.GetColumnsFromCentre(x, y, zoneSizePerc, false);
+						List<Column> columnsThreshold = lr.GetColumnsFromCentre_WithThreshold(x, y, zoneSizePerc, false, stimulusThreshold);
 
 						ctr = 0;
 						foreach (Column col in columnsThreshold)
@@ -1640,8 +1722,8 @@ namespace Net1.Tests
 				{
 					for (int x = 0; x < lr.NumColumnsX; x++)
 					{
-						List<Column> columnsAll = lr.GetColumnsFromCentre(x, y, radius, false);
-						List<Column> columnsThreshold = lr.GetColumnsFromCentre_WithThreshold(x, y, radius, false, stimulusThreshold);
+						List<Column> columnsAll = lr.GetColumnsFromCentre(x, y, zoneSizePerc, false);
+						List<Column> columnsThreshold = lr.GetColumnsFromCentre_WithThreshold(x, y, zoneSizePerc, false, stimulusThreshold);
 
 						ctr = 0;
 						foreach (Column col in columnsAll)
@@ -1680,8 +1762,6 @@ namespace Net1.Tests
 				lr.ZoneSizePercBasal = zoneSizePerc;
 				lr.ZoneCoveragePercBasal = zoneCoveragePerc;
 
-				double radius = lr.CalcRadius(zoneSizePerc);
-
 				lr.ConnectColumns(null);
 
 				//for each column, count unique connected columns
@@ -1704,9 +1784,6 @@ namespace Net1.Tests
 								Column cc = syn.ColumnConnected;
 								Assert.IsNotNull(cc);
 								Assert.AreNotSame(col, cc);	//check column not connected to itself
-								double distance = Algebra.EuclideanDistance2D(cc.X, cc.Y, col.X, col.Y);
-								Assert.IsTrue(distance <= radius);
-								Assert.IsTrue(distance > 0);
 
 								//add unique connected columns to list to obtain 
 								//connected columns counter for each synapse

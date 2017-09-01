@@ -71,8 +71,7 @@ namespace Net1
 
 		#region Public methods
 
-
-
+		
 
 		// Process Synapses
 		public abstract int Update();

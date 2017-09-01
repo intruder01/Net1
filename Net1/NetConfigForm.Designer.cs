@@ -396,8 +396,7 @@
 			this.label5.Size = new System.Drawing.Size(75, 13);
 			this.label5.TabIndex = 7;
 			this.label5.Text = "SizePercBasal";
-			this.toolTip.SetToolTip(this.label5, "Radius of Column\'s neighbourhood area in Layer (Basal). In % of diagonal of the L" +
-        "ayer. 1 = 100% of diagonal.");
+			this.toolTip.SetToolTip(this.label5, "Column\'s neighbourhood (Basal) as % of all Columns. 1 = 100% of Columns.");
 			// 
 			// label7
 			// 
@@ -417,8 +416,7 @@
 			this.label8.Size = new System.Drawing.Size(88, 13);
 			this.label8.TabIndex = 3;
 			this.label8.Text = "SizePercProximal";
-			this.toolTip.SetToolTip(this.label8, "Radius of Column\'s receptive area on InputPlane (Proximal). In % of diagonal of t" +
-        "he InputPlane. 1 = 100% of diagonal.");
+			this.toolTip.SetToolTip(this.label8, "Column\'s neighbourhood (Proximal) as % of all Columns. 1 = 100% of Columns.");
 			// 
 			// groupBox5
 			// 

@@ -348,14 +348,12 @@ namespace Net1.Tests
 				lr.ZoneSizePercBasal = zoneSizePerc;
 				lr.ZoneCoveragePercBasal = zoneCoveragePerc;
 
-				double radius = lr.CalcRadius(zoneSizePerc);
-
 				//for each column, count unique connected columns
-				List<Column> PotentialColumnsList = new List<Column>(); //list of columns within radius (potential connections)
+				List<Column> PotentialColumnsList = new List<Column>(); //list of columns within zone (potential connections)
 				List<Column> ConnectedColumnsList = new List<Column>(); //list of columns connected to (actual connections)
 
 				//calculate number of connections that will be created
-				PotentialColumnsList = lr.GetColumnsFromCentre(column.X, column.Y, radius, false);
+				PotentialColumnsList = lr.GetColumnsFromCentre(column.X, column.Y, zoneSizePerc, false);
 				int numToConnect = (int)(PotentialColumnsList.Count * zoneCoveragePerc);
 				
 				foreach (Cell cell in column.Cells)
@@ -369,9 +367,7 @@ namespace Net1.Tests
 						Column cc = syn.ColumnConnected;
 						Assert.IsNotNull(cc);
 						Assert.AreNotSame(column, cc); //check column not connected to itself
-						double distance = Algebra.EuclideanDistance2D(cc.X, cc.Y, column.X, column.Y);
-						Assert.IsTrue(distance <= radius);
-						Assert.IsTrue(distance > 0);
+						Assert.IsTrue(PotentialColumnsList.Contains( cc ));
 
 						//add unique connected columns to list to obtain 
 						//connected columns counter for each synapse
