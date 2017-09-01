@@ -30,7 +30,7 @@ namespace Net1
 		//chart parameters
 		public static int CHART_NUM_POINTS = 100;		//number of points to display on chart
 
-
+		
 
 #if TESTING
 

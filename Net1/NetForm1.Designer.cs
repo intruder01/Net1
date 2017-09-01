@@ -144,8 +144,9 @@
 			// openToolStripMenuItem
 			// 
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.openToolStripMenuItem.Text = "Open";
+			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
 			// 
 			// configurationToolStripMenuItem
 			// 
@@ -590,7 +591,7 @@
 			// 
 			this.tabProximalSynapses.Location = new System.Drawing.Point(4, 22);
 			this.tabProximalSynapses.Name = "tabProximalSynapses";
-			this.tabProximalSynapses.Size = new System.Drawing.Size(595, 303);
+			this.tabProximalSynapses.Size = new System.Drawing.Size(599, 306);
 			this.tabProximalSynapses.TabIndex = 4;
 			this.tabProximalSynapses.Text = "Prox";
 			this.tabProximalSynapses.UseVisualStyleBackColor = true;
@@ -600,7 +601,7 @@
 			// 
 			this.tabInputOverlap.Location = new System.Drawing.Point(4, 22);
 			this.tabInputOverlap.Name = "tabInputOverlap";
-			this.tabInputOverlap.Size = new System.Drawing.Size(595, 303);
+			this.tabInputOverlap.Size = new System.Drawing.Size(599, 306);
 			this.tabInputOverlap.TabIndex = 3;
 			this.tabInputOverlap.Text = "InpOverlap";
 			this.tabInputOverlap.UseVisualStyleBackColor = true;
@@ -610,7 +611,7 @@
 			// 
 			this.tabBoost.Location = new System.Drawing.Point(4, 22);
 			this.tabBoost.Name = "tabBoost";
-			this.tabBoost.Size = new System.Drawing.Size(595, 303);
+			this.tabBoost.Size = new System.Drawing.Size(599, 306);
 			this.tabBoost.TabIndex = 5;
 			this.tabBoost.Text = "Boost";
 			this.tabBoost.UseVisualStyleBackColor = true;
@@ -621,7 +622,7 @@
 			this.tabActivation.Location = new System.Drawing.Point(4, 22);
 			this.tabActivation.Name = "tabActivation";
 			this.tabActivation.Padding = new System.Windows.Forms.Padding(3);
-			this.tabActivation.Size = new System.Drawing.Size(595, 303);
+			this.tabActivation.Size = new System.Drawing.Size(599, 306);
 			this.tabActivation.TabIndex = 1;
 			this.tabActivation.Text = "Act";
 			this.tabActivation.UseVisualStyleBackColor = true;
@@ -632,7 +633,7 @@
 			this.tabPrediction.Location = new System.Drawing.Point(4, 22);
 			this.tabPrediction.Name = "tabPrediction";
 			this.tabPrediction.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPrediction.Size = new System.Drawing.Size(595, 303);
+			this.tabPrediction.Size = new System.Drawing.Size(599, 306);
 			this.tabPrediction.TabIndex = 2;
 			this.tabPrediction.Text = "Pred";
 			this.tabPrediction.UseVisualStyleBackColor = true;
@@ -749,7 +750,7 @@
 			this.tabEntropyChart.Location = new System.Drawing.Point(4, 22);
 			this.tabEntropyChart.Name = "tabEntropyChart";
 			this.tabEntropyChart.Padding = new System.Windows.Forms.Padding(3);
-			this.tabEntropyChart.Size = new System.Drawing.Size(592, 137);
+			this.tabEntropyChart.Size = new System.Drawing.Size(596, 138);
 			this.tabEntropyChart.TabIndex = 1;
 			this.tabEntropyChart.Text = "Entr";
 			this.tabEntropyChart.UseVisualStyleBackColor = true;
@@ -792,7 +793,7 @@
 			this.chartEntropy.Dock = System.Windows.Forms.DockStyle.Left;
 			this.chartEntropy.Location = new System.Drawing.Point(3, 3);
 			this.chartEntropy.Name = "chartEntropy";
-			this.chartEntropy.Size = new System.Drawing.Size(465, 131);
+			this.chartEntropy.Size = new System.Drawing.Size(465, 132);
 			this.chartEntropy.TabIndex = 1;
 			this.chartEntropy.Text = "cartesianChart1";
 			// 
@@ -825,7 +826,7 @@
 			this.tabParams.Controls.Add(this.label19);
 			this.tabParams.Location = new System.Drawing.Point(4, 22);
 			this.tabParams.Name = "tabParams";
-			this.tabParams.Size = new System.Drawing.Size(592, 137);
+			this.tabParams.Size = new System.Drawing.Size(596, 138);
 			this.tabParams.TabIndex = 2;
 			this.tabParams.Text = "Prms";
 			this.tabParams.UseVisualStyleBackColor = true;

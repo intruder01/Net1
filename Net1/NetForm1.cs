@@ -26,6 +26,9 @@ namespace Net1
 		private bool refreshArea2 { get; set; }
 		private bool refreshArea3 { get; set; }
 
+		//last file opened in previous session
+		private string lastFileOpen;
+
 
 		public netForm1()
 		{
@@ -40,14 +43,32 @@ namespace Net1
 
 			loadSettings();
 
-			string filename = AppDomain.CurrentDomain.BaseDirectory + @"..\..\..\..\..\TestData.csv";
-			CreateNetworkFromFile(filename);
+			//string filename = AppDomain.CurrentDomain.BaseDirectory + @"..\..\..\..\..\..\TestData.csv";
 
-			configureControls();
-			ScreenDataChanged();
-			enableControls();
+			//attempt to open last file
+			if ( lastFileOpen.Length > 2 )
+			{
+				Net = CreateNetworkFromFile(lastFileOpen);
+			}
+			else
+			{
+				//or show open file dialog
+				openToolStripMenuItem_Click(null, EventArgs.Empty);
+			}
 
-			showNetConfigDlg();
+			//network loaded - configure GUI
+			if ( Net != null )
+			{
+				configureControls();
+				ScreenDataChanged();
+				enableControls();
+
+				//show network configuration window
+				showNetConfigDlg();
+
+				//show 3D display window
+				Viewer3D.Start();
+			}
 		}
 
 		private void form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -147,14 +168,18 @@ namespace Net1
 			enableControls();
 		}
 
-		public void CreateNetworkFromFile(string filename)
+		public Network CreateNetworkFromFile(string filename)
 		{
+			Network net = null;
+
 			if (File.Exists(filename))
 			{
-				Net = new Network(filename);
+				net = new Network(filename);
 			}
 			else
 				MessageBox.Show($"Network file not found:\n\n{ filename }");
+
+			return net;
 		}
 
 		//respond to ScreenData change events
@@ -569,6 +594,8 @@ namespace Net1
 			refreshArea3 = Properties.Settings.Default.RefreshArea3;
 
 			ScreenUpdateData.SparsenessParamSearchEnable = Properties.Settings.Default.SparsenessParamSearchEnable;
+
+			lastFileOpen = Properties.Settings.Default.LastFileOpen;
 		}
 
 		private void saveSettings()
@@ -598,6 +625,8 @@ namespace Net1
 			Properties.Settings.Default.RefreshArea3 = refreshArea3;
 
 			Properties.Settings.Default.SparsenessParamSearchEnable = ScreenUpdateData.SparsenessParamSearchEnable;
+
+			Properties.Settings.Default.LastFileOpen = lastFileOpen;
 
 			Properties.Settings.Default.Save();
 		}
@@ -688,6 +717,33 @@ namespace Net1
 			{
 				Viewer3D.End ();
 			}
+		}
+
+		private void openToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog dlg = new OpenFileDialog();
+			dlg.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+			dlg.CheckFileExists = true;
+			dlg.CheckPathExists = true;
+			dlg.DefaultExt = "csv";
+			dlg.InitialDirectory = Environment.CurrentDirectory;
+
+			string filename = "";
+			if ( dlg.ShowDialog() == DialogResult.OK )
+			{
+				filename = dlg.FileName;
+				if ( File.Exists(filename) )
+				{
+					Net = new Network(filename);
+					lastFileOpen = filename;
+
+					//save last open file in Settings
+					Properties.Settings.Default.LastFileOpen = lastFileOpen;
+					Properties.Settings.Default.Save();
+				}
+			}
+
+
 		}
 	}
 }
