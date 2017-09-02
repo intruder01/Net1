@@ -9,7 +9,7 @@ namespace Net1
 	static class Program
 	{
 		//program main form instance
-		public static netForm1 netForm1 { get; private set; }
+		public static NetFormMain netFormMain { get; private set; }
 
 		/// <summary>
 		/// The main entry point for the application.
@@ -20,8 +20,8 @@ namespace Net1
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			netForm1 = new netForm1();
-			Application.Run(netForm1);
+			netFormMain = new NetFormMain();
+			Application.Run(netFormMain);
 		}
 	}
 }

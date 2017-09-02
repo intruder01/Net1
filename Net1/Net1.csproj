@@ -119,8 +119,23 @@
       <DependentUpon>Viewer3DForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Viewer3DEngine.cs" />
+    <Compile Include="WatchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WatchForm.designer.cs">
+      <DependentUpon>WatchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WatchWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WatchWindow.designer.cs">
+      <DependentUpon>WatchWindow.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="AdamsLair.WinForms">
+      <HintPath>..\WinForms\bin\Debug\AdamsLair.WinForms.dll</HintPath>
+    </Reference>
     <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.2.16.3.0\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
@@ -147,8 +162,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking">
-      <HintPath>..\packages\WinForms-master\Outputs\Debug\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.0.6413.19160, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AdamsLair\Docking\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
@@ -178,6 +194,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Viewer3DForm.resx">
       <DependentUpon>Viewer3DForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WatchForm.resx">
+      <DependentUpon>WatchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WatchWindow.resx">
+      <DependentUpon>WatchWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

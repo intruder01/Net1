@@ -74,6 +74,7 @@
 			this.tbrNumCellsInColumn = new System.Windows.Forms.TrackBar();
 			this.btnClose = new System.Windows.Forms.Button();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.btnSave = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbrSynapsePermanenceDecrease)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbrSynapsePermanenceIncrease)).BeginInit();
@@ -544,11 +545,22 @@
 			this.btnClose.UseVisualStyleBackColor = true;
 			this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
 			// 
+			// btnSave
+			// 
+			this.btnSave.Location = new System.Drawing.Point(12, 524);
+			this.btnSave.Name = "btnSave";
+			this.btnSave.Size = new System.Drawing.Size(75, 23);
+			this.btnSave.TabIndex = 14;
+			this.btnSave.Text = "Save";
+			this.btnSave.UseVisualStyleBackColor = true;
+			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+			// 
 			// NetConfigForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(405, 555);
+			this.ClientSize = new System.Drawing.Size(405, 554);
+			this.Controls.Add(this.btnSave);
 			this.Controls.Add(this.btnClose);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
@@ -630,5 +642,6 @@
 		private System.Windows.Forms.TextBox txtZoneSizePercBasal;
 		private System.Windows.Forms.TextBox txtZoneCoveragePercProximal;
 		private System.Windows.Forms.TextBox txtZoneSizePercProximal;
+		private System.Windows.Forms.Button btnSave;
 	}
 }

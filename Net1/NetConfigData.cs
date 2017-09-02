@@ -36,6 +36,7 @@ namespace Net1
 		{
 			DataChanged?.Invoke();
 		}
+		
 
 		//Synapse parameters
 
@@ -203,12 +204,12 @@ namespace Net1
 			ColumnStimulusThreshold = 1;            //minimum Column InputOverlap for activation
 
 			//Layer parameters
-			ZoneSizePercProximal = 0.3;			//zoneSizePerc as applied to Proximal connections to InputPlane
-			ZoneCoveragePercProximal = 0.01;		//zoneCoveragePerc as applied to Proximal connections to InputPlane
-			ZoneSizePercBasal = 1;					//zoneSizePerc as applied to Basal connections in Layer
-			ZoneCoveragePercBasal = 1;              //zoneCoveragePerc as applied to Proximal connections inLayer	
-			ZoneSizePercApical = 1;                  //zoneSizePerc as applied to Apical connections in Layer
-			ZoneCoveragePercApical = 1;              //zoneCoveragePerc as applied to Apical connections inLayer	
+			ZoneSizePercProximal = 0.25;			//zoneSizePerc as applied to Proximal connections to InputPlane
+			ZoneCoveragePercProximal = 0.15;		//zoneCoveragePerc as applied to Proximal connections to InputPlane
+			ZoneSizePercBasal = 0.25;					//zoneSizePerc as applied to Basal connections in Layer
+			ZoneCoveragePercBasal = 0.5;              //zoneCoveragePerc as applied to Proximal connections inLayer	
+			ZoneSizePercApical = 0.25;                  //zoneSizePerc as applied to Apical connections in Layer
+			ZoneCoveragePercApical = 0.2;              //zoneCoveragePerc as applied to Apical connections inLayer	
 													//Network parameters	
 			NumCellsInColumn = 3;					//number of Cells per Column in Layer
 			ColumnsTopPercentile = 0.02;            // 2% is the usual ratio to obtain SDR

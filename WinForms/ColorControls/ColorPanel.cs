@@ -305,7 +305,7 @@ namespace AdamsLair.WinForms.ColorControls
 
 			if (this.clrBottomLeft.A < 255 || this.clrBottomRight.A < 255 || this.clrTopLeft.A < 255 || this.clrTopRight.A < 255)
 				e.Graphics.FillRectangle(new HatchBrush(HatchStyle.LargeCheckerBoard, this.renderer.ColorLightBackground, this.renderer.ColorDarkBackground), colorArea);
-           
+		   
 			e.Graphics.DrawImage(this.srcImage, colorArea, 0, 0, this.srcImage.Width - 1, this.srcImage.Height - 1, GraphicsUnit.Pixel);
 
 			Pen innerPickerPen = this.valTemp.GetLuminance() > 0.5f ? Pens.Black : Pens.White;

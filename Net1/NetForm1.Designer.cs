@@ -1,6 +1,6 @@
 ﻿namespace Net1
 {
-	partial class netForm1
+	partial class NetFormMain
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -105,6 +105,7 @@
 			this.txtTabPrmsSparsenessInput = new System.Windows.Forms.TextBox();
 			this.label19 = new System.Windows.Forms.Label();
 			this.splitter1 = new System.Windows.Forms.Splitter();
+			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -119,6 +120,9 @@
 			this.tabSparsenessChart.SuspendLayout();
 			this.tabEntropyChart.SuspendLayout();
 			this.tabParams.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+			this.splitContainer3.Panel1.SuspendLayout();
+			this.splitContainer3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -129,7 +133,7 @@
             this.exitToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(798, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(1372, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -144,7 +148,7 @@
 			// openToolStripMenuItem
 			// 
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
 			this.openToolStripMenuItem.Text = "Open";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
 			// 
@@ -215,9 +219,9 @@
 			// 
 			// splitContainer1.Panel2
 			// 
-			this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-			this.splitContainer1.Size = new System.Drawing.Size(798, 508);
-			this.splitContainer1.SplitterDistance = 183;
+			this.splitContainer1.Panel2.Controls.Add(this.splitContainer3);
+			this.splitContainer1.Size = new System.Drawing.Size(1372, 554);
+			this.splitContainer1.SplitterDistance = 184;
 			this.splitContainer1.TabIndex = 1;
 			// 
 			// btnViewer3D
@@ -234,7 +238,7 @@
 			// 
 			this.cbRefreshArea1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cbRefreshArea1.AutoSize = true;
-			this.cbRefreshArea1.Location = new System.Drawing.Point(165, 3);
+			this.cbRefreshArea1.Location = new System.Drawing.Point(163, 3);
 			this.cbRefreshArea1.Name = "cbRefreshArea1";
 			this.cbRefreshArea1.Size = new System.Drawing.Size(15, 14);
 			this.cbRefreshArea1.TabIndex = 37;
@@ -546,15 +550,15 @@
 			this.splitContainer2.Panel2.Controls.Add(this.cbRefreshArea3);
 			this.splitContainer2.Panel2.Controls.Add(this.tabsStatistics);
 			this.splitContainer2.Panel2.Controls.Add(this.splitter1);
-			this.splitContainer2.Size = new System.Drawing.Size(611, 508);
-			this.splitContainer2.SplitterDistance = 336;
+			this.splitContainer2.Size = new System.Drawing.Size(868, 550);
+			this.splitContainer2.SplitterDistance = 363;
 			this.splitContainer2.TabIndex = 0;
 			// 
 			// cbRefreshArea2
 			// 
 			this.cbRefreshArea2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cbRefreshArea2.AutoSize = true;
-			this.cbRefreshArea2.Location = new System.Drawing.Point(525, 3);
+			this.cbRefreshArea2.Location = new System.Drawing.Point(782, 3);
 			this.cbRefreshArea2.Name = "cbRefreshArea2";
 			this.cbRefreshArea2.Size = new System.Drawing.Size(15, 14);
 			this.cbRefreshArea2.TabIndex = 37;
@@ -573,7 +577,7 @@
 			this.tabsNetDisplay.Location = new System.Drawing.Point(0, 0);
 			this.tabsNetDisplay.Name = "tabsNetDisplay";
 			this.tabsNetDisplay.SelectedIndex = 0;
-			this.tabsNetDisplay.Size = new System.Drawing.Size(607, 332);
+			this.tabsNetDisplay.Size = new System.Drawing.Size(864, 359);
 			this.tabsNetDisplay.TabIndex = 0;
 			// 
 			// tabInputPlane
@@ -581,7 +585,7 @@
 			this.tabInputPlane.Location = new System.Drawing.Point(4, 22);
 			this.tabInputPlane.Name = "tabInputPlane";
 			this.tabInputPlane.Padding = new System.Windows.Forms.Padding(3);
-			this.tabInputPlane.Size = new System.Drawing.Size(599, 306);
+			this.tabInputPlane.Size = new System.Drawing.Size(856, 333);
 			this.tabInputPlane.TabIndex = 0;
 			this.tabInputPlane.Text = "Inp";
 			this.tabInputPlane.UseVisualStyleBackColor = true;
@@ -642,7 +646,7 @@
 			// 
 			this.cbRefreshArea3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cbRefreshArea3.AutoSize = true;
-			this.cbRefreshArea3.Location = new System.Drawing.Point(527, 3);
+			this.cbRefreshArea3.Location = new System.Drawing.Point(784, 3);
 			this.cbRefreshArea3.Name = "cbRefreshArea3";
 			this.cbRefreshArea3.Size = new System.Drawing.Size(15, 14);
 			this.cbRefreshArea3.TabIndex = 37;
@@ -658,7 +662,7 @@
 			this.tabsStatistics.Location = new System.Drawing.Point(3, 0);
 			this.tabsStatistics.Name = "tabsStatistics";
 			this.tabsStatistics.SelectedIndex = 0;
-			this.tabsStatistics.Size = new System.Drawing.Size(604, 164);
+			this.tabsStatistics.Size = new System.Drawing.Size(861, 179);
 			this.tabsStatistics.TabIndex = 1;
 			// 
 			// tabSparsenessChart
@@ -673,7 +677,7 @@
 			this.tabSparsenessChart.Location = new System.Drawing.Point(4, 22);
 			this.tabSparsenessChart.Name = "tabSparsenessChart";
 			this.tabSparsenessChart.Padding = new System.Windows.Forms.Padding(3);
-			this.tabSparsenessChart.Size = new System.Drawing.Size(596, 138);
+			this.tabSparsenessChart.Size = new System.Drawing.Size(853, 153);
 			this.tabSparsenessChart.TabIndex = 0;
 			this.tabSparsenessChart.Text = "Spars";
 			this.tabSparsenessChart.UseVisualStyleBackColor = true;
@@ -681,7 +685,7 @@
 			// txtSparsenessStdDev
 			// 
 			this.txtSparsenessStdDev.Enabled = false;
-			this.txtSparsenessStdDev.Location = new System.Drawing.Point(474, 97);
+			this.txtSparsenessStdDev.Location = new System.Drawing.Point(681, 106);
 			this.txtSparsenessStdDev.Name = "txtSparsenessStdDev";
 			this.txtSparsenessStdDev.Size = new System.Drawing.Size(50, 20);
 			this.txtSparsenessStdDev.TabIndex = 8;
@@ -689,7 +693,7 @@
 			// txtSparsenessAve
 			// 
 			this.txtSparsenessAve.Enabled = false;
-			this.txtSparsenessAve.Location = new System.Drawing.Point(474, 60);
+			this.txtSparsenessAve.Location = new System.Drawing.Point(681, 69);
 			this.txtSparsenessAve.Name = "txtSparsenessAve";
 			this.txtSparsenessAve.Size = new System.Drawing.Size(50, 20);
 			this.txtSparsenessAve.TabIndex = 6;
@@ -697,7 +701,7 @@
 			// txtSparsenessVal
 			// 
 			this.txtSparsenessVal.Enabled = false;
-			this.txtSparsenessVal.Location = new System.Drawing.Point(474, 23);
+			this.txtSparsenessVal.Location = new System.Drawing.Point(681, 32);
 			this.txtSparsenessVal.Name = "txtSparsenessVal";
 			this.txtSparsenessVal.Size = new System.Drawing.Size(50, 20);
 			this.txtSparsenessVal.TabIndex = 4;
@@ -705,7 +709,7 @@
 			// label15
 			// 
 			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(474, 81);
+			this.label15.Location = new System.Drawing.Point(681, 90);
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(43, 13);
 			this.label15.TabIndex = 7;
@@ -714,7 +718,7 @@
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(476, 44);
+			this.label10.Location = new System.Drawing.Point(683, 53);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(26, 13);
 			this.label10.TabIndex = 5;
@@ -725,14 +729,14 @@
 			this.chartSparseness.Dock = System.Windows.Forms.DockStyle.Left;
 			this.chartSparseness.Location = new System.Drawing.Point(3, 3);
 			this.chartSparseness.Name = "chartSparseness";
-			this.chartSparseness.Size = new System.Drawing.Size(465, 132);
+			this.chartSparseness.Size = new System.Drawing.Size(672, 147);
 			this.chartSparseness.TabIndex = 0;
 			this.chartSparseness.Text = "cartesianChart1";
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(474, 7);
+			this.label3.Location = new System.Drawing.Point(681, 16);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(34, 13);
 			this.label3.TabIndex = 3;
@@ -896,16 +900,29 @@
 			// 
 			this.splitter1.Location = new System.Drawing.Point(0, 0);
 			this.splitter1.Name = "splitter1";
-			this.splitter1.Size = new System.Drawing.Size(3, 164);
+			this.splitter1.Size = new System.Drawing.Size(3, 179);
 			this.splitter1.TabIndex = 0;
 			this.splitter1.TabStop = false;
+			// 
+			// splitContainer3
+			// 
+			this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer3.Name = "splitContainer3";
+			// 
+			// splitContainer3.Panel1
+			// 
+			this.splitContainer3.Panel1.Controls.Add(this.splitContainer2);
+			this.splitContainer3.Size = new System.Drawing.Size(1180, 550);
+			this.splitContainer3.SplitterDistance = 868;
+			this.splitContainer3.TabIndex = 1;
 			// 
 			// netForm1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Control;
-			this.ClientSize = new System.Drawing.Size(798, 532);
+			this.ClientSize = new System.Drawing.Size(1372, 578);
 			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.menuStrip1);
 			this.Name = "netForm1";
@@ -934,6 +951,9 @@
 			this.tabEntropyChart.PerformLayout();
 			this.tabParams.ResumeLayout(false);
 			this.tabParams.PerformLayout();
+			this.splitContainer3.Panel1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+			this.splitContainer3.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1018,6 +1038,7 @@
 		private System.Windows.Forms.CheckBox cbRefreshArea2;
 		private System.Windows.Forms.TabPage tabInputPlane;
 		private System.Windows.Forms.Button btnViewer3D;
+		private System.Windows.Forms.SplitContainer splitContainer3;
 	}
 }
 

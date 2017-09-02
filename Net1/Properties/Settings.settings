@@ -6,10 +6,10 @@
       <Value Profile="(Default)">0.5</Value>
     </Setting>
     <Setting Name="NetConfig_SynapsePermanenceIncrease" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.1</Value>
+      <Value Profile="(Default)">0.01</Value>
     </Setting>
     <Setting Name="NetConfig_SynapsePermanenceDecrease" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.01</Value>
+      <Value Profile="(Default)">0.001</Value>
     </Setting>
     <Setting Name="NetConfig_DendriteActivationThresholdProximal" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
@@ -27,19 +27,19 @@
       <Value Profile="(Default)">0.25</Value>
     </Setting>
     <Setting Name="NetConfig_ZoneCoveragePercProximal" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.01</Value>
+      <Value Profile="(Default)">0.15</Value>
     </Setting>
     <Setting Name="NetConfig_ZoneSizePercBasal" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.25</Value>
     </Setting>
     <Setting Name="NetConfig_ZoneCoveragePercBasal" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.01</Value>
+      <Value Profile="(Default)">0.5</Value>
     </Setting>
     <Setting Name="NetConfig_ZoneSizePercApical" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.25</Value>
     </Setting>
     <Setting Name="NetConfig_ZoneCoveragePercApical" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.01</Value>
+      <Value Profile="(Default)">0.2</Value>
     </Setting>
     <Setting Name="NetConfig_NumCellsInColumn" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>

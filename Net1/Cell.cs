@@ -150,8 +150,8 @@ namespace Net1
 		//TODO: verify if HTM theory requires multiple Basal dendrites (segments) in a cell
 		public DendriteBasal GetSequencePredictingBasalSegment ()
 		{
-			
-			//TODO: this logic different from openHTM due to only single basal dendrite (currently)
+
+			//TODO: this logic different from OpenHTM due to only single basal dendrite (currently)
 
 			DendriteBasal predictingDendrite = null;
 

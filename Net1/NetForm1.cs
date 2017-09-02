@@ -16,7 +16,7 @@ using System.Windows.Media;
 
 namespace Net1
 {
-	public partial class netForm1 : Form
+	public partial class NetFormMain : Form
 	{
 		public Network Net { get; private set; }
 		//private ScreenUpdateData screenUpdateData { get; set; }
@@ -27,10 +27,12 @@ namespace Net1
 		private bool refreshArea3 { get; set; }
 
 		//last file opened in previous session
-		private string lastFileOpen;
+		private string lastFileOpen = "";
 
+		//NetConfigDlg form displays at startup
+		Form netConfigDlg;
 
-		public netForm1()
+		public NetFormMain()
 		{
 			InitializeComponent();
 		}
@@ -39,11 +41,13 @@ namespace Net1
 		{
 			//structure for screen updates
 			ScreenUpdateData.DataChanged += new ScreenUpdateChangedEventHandler(ScreenDataChanged);
-			NetConfigData.DataChanged += new NetConfigData.NetConfigDataChangedEventHandler(NetConfigDataChanged); // needs item
+			NetConfigData.DataChanged += new NetConfigData.NetConfigDataChangedEventHandler(NetConfigDataChanged); // TODO: needs item? are items needed?
+			NetConfigForm.DataSave += new NetConfigForm.NetConfigDataSaveEventHandler(NetConfigDataSave); 
 
+			//restore defaults
+			NetConfigData.SetDefaults();
+			//attempt to load from Settings
 			loadSettings();
-
-			//string filename = AppDomain.CurrentDomain.BaseDirectory + @"..\..\..\..\..\..\TestData.csv";
 
 			//attempt to open last file
 			if ( lastFileOpen.Length > 2 )
@@ -91,13 +95,25 @@ namespace Net1
 		private void shutdown()
 		{
 			//abort training task
-			while (Net.TrainingInProgress)
-				Thread.Sleep(10);
+			Net.TrainRequest = false;
+			//while (Net.TrainingInProgress)
+				Thread.Sleep(100);
 
 			//unsubscribe from data update events
 			ScreenUpdateData.DataChanged -= ScreenDataChanged;
 			NetConfigData.DataChanged -= NetConfigDataChanged;
+			NetConfigForm.DataSave -= NetConfigDataSave;
 			saveSettings();
+
+			//close 3D viever
+			if(Viewer3D.IsActive)
+				Viewer3D.End();
+			//close net config window
+			if ( netConfigDlg != null )
+			{
+				netConfigDlg.Close();
+				netConfigDlg = null;
+			}
 		}
 	
 
@@ -108,9 +124,7 @@ namespace Net1
 
 		private void btnTrainCase_Click(object sender, EventArgs e)
 		{
-			Net.TrainingInProgress = true;
 			Net.TrainCase();
-			Net.TrainingInProgress = false;
 		}
 
 		private void btnNextCaseTrain_Click(object sender, EventArgs e)
@@ -123,7 +137,9 @@ namespace Net1
 		{
 			for (int epoch = 0; epoch < NetConfigData.NumEpochsToTrain; epoch++)
 			{
+				Net.TrainingInProgress = true;
 				Net.TrainEpoch();
+				Net.TrainingInProgress = false;
 				Application.DoEvents();
 			}
 
@@ -207,6 +223,19 @@ namespace Net1
 			else
 			{
 				refreshNetDisplayTabs();
+			}
+		}
+
+		//respond to NetConfigData Save button
+		public void NetConfigDataSave()
+		{
+			if ( InvokeRequired )
+			{
+				Invoke(new MethodInvoker(NetConfigDataSave));
+			}
+			else
+			{
+				saveSettings();
 			}
 		}
 

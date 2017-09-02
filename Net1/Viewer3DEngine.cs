@@ -594,9 +594,9 @@ namespace Net1
 				this.rightLegend = new HtmOverViewInformation();
 
 				//Get references for traversing regions
-				this.Region = Program.netForm1.Net.Lr;
-				this.HtmRegionColumns = Program.netForm1.Net.Lr.Columns;
-				this.InputPlaneColumns = Program.netForm1.Net.Ip.Columns;
+				this.Region = Program.netFormMain.Net.Lr;
+				this.HtmRegionColumns = Program.netFormMain.Net.Lr.Columns;
+				this.InputPlaneColumns = Program.netFormMain.Net.Ip.Columns;
 
 				//Prepare Arrays for 2-dim-content
 				this.predictions = new float[this.Region.NumColumnsX, this.Region.NumColumnsY];
@@ -823,8 +823,8 @@ namespace Net1
 				//Get input data from fileSensor. Attention: Draw rythm happens very often!
 				//TODO: they use the Global.T concept to access data according to T steps back
 				//I did not implement it here as I see no need for it 
-				InputPlane ip = Program.netForm1.Net.Ip;
-				List<List<Column>> inputData = Program.netForm1.Net.Ip.Columns;
+				InputPlane ip = Program.netFormMain.Net.Ip;
+				List<List<Column>> inputData = Program.netFormMain.Net.Ip.Columns;
 
 				if(inputData != null)
 				{
@@ -1056,7 +1056,7 @@ namespace Net1
 						if(!inactiveCells)
 						{
 							//Send column indices with actual proecition value in 2-dim Array
-							float result = predictionCounter / (float)Program.netForm1.Net.Lr.NumCellsInColumn;
+							float result = predictionCounter / (float)Program.netFormMain.Net.Lr.NumCellsInColumn;
 							this.predictions[column.X, column.Y] = result;
 						}
 
@@ -2135,7 +2135,7 @@ namespace Net1
 		public void UpdateSelectedObjectList(object obj, bool add)
 		{
 			//Trigger selection changed event
-			SelectionChangedEvent ( this, EventArgs.Empty, Program.netForm1.Net.Lr );
+			SelectionChangedEvent ( this, EventArgs.Empty, Program.netFormMain.Net.Lr );
 		}
 
 

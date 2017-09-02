@@ -85,13 +85,11 @@ namespace Net1
 		{
 			if (Trainer.DataReady)
 			{
-				TrainingInProgress = true;
 				for (int caseNum = 0; caseNum < Trainer.NumCases; caseNum++)
 				{
 					LoadNextCase();
 					TrainCase();
 				}
-				TrainingInProgress = false;
 			}
 		}
 

@@ -37,7 +37,7 @@ namespace Net1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.01")]
         public double NetConfig_SynapsePermanenceIncrease {
             get {
                 return ((double)(this["NetConfig_SynapsePermanenceIncrease"]));
@@ -49,7 +49,7 @@ namespace Net1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.01")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.001")]
         public double NetConfig_SynapsePermanenceDecrease {
             get {
                 return ((double)(this["NetConfig_SynapsePermanenceDecrease"]));
@@ -121,7 +121,7 @@ namespace Net1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.01")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.15")]
         public double NetConfig_ZoneCoveragePercProximal {
             get {
                 return ((double)(this["NetConfig_ZoneCoveragePercProximal"]));
@@ -145,7 +145,7 @@ namespace Net1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.01")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.5")]
         public double NetConfig_ZoneCoveragePercBasal {
             get {
                 return ((double)(this["NetConfig_ZoneCoveragePercBasal"]));
@@ -169,7 +169,7 @@ namespace Net1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.01")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.2")]
         public double NetConfig_ZoneCoveragePercApical {
             get {
                 return ((double)(this["NetConfig_ZoneCoveragePercApical"]));

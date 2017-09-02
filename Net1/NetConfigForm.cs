@@ -27,6 +27,15 @@ namespace Net1
 		[DllImport("user32.dll", EntryPoint = "MoveWindow")]
 		internal static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
+		//event trigger for data Save button
+		//notifies main form to save Settings
+		public delegate void NetConfigDataSaveEventHandler();
+		public static event NetConfigDataSaveEventHandler DataSave;
+		public static void OnDataSave()
+		{
+			DataSave?.Invoke();
+		}
+
 		private void NetConfigForm_Load(object sender, EventArgs e)
 		{
 			int posX = Application.OpenForms[0].Location.X;
@@ -37,7 +46,7 @@ namespace Net1
 			MoveWindow(this.Handle, posX + width, posY, this.Width, this.Height, true);
 			
 
-			NetConfigData.DataChanged += new NetConfigData.NetConfigDataChangedEventHandler(UpdateControls);
+			//NetConfigData.DataChanged += new NetConfigData.NetConfigDataChangedEventHandler(UpdateControls);
 			UpdateControls();
 		}
 
@@ -300,6 +309,13 @@ namespace Net1
 		private void btnClose_Click(object sender, EventArgs e)
 		{
 			Close();
+		}
+
+		private void btnSave_Click(object sender, EventArgs e)
+		{
+			//notify lsteners Save button pressed
+			//main screen saves Settings data
+			OnDataSave();
 		}
 	}
 }
